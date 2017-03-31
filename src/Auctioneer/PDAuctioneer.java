@@ -163,8 +163,6 @@ public class PDAuctioneer {
 								asks.clear();
 								bids.clear();
 								observer.clear();
-
-								////System.out.println("**************************************\n");
 							}
 
 							observer.doBalancing();
