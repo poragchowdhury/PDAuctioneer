@@ -45,71 +45,44 @@ public class MCTS {
 		////this.arrPredictedClearingPrices = observer.arrPredictedClearingPrices15;
 		
     	// Create all the actions
-    	Action action = new Action("A0",-2,2,false, Action.ACTION_TYPE.BUY, 1.00);
+		Action action = new Action("A0",-2,0,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A1",-2,1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A1",-1,1,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A2",-2,0,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A2",-1,0,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A3",-2,-1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A3",0,1,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A4",-1,2,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A4",0,2,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A5",-1,1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	
+    	action = new Action("A5",-2,0,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A6",-1,0,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A6",-1,1,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A7",0,2,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A7",-1,0,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A8",0,1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A8",0,1,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A9",1,2,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("A9",0,2,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
+
     	// no bid
-    	action = new Action("A10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
+		action = new Action("A10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
     	actions.add(action);
-    
-    	action = new Action("A11",-2,1,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A12",-2,0,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A13",-2,-1,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A14",-1,2,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A15",-1,1,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A16",-1,0,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A17",0,2,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A18",0,1,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	action = new Action("A19",1,2,false, Action.ACTION_TYPE.BUY, 1.20);
-    	actions.add(action);
-    	
+
     	// Selling
-    	action = new Action("A20",-2,2,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A11",-2,0,false, Action.ACTION_TYPE.SELL, 1.00);
     	actions.add(action);
-    	action = new Action("A21",-2,1,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A12",-1,1,false, Action.ACTION_TYPE.SELL, 1.00);
     	actions.add(action);
-    	action = new Action("A22",-2,0,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A13",-1,0,false, Action.ACTION_TYPE.SELL, 1.00);
     	actions.add(action);
-    	action = new Action("A23",-2,-1,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A14",0,1,false, Action.ACTION_TYPE.SELL, 1.00);
     	actions.add(action);
-    	action = new Action("A24",-1,2,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A15",0,2,false, Action.ACTION_TYPE.SELL, 1.00);
     	actions.add(action);
-    	action = new Action("A25",-1,1,false, Action.ACTION_TYPE.SELL, 1.00);
-    	actions.add(action);
-    	action = new Action("A26",-1,0,false, Action.ACTION_TYPE.SELL, 1.00);
-    	actions.add(action);
-    	action = new Action("A27",0,2,false, Action.ACTION_TYPE.SELL, 1.00);
-    	actions.add(action);
-    	action = new Action("A28",0,1,false, Action.ACTION_TYPE.SELL, 1.00);
-    	actions.add(action);
-    	action = new Action("A29",1,2,false, Action.ACTION_TYPE.SELL, 1.00);
-    	actions.add(action);
-    	
+
     }
 	
     public TreeNode getBestMCTSMove(Observer observer) {

@@ -36,6 +36,9 @@ public class Observer {
 	public int SUB_CASE_STUDY = 1;
 	public HashMap<Integer, HashMap<String, ArrayList<Double>>> results;
 	public int[] mctsDebugVals;
+	public enum costArrayIndices{
+		volumebuy, totalbuy, volumesell, totalsell, volumebalance, totalbalance
+	}
 	
 	public String getTime(){
 		return currentTimeSlot + "," + hour + "," + hourAhead + "," + date + "," + month + "," + year + "," + Configure.getNUMBER_OF_BROKERS() + "," + Configure.getNUMBER_OF_PRODUCERS() + ",";
@@ -43,6 +46,7 @@ public class Observer {
 	
 	public boolean DEBUG = false;
 	public double neededEneryMCTSBroker = 0;
+	public double initialNeededEneryMCTSBroker = 0;
 	public int NUM_MCTS_SIM = 0;
 	public double [][] arrProducerBidPrice;
 	public double [][] arrProducerBidVolume;
@@ -465,18 +469,16 @@ public class Observer {
 			    Double clearedBidMWh = getClearedBidVolume(brokerName);
 			    if(clearedBidMWh == null)
 			    	clearedBidMWh = 0.00;
-			    addTotalClearTrade(new Bid(brokerName,brokerid,0,clearedBidMWh));
-			    addTotalTradeCost(new Bid(brokerName,brokerid,clearingPrice,clearedBidMWh));
+			    addTotalClearTrade(new Bid(brokerName,brokerid,0,clearedBidMWh,a.type));
+			    addTotalTradeCost(new Bid(brokerName,brokerid,clearingPrice,clearedBidMWh,a.type));
 			    if(DEBUG)
 			    	System.out.println(brokerName + " MWh : " + clearedBidMWh + " $ : " + clearingPrice);
 		    
 			    Double clearedAskMWh = getClearedAskVolume(brokerName);
 			    if(clearedAskMWh == null)
 			    	clearedAskMWh = 0.00;
-			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh));
-			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh));
-			
-			    
+			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
+			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type));
 			    
 		    } else {
 			    Double clearedAskMWh = getClearedAskVolume(brokerName);
@@ -488,8 +490,8 @@ public class Observer {
 			    }
 			    totalAskVolumeCleared += clearedAskMWh;
 			    
-			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh));
-			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh));
+			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
+			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type));
 			    if(DEBUG)
 			    	System.out.println(brokerName + " MWh : " + clearedAskMWh + " $ : " + clearingPrice);
 		    }
@@ -663,9 +665,9 @@ public class Observer {
 		    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
 		    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
 		    if(a.type == Agent.agentType.BROKER)
-		    	addTotalTradeCost(new Bid(brokerName,brokerid,balancingPrice,clearedBalancingMWh));
+		    	addTotalTradeCost(new Bid(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type));
 		    else 
-		    	addTotalTradeCost(new Ask(brokerName,brokerid,balancingPrice,clearedBalancingMWh));
+		    	addTotalTradeCost(new Ask(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type));
 		}
 	}
 	

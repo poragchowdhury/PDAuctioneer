@@ -94,3 +94,185 @@ Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMC
 1,1,15000,	1,0,0.00,100.00,90.00,100.00,120.00,-18.62,-16.89,-44.07,-4.53,-15.89,Green Energy Cleared,21.418829269536445
 Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
 1,1,25000,	1,0,100.00,100.00,50.00,120.00,98.37,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10,	24,10,70.11,83.44,75.89,71.74,88.61,-12.23,-16.31,-50.05,-5.42,-15.99,Green Energy Cleared,21.73614647191362
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,80.77,74.89,74.20,82.65,92.56,-12.25,-16.22,-50.39,-5.31,-15.83,Green Energy Cleared,21.531433112994073
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,71.37,76.92,70.23,90.88,92.70,-12.30,-16.24,-50.15,-5.40,-15.91,Green Energy Cleared,21.641750851136333
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,72.02,75.61,71.72,90.64,93.28,-12.38,-16.39,-49.82,-5.39,-16.02,Green Energy Cleared,21.77464318808959
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,74.02,78.73,72.43,92.48,90.37,-12.33,-16.28,-50.17,-5.35,-15.87,Green Energy Cleared,21.629969896099805
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,78.08,69.32,67.38,92.65,96.73,-12.21,-16.14,-50.52,-5.36,-15.77,Green Energy Cleared,21.498653978984272
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,67.81,81.72,74.17,95.17,90.31,-12.28,-16.24,-50.30,-5.36,-15.83,Green Energy Cleared,21.59826651386857
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10,	24,10,64.49,78.86,72.17,57.89,87.89,-12.24,-16.16,-50.00,-5.51,-16.09,Green Energy Cleared,21.668064283441698
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,70.67,72.32,71.27,86.38,84.68,-12.18,-16.13,-50.23,-5.47,-16.00,Green Energy Cleared,21.59665601830625
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,67.81,73.82,69.39,86.99,88.13,-12.12,-16.04,-50.45,-5.43,-15.95,Green Energy Cleared,21.474329988485813
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,71.79,70.59,71.17,83.24,84.01,-12.24,-16.21,-49.93,-5.50,-16.11,Green Energy Cleared,21.715399499626756
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,65.89,74.45,67.42,84.15,87.07,-12.18,-16.10,-50.20,-5.51,-16.01,Green Energy Cleared,21.60887003909674
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,66.40,70.43,71.18,92.08,86.43,-12.22,-16.14,-50.13,-5.48,-16.03,Green Energy Cleared,21.622657304517446
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,68.88,75.07,67.14,84.72,89.37,-12.16,-16.03,-50.38,-5.45,-15.98,Green Energy Cleared,21.478342276986773
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,65.85,75.34,73.63,82.10,85.03,-12.20,-16.13,-50.16,-5.47,-16.04,Green Energy Cleared,21.59450359814038
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,66.64,76.07,71.19,86.78,84.28,-12.23,-16.17,-50.04,-5.48,-16.09,Green Energy Cleared,21.64613429230632
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,76.96,67.43,69.23,87.92,86.27,-12.21,-16.06,-50.27,-5.45,-16.01,Green Energy Cleared,21.512336863421005
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,72.29,73.06,71.25,88.76,82.19,-12.23,-16.14,-50.08,-5.48,-16.06,Green Energy Cleared,21.622209646958705
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,60.87,74.40,70.15,87.03,86.43,-12.30,-16.22,-49.80,-5.55,-16.13,Green Energy Cleared,21.769289692488726
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,69.15,71.80,68.75,82.63,84.65,-12.26,-16.19,-49.92,-5.53,-16.10,Green Energy Cleared,21.715206415059946
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,70.27,76.97,69.24,89.21,82.92,-12.20,-16.13,-50.16,-5.46,-16.05,Green Energy Cleared,21.588781644596992
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	1,0,100.00,100.00,42.89,108.00,108.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	1,0,100.00,100.00,42.89,108.00,108.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	1,0,72.58,100.00,80.00,100.00,100.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	1,0,100.00,100.00,42.89,108.00,108.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	1,0,100.00,100.00,46.68,90.00,108.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	1,0,72.58,100.00,60.00,100.00,120.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	1,0,100.00,100.00,46.68,90.00,108.00,-16.50,-14.97,-50.44,-4.01,-14.08,Green Energy Cleared,18.978117931578094
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	1,0,100.00,100.00,90.00,0.00,0.00,-21.26,-19.28,-36.15,-5.17,-18.14,Green Energy Cleared,24.45089584489732
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	1,0,100.00,100.00,90.00,0.00,0.00,-21.26,-19.28,-36.15,-5.17,-18.14,Green Energy Cleared,24.45089584489732
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	1,0,0.00,100.00,90.00,0.00,0.00,-32.45,-29.43,-2.55,-7.89,-27.68,Green Energy Cleared,37.319788394843286
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	1,0,100.00,100.00,90.00,0.00,0.00,-21.26,-19.28,-36.15,-5.17,-18.14,Green Energy Cleared,24.45089584489732
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	1,0,100.00,100.00,90.00,0.00,0.00,-21.26,-19.28,-36.15,-5.17,-18.14,Green Energy Cleared,24.45089584489732
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	1,0,100.00,100.00,90.00,0.00,0.00,-21.26,-19.28,-36.15,-5.17,-18.14,Green Energy Cleared,24.45089584489732
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	1,0,0.00,100.00,90.00,0.00,0.00,-32.45,-29.43,-2.55,-7.89,-27.68,Green Energy Cleared,37.319788394843286
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,72.87,71.80,72.70,73.67,83.46,-12.25,-16.15,-50.03,-5.49,-16.07,Green Energy Cleared,21.641481587337775
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,75.14,71.74,69.72,80.36,86.51,-12.17,-16.07,-50.29,-5.45,-16.02,Green Energy Cleared,21.5213344532766
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,70.41,71.31,69.97,86.71,86.10,-12.27,-16.16,-49.99,-5.48,-16.11,Green Energy Cleared,21.63883657702965
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,67.49,81.82,72.75,93.41,92.00,-12.30,-16.28,-50.20,-5.36,-15.87,Green Energy Cleared,21.636882915092183
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,66.52,75.70,71.86,89.19,87.98,-12.21,-16.07,-50.30,-5.42,-16.00,Green Energy Cleared,21.48996357446861
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,67.39,74.05,70.43,87.73,85.21,-12.27,-16.15,-50.00,-5.47,-16.11,Green Energy Cleared,21.619867764787625
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,70.06,72.11,67.79,87.58,87.63,-12.21,-16.04,-50.27,-5.49,-15.99,Green Energy Cleared,21.53524195694902
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	168,10,92.18,93.88,90.97,94.16,102.32,-13.26,-17.67,-47.08,-5.21,-16.78,Green Energy Cleared,22.88521260844312
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	168,10,91.63,91.51,89.37,98.14,102.74,-13.18,-17.65,-47.21,-5.21,-16.76,Green Energy Cleared,22.853497151705916
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	168,10,89.56,90.45,88.47,101.65,101.49,-13.21,-17.68,-47.11,-5.22,-16.78,Green Energy Cleared,22.903396599491536
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	168,10,88.79,89.42,89.86,102.21,100.60,-13.26,-17.70,-47.02,-5.23,-16.80,Green Energy Cleared,22.927308410849438
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	168,10,91.28,89.73,89.04,101.32,101.66,-13.16,-17.65,-47.20,-5.21,-16.78,Green Energy Cleared,22.857561196684102
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	168,10,91.79,88.58,88.98,102.12,102.10,-13.17,-17.62,-47.31,-5.20,-16.71,Green Energy Cleared,22.815385693759644
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	168,10,91.52,89.77,88.52,102.92,100.89,-13.21,-17.62,-47.23,-5.20,-16.74,Green Energy Cleared,22.818265281486898
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	168,10,93.75,94.65,93.16,96.85,94.31,-13.28,-17.67,-47.06,-5.21,-16.77,Green Energy Cleared,22.88622722290886
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	168,10,92.55,95.02,93.30,97.24,94.25,-13.29,-17.70,-47.00,-5.22,-16.79,Green Energy Cleared,22.91493567740904
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	168,10,93.44,94.37,92.13,96.33,94.69,-13.29,-17.71,-46.95,-5.23,-16.82,Green Energy Cleared,22.9385238597628
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	168,10,94.30,93.98,93.36,95.91,95.27,-13.25,-17.66,-47.12,-5.21,-16.75,Green Energy Cleared,22.874535178610405
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	168,10,93.95,95.54,93.02,96.68,96.18,-13.27,-17.70,-47.07,-5.21,-16.76,Green Energy Cleared,22.90179143314181
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	168,10,95.48,94.34,93.24,96.57,95.92,-13.24,-17.65,-47.15,-5.21,-16.76,Green Energy Cleared,22.860666753970513
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	168,10,92.85,95.34,93.64,95.96,95.49,-13.27,-17.64,-47.13,-5.21,-16.74,Green Energy Cleared,22.852829447436307
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,79.93,79.45,75.92,76.14,68.31,-12.16,-16.10,-50.29,-5.45,-16.01,Green Energy Cleared,21.54521497662449
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,76.67,77.36,70.74,74.59,74.93,-12.28,-16.25,-49.78,-5.52,-16.17,Green Energy Cleared,21.772187910442998
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,67.76,81.94,72.21,77.29,75.77,-12.29,-16.26,-49.75,-5.51,-16.18,Green Energy Cleared,21.77257240601131
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,75.51,76.75,71.89,74.65,74.92,-12.36,-16.34,-49.52,-5.53,-16.25,Green Energy Cleared,21.866800672245088
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,76.38,78.80,74.92,73.43,70.69,-12.32,-16.30,-49.65,-5.52,-16.21,Green Energy Cleared,21.821137371575507
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,73.59,77.78,70.74,74.74,73.63,-12.48,-16.51,-49.00,-5.59,-16.42,Green Energy Cleared,22.101821538782914
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,77.74,77.66,74.50,73.38,72.15,-12.36,-16.35,-49.52,-5.53,-16.25,Green Energy Cleared,21.87043015387032
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,71.87,79.46,71.45,74.49,69.19,-12.58,-16.60,-48.66,-5.63,-16.52,Green Energy Cleared,22.236948282501775
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,80.33,73.73,71.50,73.67,73.14,-12.40,-16.38,-49.39,-5.54,-16.29,Green Energy Cleared,21.9177197731992
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,75.94,81.67,77.25,69.25,69.69,-12.41,-16.40,-49.33,-5.55,-16.31,Green Energy Cleared,21.94978615012611
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,81.13,76.78,71.93,71.25,71.42,-12.41,-16.42,-49.28,-5.56,-16.33,Green Energy Cleared,21.98062737410419
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,72.16,83.33,73.81,69.87,68.42,-12.54,-16.59,-48.74,-5.62,-16.51,Green Energy Cleared,22.210479300359946
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,74.72,81.08,74.08,71.45,71.88,-12.39,-16.39,-49.37,-5.54,-16.30,Green Energy Cleared,21.93535019739714
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,72.31,79.34,74.64,70.41,70.88,-12.58,-16.64,-48.60,-5.64,-16.55,Green Energy Cleared,22.275198175388752
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,76.96,80.51,75.26,61.67,80.98,-12.26,-16.21,-49.92,-5.49,-16.12,Green Energy Cleared,21.702886484211646
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,69.73,77.90,76.45,72.94,80.48,-12.26,-16.19,-49.97,-5.48,-16.10,Green Energy Cleared,21.66771987582209
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,73.09,72.71,72.82,79.79,81.04,-12.23,-16.14,-50.12,-5.45,-16.06,Green Energy Cleared,21.58529159861201
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,78.35,80.75,70.64,78.32,79.09,-12.37,-16.56,-48.97,-5.61,-16.49,Green Energy Cleared,22.17125606913942
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,68.46,77.36,70.33,78.96,77.88,-12.35,-16.35,-49.48,-5.56,-16.26,Green Energy Cleared,21.910576430263127
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,73.57,75.02,70.88,77.73,75.57,-12.42,-16.43,-49.28,-5.56,-16.32,Green Energy Cleared,21.982158966165017
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,62.76,78.20,73.13,81.66,79.88,-12.21,-16.17,-50.08,-5.49,-16.06,Green Energy Cleared,21.66197631278972
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,72.49,72.82,71.34,49.74,75.61,-11.90,-15.99,-50.40,-5.81,-15.90,Green Energy Cleared,21.80071469861539
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,83.33,70.38,71.93,66.41,79.63,-12.39,-16.37,-49.44,-5.54,-16.27,Green Energy Cleared,21.906674866333258
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,71.47,72.52,72.41,78.30,83.07,-12.29,-16.19,-49.96,-5.48,-16.09,Green Energy Cleared,21.670095828456507
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,71.48,69.62,68.30,79.58,76.32,-12.55,-16.56,-48.78,-5.62,-16.49,Green Energy Cleared,22.17953948012771
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,74.19,81.22,75.59,82.72,77.83,-12.37,-16.39,-49.45,-5.64,-16.15,Green Energy Cleared,22.030066510371828
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,60.41,67.85,59.58,70.62,67.10,-12.76,-16.52,-48.32,-5.76,-16.64,Green Energy Cleared,22.2801803002352
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,64.10,68.78,61.84,75.89,65.38,-12.42,-16.24,-49.54,-5.74,-16.06,Green Energy Cleared,21.976754933348598
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,83.33,78.77,77.41,53.71,76.09,-12.37,-16.37,-49.42,-5.52,-16.31,Green Energy Cleared,21.89663460567825
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,64.82,69.91,67.23,59.15,69.30,-12.61,-16.63,-48.29,-5.72,-16.74,Green Energy Cleared,22.35955027363846
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,72.85,78.01,69.84,73.81,76.72,-12.34,-16.32,-49.54,-5.53,-16.26,Green Energy Cleared,21.857280941789284
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,74.24,79.17,71.31,75.59,74.63,-12.29,-16.26,-49.79,-5.49,-16.17,Green Energy Cleared,21.751408719091703
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,79.61,77.20,70.73,78.70,71.62,-12.26,-16.21,-49.94,-5.48,-16.12,Green Energy Cleared,21.687795983760928
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,66.59,77.70,69.66,79.89,78.77,-12.45,-16.42,-49.22,-5.56,-16.35,Green Energy Cleared,21.98180807619768
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,67.98,72.23,65.74,72.40,72.64,-12.56,-16.56,-48.77,-5.63,-16.48,Green Energy Cleared,22.18593327458293

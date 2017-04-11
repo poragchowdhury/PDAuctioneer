@@ -72,7 +72,7 @@ public class ZI extends Agent {
 			}
 			
 			
-			Bid bid = new Bid(this.playerName, this.id, ZIlimitPrice, this.neededMWh);
+			Bid bid = new Bid(this.playerName, this.id, ZIlimitPrice, this.neededMWh, this.type);
 			if(ob.DEBUG)
 				System.out.println(bid.toString());
 			bids.add(bid);

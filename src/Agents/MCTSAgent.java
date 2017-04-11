@@ -41,6 +41,7 @@ public class MCTSAgent extends Agent {
 		}
 		//long start = System.currentTimeMillis();
 		observer.neededEneryMCTSBroker = this.neededMWh; 
+		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
 		if(this.neededMWh > 0)
 		{
 			TreeNode bestMove = mcts.getBestMCTSMove(observer);
@@ -74,9 +75,11 @@ public class MCTSAgent extends Agent {
 			if(!bestMove.nobid){
 				if(bestMove.actionType == ACTION_TYPE.BUY){
 					// Submit buy orders
-					minMWh= (Math.abs(this.neededMWh)*bestMove.volPercentage) / numberofbids;
+					double surplus = Math.abs(this.initialNeededMWh)*(1-bestMove.volPercentage);
+					double totalE = surplus + this.neededMWh;
+					minMWh = totalE  / numberofbids;
 					for(int i = 1; i <=numberofbids; i++){
-						Bid bid = new Bid(this.playerName, this.id, limitPrice, minMWh);
+						Bid bid = new Bid(this.playerName, this.id, limitPrice, minMWh, this.type);
 						if(observer.DEBUG)
 							System.out.println(bid.toString());
 						bids.add(bid);
@@ -85,13 +88,15 @@ public class MCTSAgent extends Agent {
 				}
 				else{
 					// Submit sell orders
+					double surplus = 0 - neededMWh;
 					minMWh= (Math.abs(this.initialNeededMWh)*(1-bestMove.volPercentage));
-					if(minMWh > Math.abs(this.neededMWh))
+					if(minMWh > surplus)
 						minMWh /= numberofbids;
 					else
-						minMWh = Math.abs(this.neededMWh) / numberofbids;
+						minMWh = surplus / numberofbids;
+					
 					for(int i = 1; i <=numberofbids; i++){
-						Ask ask = new Ask(this.playerName, this.id, limitPrice, minMWh);
+						Ask ask = new Ask(this.playerName, this.id, limitPrice, minMWh, this.type);
 						if(observer.DEBUG)
 							System.out.println(ask.toString());
 						asks.add(ask);

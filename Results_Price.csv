@@ -94,3 +94,185 @@ Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMC
 1,1,15000,	1,0,-87.81,-18.94,-25.83,-18.94,-40.29,18.94,18.94,34.50,18.94,18.94,Mean Clearing Price,18.939761977092395
 Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
 1,1,25000,	1,0,-20.54,-20.54,-54.17,-42.21,-21.64,20.54,20.54,20.54,20.54,20.54,Mean Clearing Price,20.539761977092393
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10,	24,10,-34.60,-23.91,-30.00,-33.19,-28.58,24.16,24.57,25.50,25.63,23.63,Mean Clearing Price,18.129291599463848
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-27.04,-30.99,-31.94,-33.61,-28.60,23.32,24.23,24.63,25.79,23.55,Mean Clearing Price,18.246197883400185
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-33.04,-29.79,-34.80,-30.99,-27.96,24.63,25.68,26.30,26.37,24.85,Mean Clearing Price,17.38254365952395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-33.34,-30.18,-33.43,-28.60,-32.05,24.05,24.93,26.53,26.25,24.17,Mean Clearing Price,17.187259870109873
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-32.68,-27.61,-33.00,-27.67,-29.39,23.85,24.88,25.70,26.47,24.30,Mean Clearing Price,17.018213509371744
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-29.07,-34.94,-36.74,-27.59,-32.29,25.02,26.02,25.73,26.86,25.30,Mean Clearing Price,17.159820599009702
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-35.95,-25.88,-31.73,-29.67,-30.31,24.05,25.03,25.49,26.12,24.41,Mean Clearing Price,17.53322973482005
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10,	24,10,-38.17,-27.72,-33.06,-43.84,-28.95,27.31,28.32,28.66,27.52,26.56,Mean Clearing Price,16.467882803907873
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-34.88,-32.17,-33.68,-30.88,-33.07,27.51,28.32,28.40,27.51,26.76,Mean Clearing Price,17.623589193012588
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-36.05,-32.51,-35.64,-28.71,-30.56,28.21,29.07,28.61,28.30,27.42,Mean Clearing Price,17.25957571393892
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-33.29,-34.52,-34.05,-32.41,-32.94,27.84,28.64,29.37,27.88,27.07,Mean Clearing Price,16.308747906058475
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-38.06,-30.99,-36.82,-33.26,-32.03,28.59,29.46,29.40,28.41,27.86,Mean Clearing Price,16.01336177042146
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-37.67,-33.66,-33.72,-33.63,-34.82,27.79,28.77,29.00,27.97,27.17,Mean Clearing Price,16.472313537303684
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-35.98,-31.10,-36.98,-27.80,-31.08,27.76,28.86,28.34,28.11,27.06,Mean Clearing Price,16.939958652063467
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-37.73,-30.43,-32.04,-36.40,-33.63,27.39,28.36,28.51,27.93,26.67,Mean Clearing Price,17.124927987240675
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-37.58,-29.53,-33.80,-28.44,-33.06,27.49,28.40,28.75,27.81,26.69,Mean Clearing Price,16.573394429130794
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-30.04,-35.97,-35.20,-30.07,-28.03,27.28,28.47,28.28,27.83,26.70,Mean Clearing Price,16.374808198495685
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-32.09,-32.60,-33.92,-31.29,-30.57,27.08,28.15,28.33,27.61,26.41,Mean Clearing Price,15.953301235265641
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-41.24,-31.60,-34.74,-29.52,-28.74,28.40,29.40,30.14,28.50,27.79,Mean Clearing Price,17.038319993743542
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-35.80,-33.02,-35.99,-32.20,-33.58,28.49,29.44,30.02,28.65,27.85,Mean Clearing Price,16.7409483787126
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-35.07,-28.83,-34.97,-30.44,-31.40,27.06,28.06,28.19,27.40,26.32,Mean Clearing Price,16.396329324220666
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	1,0,-20.54,-20.54,-58.96,-29.21,-29.21,20.54,20.54,20.54,20.54,20.54,Mean Clearing Price,20.539761977092397
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	1,0,-20.54,-20.54,-58.96,-29.21,-29.21,20.54,20.54,20.54,20.54,20.54,Mean Clearing Price,20.539761977092397
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	1,0,-38.09,-19.30,-33.00,-19.30,-19.30,19.30,19.30,19.30,19.30,19.30,Mean Clearing Price,19.296762870439782
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	1,0,-20.54,-20.54,-58.96,-29.21,-29.21,20.54,20.54,20.54,20.54,20.54,Mean Clearing Price,20.539761977092397
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	1,0,-20.54,-20.54,-56.41,-27.27,-29.21,20.54,20.54,20.54,20.54,20.54,Mean Clearing Price,20.539761977092397
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	1,0,-38.50,-19.87,-47.04,-19.87,-41.40,19.87,19.87,19.87,19.87,19.87,Mean Clearing Price,19.869343158837633
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	1,0,-20.54,-20.54,-56.41,-27.27,-29.21,20.54,20.54,20.54,20.54,20.54,Mean Clearing Price,20.539761977092397
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	1,0,-18.94,-18.94,-25.83,-87.81,-87.81,18.94,18.94,49.50,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	1,0,-18.94,-18.94,-25.83,-87.81,-87.81,18.94,18.94,49.50,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	1,0,-87.81,-18.94,-25.83,-87.81,-87.81,18.94,18.94,86.04,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	1,0,-18.94,-18.94,-25.83,-87.81,-87.81,18.94,18.94,49.50,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	1,0,-18.94,-18.94,-25.83,-87.81,-87.81,18.94,18.94,49.50,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	1,0,-18.94,-18.94,-25.83,-87.81,-87.81,18.94,18.94,49.50,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	1,0,-87.81,-18.94,-25.83,-87.81,-87.81,18.94,18.94,86.04,18.94,18.94,Mean Clearing Price,18.939761977092395
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-32.30,-33.15,-32.95,-37.06,-32.81,27.44,28.55,28.86,27.65,26.81,Mean Clearing Price,17.34422125979179
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-31.59,-32.36,-34.69,-29.79,-27.66,26.84,27.92,27.68,27.24,26.06,Mean Clearing Price,17.228317974910762
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-34.44,-33.60,-35.03,-28.75,-27.63,27.59,28.68,28.99,28.20,26.91,Mean Clearing Price,16.862145298175157
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-37.02,-25.80,-32.55,-27.75,-26.25,23.97,24.88,25.65,26.12,24.31,Mean Clearing Price,16.644530149644932
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-37.73,-29.79,-33.35,-30.83,-32.08,26.82,28.02,27.87,27.66,26.31,Mean Clearing Price,16.514477810373226
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-36.25,-31.41,-34.70,-29.66,-29.18,27.51,28.70,29.04,28.25,26.89,Mean Clearing Price,16.885387824276364
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-34.72,-32.63,-36.23,-29.21,-29.47,27.50,28.80,28.51,27.92,26.98,Mean Clearing Price,16.64128825615165
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	168,10,-25.86,-24.55,-26.53,-31.36,-26.78,23.70,22.54,31.17,22.45,22.96,Mean Clearing Price,22.642298330122614
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	168,10,-26.37,-26.09,-27.60,-28.75,-27.55,24.08,22.73,31.02,22.60,23.11,Mean Clearing Price,22.498706712485106
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	168,10,-27.71,-27.01,-28.32,-28.17,-27.86,24.14,22.84,31.36,22.68,23.27,Mean Clearing Price,22.472750055615343
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	168,10,-28.15,-27.79,-27.42,-26.94,-27.25,24.05,22.86,31.53,22.72,23.31,Mean Clearing Price,22.1058746935947
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	168,10,-26.67,-27.56,-28.01,-27.41,-26.59,24.21,22.79,31.08,22.63,23.15,Mean Clearing Price,22.18736702185749
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	168,10,-26.28,-28.32,-27.99,-26.92,-27.08,24.08,22.80,30.88,22.57,23.27,Mean Clearing Price,22.27423987195136
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	168,10,-26.46,-27.50,-28.26,-27.61,-27.10,23.87,22.76,30.95,22.59,23.13,Mean Clearing Price,22.16765435547716
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	168,10,-24.52,-23.81,-24.85,-29.81,-31.52,23.52,22.17,31.31,21.99,22.60,Mean Clearing Price,22.98968348582137
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	168,10,-25.48,-23.34,-24.73,-28.60,-30.67,23.54,22.11,31.34,21.93,22.52,Mean Clearing Price,22.685523507561385
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	168,10,-24.87,-23.74,-25.60,-28.72,-30.24,23.69,22.23,31.55,22.01,22.58,Mean Clearing Price,22.84372243496617
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	168,10,-24.16,-24.17,-24.66,-29.69,-30.27,23.61,22.14,31.17,21.99,22.55,Mean Clearing Price,22.741357380113648
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	168,10,-24.52,-22.90,-24.85,-29.22,-29.86,23.14,21.58,30.94,21.63,22.12,Mean Clearing Price,22.782858232353856
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	168,10,-23.26,-23.97,-24.78,-29.20,-29.72,23.31,21.80,30.85,21.54,22.18,Mean Clearing Price,22.93127133061376
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	168,10,-25.33,-23.13,-24.47,-31.19,-29.89,23.50,22.15,31.20,21.96,22.55,Mean Clearing Price,22.79137965567862
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-27.30,-27.59,-30.27,-33.44,-38.40,26.82,27.65,27.62,27.25,25.95,Mean Clearing Price,17.804013622231643
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-29.96,-29.57,-34.61,-35.76,-35.97,27.34,28.21,29.30,27.87,26.64,Mean Clearing Price,17.815565138043223
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-36.78,-25.59,-33.03,-34.83,-33.29,27.08,27.91,29.20,27.55,26.14,Mean Clearing Price,16.885585092877857
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-30.92,-30.18,-33.79,-35.15,-36.36,27.17,27.99,29.71,27.89,26.31,Mean Clearing Price,17.642712317792544
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-30.23,-28.23,-31.17,-33.95,-37.40,27.05,27.90,29.34,27.22,26.20,Mean Clearing Price,16.945063357265678
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-32.34,-28.90,-34.42,-35.71,-35.48,26.92,27.79,30.61,27.50,26.05,Mean Clearing Price,16.990994427131888
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-29.27,-29.06,-31.53,-35.21,-37.59,26.69,27.58,29.36,26.95,25.87,Mean Clearing Price,17.216208468091747
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-33.34,-27.58,-33.92,-31.04,-34.21,27.07,28.11,31.45,27.68,26.39,Mean Clearing Price,17.439809275664636
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-26.99,-32.18,-33.80,-31.46,-31.78,27.11,28.02,29.89,27.37,26.37,Mean Clearing Price,17.496931719051037
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-30.61,-25.96,-29.29,-34.47,-34.19,26.78,27.61,29.61,26.89,25.87,Mean Clearing Price,17.090557866430565
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-26.58,-29.73,-33.60,-33.02,-32.96,26.93,27.81,29.95,27.53,26.09,Mean Clearing Price,17.300685542264628
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-33.44,-24.44,-31.93,-34.15,-35.08,27.06,27.90,31.18,27.58,26.13,Mean Clearing Price,17.141817050694065
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-31.98,-26.42,-31.91,-32.84,-32.52,27.01,27.88,29.82,27.24,26.15,Mean Clearing Price,16.944592486758886
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-33.26,-27.66,-31.24,-33.78,-33.22,26.83,27.76,31.36,27.55,26.03,Mean Clearing Price,16.952476502707718
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-29.79,-26.82,-30.89,-39.70,-26.42,27.16,28.07,28.78,27.34,26.44,Mean Clearing Price,17.171208333283097
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-34.99,-28.83,-29.60,-31.57,-26.57,26.75,27.71,28.30,27.04,26.02,Mean Clearing Price,16.864837973706372
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-32.33,-32.57,-32.36,-26.79,-26.09,26.62,27.58,27.85,26.93,25.86,Mean Clearing Price,16.998990372347347
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-28.56,-26.53,-34.12,-27.88,-27.44,24.75,24.89,27.96,24.61,23.00,Mean Clearing Price,17.135414596658364
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-35.94,-29.43,-34.33,-27.89,-28.37,27.29,28.00,29.72,27.64,26.44,Mean Clearing Price,17.184848701598643
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-32.23,-30.96,-33.98,-28.76,-30.23,27.07,27.82,30.04,27.10,26.16,Mean Clearing Price,17.34987461145527
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-39.87,-28.79,-32.35,-26.15,-27.39,27.70,28.44,28.75,27.60,26.89,Mean Clearing Price,16.91293568654007
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-32.73,-32.49,-33.83,-49.99,-31.90,33.83,33.79,33.32,30.04,32.57,Mean Clearing Price,17.24685849072737
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-24.81,-34.95,-33.55,-37.12,-30.52,27.33,28.25,30.02,28.02,26.60,Mean Clearing Price,17.51852353703075
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-34.13,-32.47,-32.79,-30.76,-26.59,26.96,27.85,28.54,27.23,26.25,Mean Clearing Price,17.00421087457681
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-33.61,-34.51,-36.09,-29.17,-31.16,27.53,28.52,31.61,28.18,26.79,Mean Clearing Price,17.124430616697026
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-31.89,-25.91,-30.08,-26.06,-27.90,23.93,24.61,26.67,23.08,23.45,Mean Clearing Price,17.135373059166163
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-41.47,-36.49,-42.20,-34.59,-36.50,33.06,34.94,37.88,33.46,32.88,Mean Clearing Price,17.81772878618214
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-38.96,-35.68,-40.33,-33.20,-37.61,32.68,34.10,35.14,31.81,32.96,Mean Clearing Price,17.62943095175519
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,100,	24,10,-25.10,-28.68,-29.70,-45.72,-30.25,27.88,28.77,30.46,28.46,27.12,Mean Clearing Price,18.361278378444673
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,1000,	24,10,-37.97,-35.02,-36.89,-41.80,-35.04,32.80,33.66,37.19,32.61,31.64,Mean Clearing Price,17.74285294575612
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,5000,	24,10,-32.96,-28.89,-34.93,-31.07,-29.51,27.75,28.46,29.96,27.67,26.68,Mean Clearing Price,17.35953843279105
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,10000,	24,10,-32.13,-27.49,-33.57,-30.25,-30.45,27.08,27.96,28.99,27.43,26.25,Mean Clearing Price,17.11918265679273
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,15000,	24,10,-27.75,-29.46,-33.77,-28.19,-33.05,26.92,27.88,28.41,27.27,26.16,Mean Clearing Price,17.077325969301192
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,25000,	24,10,-37.04,-28.57,-34.68,-27.13,-27.59,26.57,27.67,29.78,27.41,25.91,Mean Clearing Price,16.914902529844703
+Seed, CaseStudy, MCTSimulations, Auctions,	HourAhead,ZI,ZIP,SPOT,MCTSAgent,varMCTSAgent10000,Producer0,Producer1(RES),Producer2,Producer3(RES),Producer4,
+1,1,50000,	24,10,-36.55,-33.02,-37.77,-32.82,-32.60,29.96,30.97,33.92,30.07,29.34,Mean Clearing Price,17.237901077190585

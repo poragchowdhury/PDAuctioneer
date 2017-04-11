@@ -50,7 +50,7 @@ public class SPOT extends Agent {
 			unitPriceIncrement = priceRange / numberofbids;
 			
 			for(int i = 1; i <=numberofbids; i++){
-				Bid bid = new Bid(this.playerName,  this.id, limitPrice, minMWh);
+				Bid bid = new Bid(this.playerName,  this.id, limitPrice, minMWh, this.type);
 				if(ob.DEBUG)
 					System.out.println(bid.toString());
 				bids.add(bid);

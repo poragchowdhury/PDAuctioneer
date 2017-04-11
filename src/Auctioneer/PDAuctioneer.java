@@ -64,25 +64,25 @@ public class PDAuctioneer {
 				if(simCase == 0){
 					// for normal cases this will execute but there is a 
 					// DIFF_MCTS_SIM_CASE_EXP check which will not assign this value
-					observer.MCTSSimulation = 10;
-				}
-				else if(simCase == 1){
 					observer.MCTSSimulation = 100;
 				}
-				else if(simCase == 2){
+				else if(simCase == 1){
 					observer.MCTSSimulation = 1000;
 				}
-				else if(simCase == 3){
+				else if(simCase == 2){
 					observer.MCTSSimulation = 5000;
 				}
-				else if(simCase == 4){
+				else if(simCase == 3){
 					observer.MCTSSimulation = 10000;
 				}
-				else if(simCase == 5){
+				else if(simCase == 4){
 					observer.MCTSSimulation = 15000;
 				}
-				else if(simCase == 6){
+				else if(simCase == 5){
 					observer.MCTSSimulation = 25000;
+				}
+				else if(simCase == 6){
+					observer.MCTSSimulation = 50000;
 				}
 				else{
 					System.out.println("Mcts simulation case missmatch!");
@@ -848,8 +848,8 @@ public class PDAuctioneer {
 							System.out.println("Clearing bid :" + bid.toString());
 							System.out.println("Clearing ask :" + ask.toString());
 						}
-						observer.addClearedTrades(new Bid(bid.agentName,-1, 0, ask.amount));
-						observer.addClearedTrades(new Ask(ask.agentName,-1, 0, ask.amount));
+						observer.addClearedTrades(new Bid(bid.agentName,-1, 0, ask.amount, bid.agentType));
+						observer.addClearedTrades(new Ask(ask.agentName,-1, 0, ask.amount, ask.agentType));
 					}
 					else if(bid.amount > ask.amount){
 						// clear part of the bid and ask
@@ -858,8 +858,8 @@ public class PDAuctioneer {
 							System.out.println(bid.toString() + " Bid Partially cleared :" + ask.amount);
 							System.out.println(ask.toString());
 						}
-						observer.addClearedTrades(new Bid(bid.agentName, -1, 0, ask.amount));
-						observer.addClearedTrades(new Ask(ask.agentName, -1, 0, ask.amount));
+						observer.addClearedTrades(new Bid(bid.agentName, -1, 0, ask.amount,bid.agentType));
+						observer.addClearedTrades(new Ask(ask.agentName, -1, 0, ask.amount,ask.agentType));
 						bid.amount = bid.amount - ask.amount;
 						ask.amount = 0;
 					}
@@ -870,8 +870,8 @@ public class PDAuctioneer {
 							System.out.println(bid.toString());
 							System.out.println(ask.toString() + " Ask Partially cleared :" + bid.amount);
 						}
-						observer.addClearedTrades(new Bid(bid.agentName,-1, 0, bid.amount));
-						observer.addClearedTrades(new Ask(ask.agentName,-1, 0, bid.amount));
+						observer.addClearedTrades(new Bid(bid.agentName,-1, 0, bid.amount,bid.agentType));
+						observer.addClearedTrades(new Ask(ask.agentName,-1, 0, bid.amount,ask.agentType));
 						ask.amount = ask.amount - bid.amount;
 						bid.amount = 0;
 					}
@@ -969,8 +969,8 @@ public class PDAuctioneer {
 							System.out.println("Clearing bid: " + bid.toString());
 							System.out.println("Clearing ask: " + ask.toString());
 						}
-						observer.addClearedTrades(new Bid(bid.agentName,bid.agentID, 0, ask.amount));
-						observer.addClearedTrades(new Ask(ask.agentName,ask.agentID, 0, ask.amount));
+						observer.addClearedTrades(new Bid(bid.agentName,bid.agentID, 0, ask.amount, bid.agentType));
+						observer.addClearedTrades(new Ask(ask.agentName,ask.agentID, 0, ask.amount, ask.agentType));
 					}
 					else if(bid.amount > ask.amount){
 						// clear part of the bid and ask
@@ -979,8 +979,8 @@ public class PDAuctioneer {
 							System.out.println(bid.toString() + " Bid Partially cleared :" + ask.amount);
 							System.out.println(ask.toString());
 						}
-						observer.addClearedTrades(new Bid(bid.agentName,bid.agentID, 0, ask.amount));
-						observer.addClearedTrades(new Ask(ask.agentName,ask.agentID, 0, ask.amount));
+						observer.addClearedTrades(new Bid(bid.agentName,bid.agentID, 0, ask.amount, bid.agentType));
+						observer.addClearedTrades(new Ask(ask.agentName,ask.agentID, 0, ask.amount, ask.agentType));
 						bid.amount = bid.amount - ask.amount;
 						ask.amount = 0;
 					}
@@ -991,8 +991,8 @@ public class PDAuctioneer {
 							System.out.println(bid.toString());
 							System.out.println(ask.toString() + " Ask Partially cleared :" + bid.amount);
 						}
-						observer.addClearedTrades(new Bid(bid.agentName,bid.agentID, 0, bid.amount));
-						observer.addClearedTrades(new Ask(ask.agentName,ask.agentID, 0, bid.amount));
+						observer.addClearedTrades(new Bid(bid.agentName,bid.agentID, 0, bid.amount,bid.agentType));
+						observer.addClearedTrades(new Ask(ask.agentName,ask.agentID, 0, bid.amount,ask.agentType));
 						ask.amount = ask.amount - bid.amount;
 						bid.amount = 0;
 					}

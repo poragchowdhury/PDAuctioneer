@@ -54,7 +54,7 @@ public class Producer extends Agent{
 		
 		double bandwidth = this.neededMWh * this.cap[ob.hourAhead];
 		
-		Ask ask = new Ask(this.playerName, this.id, price, bandwidth);
+		Ask ask = new Ask(this.playerName, this.id, price, bandwidth, this.type);
 		if(ob.DEBUG)
 			System.out.println(ask.toString());
 		asks.add(ask);	

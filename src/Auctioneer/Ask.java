@@ -1,5 +1,7 @@
 package Auctioneer;
 
+import Agents.Agent;
+
 
 public class Ask implements Comparable  {
 
@@ -7,6 +9,7 @@ public class Ask implements Comparable  {
 	public int agentID;
 	public double price;
 	public double amount;
+	public Agent.agentType agentType;
 	
 	public Ask(){
 		this.agentName = "Default";
@@ -15,11 +18,12 @@ public class Ask implements Comparable  {
 		this.amount = 0;
 	}
 	
-	public Ask(String name, int id, double price, double amount){
+	public Ask(String name, int id, double price, double amount, Agent.agentType agentType){
 		this.agentName = name;
 		this.agentID = id;
 		this.price = price;
 		this.amount = amount;
+		this.agentType = agentType;
 	}
 	
 	@Override

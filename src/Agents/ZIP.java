@@ -61,7 +61,7 @@ public class ZIP extends Agent {
 				limitPrice = offSet + limitPrice * 0.1; 
 			}
 			
-			Bid bid = new Bid(this.playerName, this.id, (limitPrice+profitmargin), this.neededMWh);
+			Bid bid = new Bid(this.playerName, this.id, (limitPrice+profitmargin), this.neededMWh, this.type);
 			if(ob.DEBUG)
 				System.out.println(bid.toString());
 			bids.add(bid);
