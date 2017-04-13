@@ -36,10 +36,19 @@ public class Observer {
 	public int SUB_CASE_STUDY = 1;
 	public HashMap<Integer, HashMap<String, ArrayList<Double>>> results;
 	public int[] mctsDebugVals;
-	public enum costArrayIndices{
-		volumebuy, totalbuy, volumesell, totalsell, volumebalance, totalbalance
-	}
 	
+	public static enum COST_ARRAY_INDICES{
+		VOL_BUY(0),
+		TOT_BUY(1),
+		VOL_SELL(2),
+		TOT_SELL(3),
+		VOL_BAL(4),
+		TOT_BAL(5);
+		
+		private final int id;
+		COST_ARRAY_INDICES(int id) { this.id = id; }
+	    public int getValue() { return id; }
+	}
 	public String getTime(){
 		return currentTimeSlot + "," + hour + "," + hourAhead + "," + date + "," + month + "," + year + "," + Configure.getNUMBER_OF_BROKERS() + "," + Configure.getNUMBER_OF_PRODUCERS() + ",";
 	}
@@ -82,7 +91,7 @@ public class Observer {
 	public HashMap<String, Double> neededVolumes;
 	public HashMap<String, Double> neededTotalVolumes;
 	
-	public HashMap<String, Double> costTotal;
+	public HashMap<String, double[]> costTotal;
 	
 	public ArrayList<Agent> agents;
 	public ArrayList<Agent> printableAgents;
@@ -120,7 +129,7 @@ public class Observer {
 		clearedTotalAskVolumes = new HashMap<String, Double>();
 		
 		neededTotalVolumes = new HashMap<String, Double>();
-		costTotal = new HashMap<String, Double>();
+		costTotal = new HashMap<String, double[]>();
 		
 		clearedAsks = new ArrayList<Ask>();
 		clearedBids = new ArrayList<Bid>();
@@ -310,24 +319,30 @@ public class Observer {
 		clearedTotalAskVolumes.put(ask.agentName, volTotal);
 	}
 	
-	public void addTotalTradeCost(Bid bid){
-		Double volTotal = costTotal.get(bid.agentName); 
+	public void addTotalTradeCost(Bid bid, int VOL, int TOT_PRICE){
+		double[] volTotal = costTotal.get(bid.agentName); 
 		if(volTotal == null){
-			volTotal = (bid.amount*bid.price) * -1;
+			volTotal = new double[6];
+			volTotal[VOL] = bid.amount;
+			volTotal[TOT_PRICE] = (bid.amount*bid.price) * -1;
 		}
 		else{
-			volTotal -= (bid.amount*bid.price);
+			volTotal[VOL] -= bid.amount;
+			volTotal[TOT_PRICE] += (bid.amount*bid.price) * -1;
 		}
 		costTotal.put(bid.agentName, volTotal);
 	}
 	
-	public void addTotalTradeCost(Ask ask){
-		Double volTotal = costTotal.get(ask.agentName); 
+	public void addTotalTradeCost(Ask ask, int VOL, int TOT_PRICE){
+		double[] volTotal = costTotal.get(ask.agentName); 
 		if(volTotal == null){
-			volTotal = ask.amount*ask.price;
+			volTotal = new double[6];
+			volTotal[VOL] = Math.abs(ask.amount);
+			volTotal[TOT_PRICE] = ask.amount*ask.price;
 		}
 		else{
-			volTotal += (ask.amount*ask.price);
+			volTotal[VOL] += Math.abs(ask.amount);
+			volTotal[TOT_PRICE] += (Math.abs(ask.amount)*ask.price);
 		}
 		costTotal.put(ask.agentName, volTotal);
 	}
@@ -446,10 +461,14 @@ public class Observer {
 		return clearedTotalAskVolumes.get(brokerName).doubleValue();
 	}
 	
-	public double getTotalCost(String brokerName){
+	public double[] getTotalCost(String brokerName){
 		if(costTotal.get(brokerName) == null)
-			return 0.0;
-		return costTotal.get(brokerName).doubleValue();
+		{
+			double[] costArr = new double[6];
+			return costArr;
+		}
+		
+		return costTotal.get(brokerName);
 	}
 	
 	public double getTotalClearedVolume(String brokerName){
@@ -470,7 +489,7 @@ public class Observer {
 			    if(clearedBidMWh == null)
 			    	clearedBidMWh = 0.00;
 			    addTotalClearTrade(new Bid(brokerName,brokerid,0,clearedBidMWh,a.type));
-			    addTotalTradeCost(new Bid(brokerName,brokerid,clearingPrice,clearedBidMWh,a.type));
+			    addTotalTradeCost(new Bid(brokerName,brokerid,clearingPrice,clearedBidMWh,a.type), COST_ARRAY_INDICES.VOL_BUY.getValue(), COST_ARRAY_INDICES.TOT_BUY.getValue());
 			    if(DEBUG)
 			    	System.out.println(brokerName + " MWh : " + clearedBidMWh + " $ : " + clearingPrice);
 		    
@@ -478,7 +497,7 @@ public class Observer {
 			    if(clearedAskMWh == null)
 			    	clearedAskMWh = 0.00;
 			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
-			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type));
+			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type), COST_ARRAY_INDICES.VOL_SELL.getValue(), COST_ARRAY_INDICES.TOT_SELL.getValue());
 			    
 		    } else {
 			    Double clearedAskMWh = getClearedAskVolume(brokerName);
@@ -491,7 +510,7 @@ public class Observer {
 			    totalAskVolumeCleared += clearedAskMWh;
 			    
 			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
-			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type));
+			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type), COST_ARRAY_INDICES.VOL_SELL.getValue(), COST_ARRAY_INDICES.TOT_SELL.getValue());
 			    if(DEBUG)
 			    	System.out.println(brokerName + " MWh : " + clearedAskMWh + " $ : " + clearingPrice);
 		    }
@@ -509,9 +528,9 @@ public class Observer {
 		if(printFlag)
 		{
 			printFlag = false;
-			System.out.print("Seed, CaseStudy, MCTSimulations, Auctions,\tHourAhead,\t");
-			pwOutput.print("Seed, CaseStudy, MCTSimulations, Auctions,\tHourAhead,");
-			pwOutputV.print("Seed, CaseStudy, MCTSimulations, Auctions,\tHourAhead,");
+			System.out.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,\t");
+			pwOutput.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
+			pwOutputV.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			for(Agent agent : printableAgents){
 				String brokerName = agent.playerName;
 		    	if(arrProducerGreenPoints[agent.id] == GREEN_POINTS && agent.type == agentType.PRODUCER){
@@ -544,7 +563,17 @@ public class Observer {
 		    
 		    double clearedTotalMWh = 0;
 		    
-		    double totalCost = getTotalCost(brokerName);
+		    double[] totalCost = getTotalCost(brokerName);
+		    double volbuy = totalCost[COST_ARRAY_INDICES.VOL_BUY.getValue()];
+		    double buy = totalCost[COST_ARRAY_INDICES.TOT_BUY.getValue()];
+		    double volsell = totalCost[COST_ARRAY_INDICES.VOL_SELL.getValue()];
+		    double sell = totalCost[COST_ARRAY_INDICES.TOT_SELL.getValue()];
+		    double volbal = totalCost[COST_ARRAY_INDICES.VOL_BAL.getValue()];
+		    double penalty = totalCost[COST_ARRAY_INDICES.TOT_BAL.getValue()];
+		    double profit = buy+sell;
+		    double net = profit+penalty;
+		    
+		    
 		    
 		    if(agent.type == Agent.agentType.BROKER){
 		    	clearedTotalMWh = getTotalBidClearedVolume(brokerName);
@@ -567,13 +596,13 @@ public class Observer {
 			    		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + "," // HourAhead
 			    		);
 			    if(agent.type == Agent.agentType.BROKER){
-			    	System.out.printf("%.2f (%.2f),\t",(totalCost/neededTotalMWh),((clearedTotalMWh/neededTotalMWh)*100));
-			    	pwOutput.printf("%.2f,",(totalCost/neededTotalMWh));
+			    	System.out.printf("%s : %.2f (%.2f) %.2f (%.2f) %.2f %.2f %.2f (%.2f),\t",agent.playerName, buy, buy/volbuy, sell, sell/volsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+			    	pwOutput.printf("%.2f,",net);
 			    	pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
 			    }
 			    else{
-			    	System.out.printf("%.2f (%.2f),\t",(totalCost/neededTotalMWh),((clearedTotalMWh/totalAskVolumeCleared)*100));
-			    	pwOutput.printf("%.2f,",(totalCost/neededTotalMWh));
+			    	System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
+			    	pwOutput.printf("%.2f,",net);
 			    	pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
 			    }
 			    printTrack++;
@@ -581,13 +610,13 @@ public class Observer {
 		    else{
 		    	//System.out.print((totalCost/totalPower) + ", ");
 		    	if(agent.type == Agent.agentType.BROKER){
-		    		System.out.printf("%.2f (%.2f),\t",(totalCost/neededTotalMWh),((clearedTotalMWh/neededTotalMWh)*100));
-		    		pwOutput.printf("%.2f,",(totalCost/neededTotalMWh));
+		    		System.out.printf("%s : %.2f (%.2f) %.2f (%.2f) %.2f %.2f %.2f (%.2f),\t",agent.playerName, buy, buy/volbuy, sell, sell/volsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+		    		pwOutput.printf("%.2f,",net);
 		    		pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
 		    	}
 		    	else{
-		    		System.out.printf("%.2f (%.2f),\t",(totalCost/neededTotalMWh),((clearedTotalMWh/totalAskVolumeCleared)*100));
-		    		pwOutput.printf("%.2f,",(totalCost/neededTotalMWh));
+		    		System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
+		    		pwOutput.printf("%.2f,",net);
 		    		pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
 		    	}
 			    //pwOutputVolume.print(((clearedTotalMWh/neededTotalMWh)*100) + "%,");
@@ -600,12 +629,12 @@ public class Observer {
 				{
 					track = new HashMap<String, ArrayList<Double>>();
 					ArrayList<Double> vals = new ArrayList<Double>();
-					vals.add(totalCost/neededTotalMWh);
+					vals.add(net);
 					vals.add(1.00);
 					track.put(brokerName, vals);
 				}
 				else{
-					Double newVal = (totalCost/neededTotalMWh);
+					Double newVal = (net);
 					ArrayList<Double> vals = track.get(brokerName);
 					if(vals != null){
 						vals.set(0,(vals.get(0)+newVal));
@@ -625,7 +654,7 @@ public class Observer {
 				results.put(SUB_CASE_STUDY, track);
 		    }
 		    
-		    costTotal.put(brokerName, 0.0);
+		    costTotal.put(brokerName, new double[6]);
 		    neededTotalVolumes.put(brokerName, 0.0);
 		    clearedTotalBidVolumes.put(brokerName, 0.0);
 		    clearedTotalAskVolumes.put(brokerName, 0.0);
@@ -665,9 +694,9 @@ public class Observer {
 		    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
 		    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
 		    if(a.type == Agent.agentType.BROKER)
-		    	addTotalTradeCost(new Bid(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type));
+		    	addTotalTradeCost(new Bid(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type),COST_ARRAY_INDICES.VOL_BAL.getValue(),COST_ARRAY_INDICES.TOT_BAL.getValue());
 		    else 
-		    	addTotalTradeCost(new Ask(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type));
+		    	addTotalTradeCost(new Ask(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type),COST_ARRAY_INDICES.VOL_BAL.getValue(),COST_ARRAY_INDICES.TOT_BAL.getValue());
 		}
 	}
 	

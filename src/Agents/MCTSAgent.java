@@ -88,6 +88,7 @@ public class MCTSAgent extends Agent {
 				}
 				else{
 					// Submit sell orders
+					
 					double surplus = 0 - neededMWh;
 					minMWh= (Math.abs(this.initialNeededMWh)*(1-bestMove.volPercentage));
 					if(minMWh > surplus)
@@ -98,7 +99,7 @@ public class MCTSAgent extends Agent {
 					for(int i = 1; i <=numberofbids; i++){
 						Ask ask = new Ask(this.playerName, this.id, limitPrice, minMWh, this.type);
 						if(observer.DEBUG)
-							System.out.println(ask.toString());
+							System.out.println("Selling: " + ask.toString());
 						asks.add(ask);
 						limitPrice+=unitPriceIncrement;
 					}

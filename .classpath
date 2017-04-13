@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/IASRLUser/Dropbox/Fall 2016/EEE 5383/Project/project/commons-csv-1.0/commons-csv-1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/IASRLUser/.m2/repository/nz/ac/waikato/cms/weka/weka-stable/3.6.12/weka-stable-3.6.12.jar"/>
+	<classpathentry kind="lib" path="//cs.utep.edu/Home/Students/mchowdhury4/Documents/Desktop/Files/Research/PDAuctioneer/commons-csv-1.0.jar"/>
+	<classpathentry kind="lib" path="//cs.utep.edu/Home/Students/mchowdhury4/Documents/Desktop/Files/Research/PDAuctioneer/weka-stable-3.6.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
