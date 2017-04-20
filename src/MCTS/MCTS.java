@@ -43,7 +43,7 @@ public class MCTS {
 		
 		// Need a predictor
 		////this.arrPredictedClearingPrices = observer.arrPredictedClearingPrices15;
-		
+
     	// Create all the actions
 		Action action = new Action("A0",-2,0,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
@@ -70,7 +70,7 @@ public class MCTS {
     	// no bid
 		action = new Action("A10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
     	actions.add(action);
-
+    	
     	// Selling
     	action = new Action("A11",-2,0,false, Action.ACTION_TYPE.SELL, 1.00);
     	actions.add(action);
