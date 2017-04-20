@@ -311,10 +311,10 @@ public class Observer {
 	public void addTotalClearTrade(Ask ask){
 		Double volTotal = clearedTotalAskVolumes.get(ask.agentName); 
 		if(volTotal == null){
-			volTotal = (ask.amount)*-1;
+			volTotal = ask.amount;
 		}
 		else{
-			volTotal -= ask.amount;
+			volTotal += ask.amount;
 		}
 		clearedTotalAskVolumes.put(ask.agentName, volTotal);
 	}
@@ -324,11 +324,11 @@ public class Observer {
 		if(volTotal == null){
 			volTotal = new double[6];
 			volTotal[VOL] = bid.amount;
-			volTotal[TOT_PRICE] = (bid.amount*bid.price) * -1;
+			volTotal[TOT_PRICE] = (bid.amount*bid.price);
 		}
 		else{
-			volTotal[VOL] -= bid.amount;
-			volTotal[TOT_PRICE] += (bid.amount*bid.price) * -1;
+			volTotal[VOL] += bid.amount;
+			volTotal[TOT_PRICE] += (bid.amount*bid.price);
 		}
 		costTotal.put(bid.agentName, volTotal);
 	}
@@ -521,31 +521,31 @@ public class Observer {
 		FileWriter fwOutput = new FileWriter("Results_Price.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
 		
-		FileWriter fwOutputV = new FileWriter("Results_Volume.csv", true);
-		PrintWriter pwOutputV = new PrintWriter(new BufferedWriter(fwOutputV));
+		//FileWriter fwOutputV = new FileWriter("Results_Volume.csv", true);
+		//PrintWriter pwOutputV = new PrintWriter(new BufferedWriter(fwOutputV));
 		
 		
 		if(printFlag)
 		{
 			printFlag = false;
-			System.out.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,\t");
+			System.out.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			pwOutput.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
-			pwOutputV.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
+			//pwOutputV.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			for(Agent agent : printableAgents){
 				String brokerName = agent.playerName;
 		    	if(arrProducerGreenPoints[agent.id] == GREEN_POINTS && agent.type == agentType.PRODUCER){
 		    		System.out.print(brokerName + "(RES),\t");
 		    		pwOutput.print(brokerName + "(RES),");
-		    		pwOutputV.print(brokerName + "(RES),");
+		    		//pwOutputV.print(brokerName + "(RES),");
 		    	}
 		    	else{
-		    		System.out.print(brokerName + ",\t");
-		    		pwOutput.print(brokerName + ",");
-		    		pwOutputV.print(brokerName + ",");
+		    		System.out.print("\t" + brokerName + ",\tTot_Buy,\tVol_Buy,\tUnitBuy,\tTot_Sell,\tVol_Sell,\tUnitSell,\tPenalty,\tProfit,\tNet,\tPercBuy");
+		    		pwOutput.print(brokerName + ",Tot_Buy,Vol_Buy,UnitBuy,Tot_Sell,Vol_Sell,UnitSell,Penalty,Profit,Net,Percentage,");
+		    		//pwOutputV.print(brokerName + ",");
 		    	}
 			}
 			pwOutput.println();
-			pwOutputV.println();
+			//pwOutputV.println();
 		    System.out.println();
 		    printNamesCount++;
 		}
@@ -565,12 +565,20 @@ public class Observer {
 		    
 		    double[] totalCost = getTotalCost(brokerName);
 		    double volbuy = totalCost[COST_ARRAY_INDICES.VOL_BUY.getValue()];
-		    double buy = totalCost[COST_ARRAY_INDICES.TOT_BUY.getValue()];
+		    double buy = totalCost[COST_ARRAY_INDICES.TOT_BUY.getValue()]*(-1);
+		    double unitcost = buy/volbuy;
 		    double volsell = totalCost[COST_ARRAY_INDICES.VOL_SELL.getValue()];
 		    double sell = totalCost[COST_ARRAY_INDICES.TOT_SELL.getValue()];
+		    double unitsell = 0;
+		    if(volsell <= 0){
+		    	unitsell = sell/1;
+		    }
+		    else{
+		    	unitsell = sell/volsell;
+		    }
 		    double volbal = totalCost[COST_ARRAY_INDICES.VOL_BAL.getValue()];
-		    double penalty = totalCost[COST_ARRAY_INDICES.TOT_BAL.getValue()];
-		    double profit = buy+sell;
+		    double penalty = totalCost[COST_ARRAY_INDICES.TOT_BAL.getValue()]*(-1);
+		    double profit = sell+buy;
 		    double net = profit+penalty;
 		    
 		    
@@ -592,32 +600,32 @@ public class Observer {
 			    pwOutput.print(SEED + "," + SUB_CASE_STUDY + "," + MCTSSimulation + ",\t" +(currentTimeSlot)+ ","
 			    		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + "," // HourAhead
 			    		);
-			    pwOutputV.print(SEED + "," + SUB_CASE_STUDY + "," + MCTSSimulation + ",\t" +(currentTimeSlot)+ ","
-			    		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + "," // HourAhead
-			    		);
+			    //pwOutputV.print(SEED + "," + SUB_CASE_STUDY + "," + MCTSSimulation + ",\t" +(currentTimeSlot)+ ","
+			    //		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + "," // HourAhead
+			    //		);
 			    if(agent.type == Agent.agentType.BROKER){
-			    	System.out.printf("%s : %.2f (%.2f) %.2f (%.2f) %.2f %.2f %.2f (%.2f),\t",agent.playerName, buy, buy/volbuy, sell, sell/volsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
-			    	pwOutput.printf("%.2f,",net);
-			    	pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
+			    	System.out.printf("\t%s,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+			    	pwOutput.printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+			    	//pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
 			    }
 			    else{
 			    	System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
 			    	pwOutput.printf("%.2f,",net);
-			    	pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
+			    	//pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
 			    }
 			    printTrack++;
 		    }
 		    else{
 		    	//System.out.print((totalCost/totalPower) + ", ");
 		    	if(agent.type == Agent.agentType.BROKER){
-		    		System.out.printf("%s : %.2f (%.2f) %.2f (%.2f) %.2f %.2f %.2f (%.2f),\t",agent.playerName, buy, buy/volbuy, sell, sell/volsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
-		    		pwOutput.printf("%.2f,",net);
-		    		pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
+		    		System.out.printf("\t%s,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+		    		pwOutput.printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+		    		//pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
 		    	}
 		    	else{
 		    		System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
 		    		pwOutput.printf("%.2f,",net);
-		    		pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
+		    		//pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
 		    	}
 			    //pwOutputVolume.print(((clearedTotalMWh/neededTotalMWh)*100) + "%,");
 		    }
@@ -671,12 +679,12 @@ public class Observer {
 		System.out.printf("Mean Clearing Price : " + meanClearingPrice);
 		pwOutput.println("Mean Clearing Price," + meanClearingPrice);
 		System.out.println(" Social Welfare Point : " + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
-		pwOutputV.println("Green Energy Cleared," + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
+		//pwOutputV.println("Green Energy Cleared," + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
 		
 		pwOutput.close();
 		fwOutput.close();
-		pwOutputV.close();
-		fwOutputV.close();
+		//pwOutputV.close();
+		//fwOutputV.close();
 		totalAskVolumeCleared = 0;
 		totalGreenAskVolumeCleared = 0;
 		meanClearingPrice = 0;

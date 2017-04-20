@@ -21,8 +21,8 @@ public class Ask implements Comparable  {
 	public Ask(String name, int id, double price, double amount, Agent.agentType agentType){
 		this.agentName = name;
 		this.agentID = id;
-		this.price = price;
-		this.amount = amount;
+		this.price = Math.abs(price);
+		this.amount = Math.abs(amount);
 		this.agentType = agentType;
 	}
 	
