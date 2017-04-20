@@ -75,7 +75,7 @@ public class MCTSAgent extends Agent {
 			if(!bestMove.nobid){
 				if(bestMove.actionType == ACTION_TYPE.BUY){
 					// Submit buy orders
-					double surplus = Math.abs(this.initialNeededMWh)*(1-bestMove.volPercentage);
+					double surplus = Math.abs(this.initialNeededMWh)*(bestMove.volPercentage-1);
 					double totalE = surplus + this.neededMWh;
 					minMWh = totalE  / numberofbids;
 					for(int i = 1; i <=numberofbids; i++){
@@ -88,8 +88,9 @@ public class MCTSAgent extends Agent {
 				}
 				else{
 					// Submit sell orders
+					
 					double surplus = 0 - neededMWh;
-					minMWh= (Math.abs(this.initialNeededMWh)*(1-bestMove.volPercentage));
+					minMWh= (Math.abs(this.initialNeededMWh)*(bestMove.volPercentage-1));
 					if(minMWh > surplus)
 						minMWh /= numberofbids;
 					else
@@ -98,7 +99,7 @@ public class MCTSAgent extends Agent {
 					for(int i = 1; i <=numberofbids; i++){
 						Ask ask = new Ask(this.playerName, this.id, limitPrice, minMWh, this.type);
 						if(observer.DEBUG)
-							System.out.println(ask.toString());
+							System.out.println("Selling: " + ask.toString());
 						asks.add(ask);
 						limitPrice+=unitPriceIncrement;
 					}

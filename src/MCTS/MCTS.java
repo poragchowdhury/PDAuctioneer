@@ -72,15 +72,15 @@ public class MCTS {
     	actions.add(action);
     	
     	// Selling
-    	action = new Action("A11",-2,0,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A11",-2,0,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A12",-1,1,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A12",-1,1,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A13",-1,0,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A13",-1,0,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A14",0,1,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A14",0,1,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A15",0,2,false, Action.ACTION_TYPE.SELL, 1.00);
+    	action = new Action("A15",0,2,false, Action.ACTION_TYPE.SELL, 1.0);
     	actions.add(action);
 
     }
