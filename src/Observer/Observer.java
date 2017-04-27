@@ -539,8 +539,8 @@ public class Observer {
 		    		//pwOutputV.print(brokerName + "(RES),");
 		    	}
 		    	else{
-		    		System.out.print("\t" + brokerName + ",\tTot_Buy,\tVol_Buy,\tUnitBuy,\tTot_Sell,\tVol_Sell,\tUnitSell,\tPenalty,\tProfit,\tNet,\tPercBuy");
-		    		pwOutput.print(brokerName + ",Tot_Buy,Vol_Buy,UnitBuy,Tot_Sell,Vol_Sell,UnitSell,Penalty,Profit,Net,Percentage,");
+		    		System.out.print("\t" + brokerName + ",\tVol_Buy,\tTot_Buy,\tUnitBuy,\tVol_Sell,\tTot_Sell,\tUnitSell,\tPenalty,\tProfit,\tNet,\tPercBuy");
+		    		pwOutput.print(brokerName + ",Vol_Buy,Tot_Buy,UnitBuy,Vol_Sell,Tot_Sell,UnitSell,Penalty,Profit,Net,Percentage,");
 		    		//pwOutputV.print(brokerName + ",");
 		    	}
 			}

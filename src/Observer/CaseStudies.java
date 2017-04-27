@@ -123,7 +123,7 @@ public class CaseStudies {
 			observer.printableAgents.add(SPOT);
 			Agent MCTSAgent1K = new MCTSAgent("MCTSAgent1K",0, neededMWhBroker,30,10,1000);
 			observer.printableAgents.add(MCTSAgent1K);
-			Agent VarMCTSAgent = new MCTSAgent("varMCTSAgent",0, neededMWhBroker,30,10,10000);
+			Agent VarMCTSAgent = new MCTSAgent("varMCTSAgent",0, neededMWhBroker,30,10,Configure.getVARMCTSAGENTITERATION());
 			observer.printableAgents.add(VarMCTSAgent);
 			Random r = new Random(observer.SEED);
 			int  n = r.nextInt(6) + 0;
