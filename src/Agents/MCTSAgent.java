@@ -71,8 +71,12 @@ public class MCTSAgent extends Agent {
 			
 			unitPriceIncrement = priceRange / numberofbids;
 			
-			
 			if(!bestMove.nobid){
+				
+				observer.mctsxPredictedCostPerHour += bestMove.currentNodeCostAvg;
+				
+				observer.mctsxPredictedCost[(observer.day*observer.hour)+observer.hour][observer.hourAhead] = bestMove.totValue;
+				
 				if(bestMove.actionType == ACTION_TYPE.BUY){
 					// Submit buy orders
 					double surplus = Math.abs(this.initialNeededMWh)*(bestMove.volPercentage-1);
@@ -83,7 +87,9 @@ public class MCTSAgent extends Agent {
 						if(observer.DEBUG)
 							System.out.println(bid.toString());
 						bids.add(bid);
+						
 						limitPrice+=unitPriceIncrement;
+						
 					}
 				}
 				else{
@@ -101,6 +107,7 @@ public class MCTSAgent extends Agent {
 						if(observer.DEBUG)
 							System.out.println("Selling: " + ask.toString());
 						asks.add(ask);
+						
 						limitPrice+=unitPriceIncrement;
 					}
 				}
