@@ -1,6 +1,6 @@
+bin/
 *.model
 *.arff
 *.csv
 *.log
 *.others
-bin/*

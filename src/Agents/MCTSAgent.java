@@ -42,6 +42,7 @@ public class MCTSAgent extends Agent {
 		//long start = System.currentTimeMillis();
 		observer.neededEneryMCTSBroker = this.neededMWh; 
 		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
+		
 		if(this.neededMWh > 0)
 		{
 			TreeNode bestMove = mcts.getBestMCTSMove(observer);

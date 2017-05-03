@@ -510,7 +510,7 @@ public class Observer {
 			    
 			    if(a.playerName.equalsIgnoreCase("MCTSX")){
 			    	mctsxRealCostPerHour += (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
-			    	mctsxRealCost[(day*hour)+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
+			    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
 			    }
 			    
 		    } else {
@@ -743,7 +743,11 @@ public class Observer {
 		    if(a.playerName.equalsIgnoreCase("MCTSX")){
 		    	mctsxRealCostPerHour -= (clearedBalancingMWh*balancingPrice);
 		    	mctsxPredictedCostPerHour += (clearedBalancingMWh*balancingPrice);
-		    	mctsxRealCost[(day*hour)+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice;
+		    	
+		    	if(day == 1 && hour == 5)
+					System.out.println("I am here");
+		    	
+		    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice;
 		    }
 		    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
 		    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
