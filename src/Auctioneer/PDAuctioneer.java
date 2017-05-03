@@ -109,10 +109,11 @@ public class PDAuctioneer {
 
 					currentTimeSlot = 0;
 					for(day = 0; day < Configure.getTOTAL_SIM_DAYS(); day++){
+						
 						for(hour = 0; hour < Configure.getHOURS_IN_A_DAY(); hour++){
 							for(Agent agent:observer.agents){
 								if(agent.type == agentType.BROKER){
-									if(agent.playerName.equalsIgnoreCase("MCTSAgent"))
+									if(agent.playerName.equalsIgnoreCase("MCTSX"))
 										neededMWhBroker = Configure.getPERHOURENERGYDEMAND()*Configure.getMCTSBROKERDEMANDPERC();
 									else{
 										neededMWhBroker = Configure.getPERHOURENERGYDEMAND()*((1-Configure.getMCTSBROKERDEMANDPERC())/(Configure.getNUMBER_OF_BROKERS()-1));
@@ -171,6 +172,19 @@ public class PDAuctioneer {
 							observer.currentTimeSlot++;
 							if(observer.DEBUG)
 								System.out.println();
+							
+							// Print to the error log
+							/*
+							FileWriter fwOutput = new FileWriter("mcts_prediction_error.csv", true);
+							PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
+							pwOutput.println(observer.MCTSSimulation + "," + observer.hour + "," + (observer.mctsxRealCostPerHour + observer.mctsxPredictedCostPerHour));
+							pwOutput.close();
+							fwOutput.close();
+							*/
+							// Reset the calculcation flags
+							observer.mctsxPredictedCostPerHour = 0;
+							observer.mctsxRealCostPerHour = 0;
+							
 						}
 					}
 
@@ -181,6 +195,7 @@ public class PDAuctioneer {
 						// Reset neededTotalVolumes
 						// Rest costTotal
 						observer.printTotalClearedVolume();
+						observer.calculateError();
 
 					} catch (IOException e) {
 						e.printStackTrace();

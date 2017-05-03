@@ -36,6 +36,11 @@ public class Observer {
 	public int SUB_CASE_STUDY = 1;
 	public HashMap<Integer, HashMap<String, ArrayList<Double>>> results;
 	public int[] mctsDebugVals;
+	public double mctsxRealCostPerHour = 0.0;
+	public double mctsxPredictedCostPerHour = 0.0;
+	
+	public double[][] mctsxRealCost;
+	public double[][] mctsxPredictedCost;
 	
 	public static enum COST_ARRAY_INDICES{
 		VOL_BUY(0),
@@ -138,9 +143,13 @@ public class Observer {
 		printableAgents = new ArrayList<Agent>();
 		arrBalacingPrice = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()];
 		
-		arrProducerBidPrice = new double[Configure.getNUMBER_OF_PRODUCERS()][168];
-		arrProducerBidVolume = new double[Configure.getNUMBER_OF_PRODUCERS()][168];
+		arrProducerBidPrice = new double[Configure.getNUMBER_OF_PRODUCERS()][Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()*Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
+		arrProducerBidVolume = new double[Configure.getNUMBER_OF_PRODUCERS()][Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()*Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];;
 		arrProducerGreenPoints = new double[Configure.getNUMBER_OF_PRODUCERS()];
+		
+		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		
 	}
 	
 	public void setTime(int day, int hour, int hourAhead, int currentTimeSlot){
@@ -357,7 +366,7 @@ public class Observer {
 			System.out.println("Settingup needed volume");
 		for(Agent agent : agents){
 			if(agent.type == Agent.agentType.BROKER)
-				if(agent.playerName.equalsIgnoreCase("MCTSAgent")){
+				if(agent.playerName.equalsIgnoreCase("MCTSX")){
 					agent.neededMWh = Configure.getPERHOURENERGYDEMAND()*Configure.getMCTSBROKERDEMANDPERC();
 				}
 				else{
@@ -499,6 +508,11 @@ public class Observer {
 			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
 			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type), COST_ARRAY_INDICES.VOL_SELL.getValue(), COST_ARRAY_INDICES.TOT_SELL.getValue());
 			    
+			    if(a.playerName.equalsIgnoreCase("MCTSX")){
+			    	mctsxRealCostPerHour += (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
+			    	mctsxRealCost[(day*hour)+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
+			    }
+			    
 		    } else {
 			    Double clearedAskMWh = getClearedAskVolume(brokerName);
 			    if(clearedAskMWh == null)
@@ -517,6 +531,32 @@ public class Observer {
 		}
 	}
 	
+	public void calculateError() throws IOException{
+		// Print to the error log
+		FileWriter fwOutput = new FileWriter("mcts_HA_prediction_error.csv", true);
+		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
+		pwOutput.println("MCTS_SIM,Day,Hour,HourAhead,Error");
+		for(int totHours = 0; totHours < Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY(); totHours++){
+			for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
+				
+				// Do the summations to get tot_realcost upto balancing
+				double realCost = 0.0;
+				for(int j = 0; j <= totHA; j++)
+					realCost += mctsxRealCost[totHours][j];
+				
+				realCost += mctsxRealCost[totHours][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
+				
+				pwOutput.println(MCTSSimulation + "," + totHours/Configure.getHOURS_IN_A_DAY() + "," + totHours%Configure.getHOURS_IN_A_DAY() + "," + totHA + "," + (realCost - mctsxPredictedCost[totHours][totHA]));
+			}
+		}
+		pwOutput.close();
+		fwOutput.close();
+		
+		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		
+	}
+	
 	public void printTotalClearedVolume() throws IOException{
 		FileWriter fwOutput = new FileWriter("Results_Price.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
@@ -528,18 +568,18 @@ public class Observer {
 		if(printFlag)
 		{
 			printFlag = false;
-			System.out.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
+			System.out.print("Seed,\tCSDTY,\tMCTS#,\tAUCS#,\tHA#,\t");
 			pwOutput.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			//pwOutputV.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			for(Agent agent : printableAgents){
 				String brokerName = agent.playerName;
 		    	if(arrProducerGreenPoints[agent.id] == GREEN_POINTS && agent.type == agentType.PRODUCER){
-		    		System.out.print(brokerName + "(RES),\t");
-		    		pwOutput.print(brokerName + "(RES),");
+		    		//System.out.print(brokerName + "(RES),\t");
+		    		//pwOutput.print(brokerName + "(RES),");
 		    		//pwOutputV.print(brokerName + "(RES),");
 		    	}
-		    	else{
-		    		System.out.print("\t" + brokerName + ",\tVol_Buy,\tTot_Buy,\tUnitBuy,\tVol_Sell,\tTot_Sell,\tUnitSell,\tPenalty,\tProfit,\tNet,\tPercBuy");
+		    	else if(agent.type == agentType.BROKER){
+		    		System.out.print(brokerName + ",\tVol_Buy,\tTot_Buy,\tUnitBuy,\tVol_Sell,\tTot_Sell,\tUnitSell,\tPenalty,\tProfit,\t\tNet,\t\tPercBuy\t");
 		    		pwOutput.print(brokerName + ",Vol_Buy,Tot_Buy,UnitBuy,Vol_Sell,Tot_Sell,UnitSell,Penalty,Profit,Net,Percentage,");
 		    		//pwOutputV.print(brokerName + ",");
 		    	}
@@ -593,8 +633,8 @@ public class Observer {
 		    //System.out.println(brokerName + "'s bid cleared " + ((clearedTotalBidMWh/neededTotalMWh)*100) + "% ," + " ask cleared " + ((clearedTotalAskMWh/neededTotalMWh)*100) + "%");
 		    //System.out.println(brokerName + "'s unitCost " + (totalCost/totalPower) + "$ ");
 		    if(printTrack == 0){
-			    System.out.print(SEED + ",\t" + SUB_CASE_STUDY + ",\t" + MCTSSimulation + ",\t" +(currentTimeSlot)+ ",\t\t"
-			    		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + ",\t\t" // HourAhead
+			    System.out.print(SEED + ",\t" + SUB_CASE_STUDY + ",\t" + MCTSSimulation + ",\t" +(currentTimeSlot)+ ",\t"
+			    		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + "," // HourAhead
 			    		);
 			    		//+ (totalCost/totalPower) + ", ");
 			    pwOutput.print(SEED + "," + SUB_CASE_STUDY + "," + MCTSSimulation + ",\t" +(currentTimeSlot)+ ","
@@ -604,13 +644,13 @@ public class Observer {
 			    //		+ Configure.getTOTAL_HOUR_AHEAD_AUCTIONS() + "," // HourAhead
 			    //		);
 			    if(agent.type == Agent.agentType.BROKER){
-			    	System.out.printf("\t%s,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+			    	System.out.printf("\t%s,\t%.2f,\t%.2f,\t%.2f,\t\t%.2f,\t\t%.2f,\t\t%.2f,\t\t%.2f,\t\t%.2f,\t%.2f,\t%.2f",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
 			    	pwOutput.printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
 			    	//pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
 			    }
 			    else{
-			    	System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
-			    	pwOutput.printf("%.2f,",net);
+			    	//System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
+			    	//pwOutput.printf("%.2f,",net);
 			    	//pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
 			    }
 			    printTrack++;
@@ -618,13 +658,13 @@ public class Observer {
 		    else{
 		    	//System.out.print((totalCost/totalPower) + ", ");
 		    	if(agent.type == Agent.agentType.BROKER){
-		    		System.out.printf("\t%s,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f,\t%.2f",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
+		    		System.out.printf("\t%s,\t%.2f,\t%.2f,\t%.2f,\t\t%.2f,\t\t%.2f,\t\t%.2f,\t\t%.2f,\t\t%.2f,\t%.2f,\t%.2f",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
 		    		pwOutput.printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,",agent.playerName, volbuy, buy, unitcost, volsell, sell, unitsell, penalty, profit, net,((clearedTotalMWh/neededTotalMWh)*100));
 		    		//pwOutputV.printf("%.2f,",((clearedTotalMWh/neededTotalMWh)*100));
 		    	}
 		    	else{
-		    		System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
-		    		pwOutput.printf("%.2f,",net);
+		    		//System.out.printf("%.2f (%.2f),\t",net,((clearedTotalMWh/totalAskVolumeCleared)*100));
+		    		//pwOutput.printf("%.2f,",net);
 		    		//pwOutputV.printf("%.2f,",((clearedTotalMWh/totalAskVolumeCleared)*100));
 		    	}
 			    //pwOutputVolume.print(((clearedTotalMWh/neededTotalMWh)*100) + "%,");
@@ -699,6 +739,12 @@ public class Observer {
 			String brokerName = a.playerName;
 			int brokerid = a.id;
 		    double clearedBalancingMWh = Math.abs(a.neededMWh);
+		    
+		    if(a.playerName.equalsIgnoreCase("MCTSX")){
+		    	mctsxRealCostPerHour -= (clearedBalancingMWh*balancingPrice);
+		    	mctsxPredictedCostPerHour += (clearedBalancingMWh*balancingPrice);
+		    	mctsxRealCost[(day*hour)+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice;
+		    }
 		    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
 		    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
 		    if(a.type == Agent.agentType.BROKER)

@@ -25,7 +25,7 @@ public class CaseStudies {
 			observer.printableAgents.add(ZIP);
 			Agent SPOT = new SPOT("SPOT", 0, neededMWhBroker, 30, 10);
 			observer.printableAgents.add(SPOT);
-			Agent MCTSAgent1K = new MCTSAgent("MCTSAgent",0, neededMCTSMWhBroker,30,10,1000);
+			Agent MCTSAgent1K = new MCTSAgent("MCTSX",0, neededMCTSMWhBroker,30,10,1000);
 			observer.printableAgents.add(MCTSAgent1K);
 			Agent varMCTSAgent = new MCTSAgent("varMCTSAgent"+Configure.getVARMCTSAGENTITERATION(),0, neededMWhBroker,30,10,Configure.getVARMCTSAGENTITERATION());
 			observer.printableAgents.add(varMCTSAgent);
