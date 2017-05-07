@@ -80,7 +80,7 @@ public class MCTS {
     	actions.add(action);
     	action = new Action("A14",0,1,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A15",0,2,false, Action.ACTION_TYPE.SELL, 1.0);
+    	action = new Action("A15",0,2,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
 
     }
