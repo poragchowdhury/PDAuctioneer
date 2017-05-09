@@ -22,6 +22,8 @@ public class PricePredictor {
 		Attribute year = new Attribute("year");
 		Attribute nUMBER_OF_BROKERS = new Attribute("nUMBER_OF_BROKERS");
 		Attribute nUMBER_OF_PRODUCERS = new Attribute("nUMBER_OF_PRODUCERS");
+		Attribute mcp1 = new Attribute("mcp1");
+		Attribute mcp2 = new Attribute("mcp2");
 		Attribute clearingPrice = new Attribute("clearingPrice");
 
 		attributes = new FastVector();
@@ -33,6 +35,8 @@ public class PricePredictor {
 		attributes.addElement(year);
 		attributes.addElement(nUMBER_OF_BROKERS);
 		attributes.addElement(nUMBER_OF_PRODUCERS);
+		attributes.addElement(mcp1);
+		attributes.addElement(mcp2);
 		attributes.addElement(clearingPrice);
 		
 		loadModel(predictorVersion);

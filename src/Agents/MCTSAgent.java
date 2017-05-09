@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import configure.Configure;
+
 import Agents.Agent.agentType;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
@@ -65,6 +67,14 @@ public class MCTSAgent extends Agent {
 			// Bidding configuration
 			double numberofbids = 10;
 			double unitPriceIncrement = 1.00;
+			
+			/*double [] param = new double[11];
+	    	param = observer.getFeatures(param);
+	    	double clearingPrice = mcts.pricePredictor.getLimitPrice(param);
+	    	double limitPrice = clearingPrice + (bestMove.minMult*7.8); //tn.minmctsClearingPrice;
+    		double maxPrice = clearingPrice + (bestMove.maxMult*7.8); //tn.minmctsClearingPrice;
+    		double priceRange = maxPrice - limitPrice; // tn.maxmctsClearingPrice - tn.minmctsClearingPrice;
+    		*/
 			double limitPrice = bestMove.minmctsClearingPrice;
 			double priceRange = bestMove.maxmctsClearingPrice - bestMove.minmctsClearingPrice;
 			double minMWh = 1;
@@ -76,7 +86,7 @@ public class MCTSAgent extends Agent {
 				
 				observer.mctsxPredictedCostPerHour += bestMove.currentNodeCostAvg;
 				
-				observer.mctsxPredictedCost[(observer.day*observer.hour)+observer.hour][observer.hourAhead] = bestMove.totValue;
+				observer.mctsxPredictedCost[(observer.day*Configure.getHOURS_IN_A_DAY())+observer.hour][observer.hourAhead] = bestMove.totValue;
 				
 				if(bestMove.actionType == ACTION_TYPE.BUY){
 					// Submit buy orders

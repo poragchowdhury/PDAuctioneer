@@ -280,8 +280,8 @@ public class TreeNode {
 				double numberofbids = 10;
 	    		double unitPriceIncrement = 1.00;
 	    		double clearingPrice = Math.abs((r.nextGaussian()*7.8)+arrPredClearingPrice[tn.hourAheadAuction]);
-	    		double limitPrice = clearingPrice + (tn.minMult*7.8); //tn.minmctsClearingPrice;
-	    		double maxPrice = clearingPrice + (tn.maxMult*7.8); //tn.minmctsClearingPrice;
+	    		double limitPrice = tn.minmctsClearingPrice; //clearingPrice + (tn.minMult*7.8);
+	    		double maxPrice = tn.minmctsClearingPrice; // clearingPrice + (tn.maxMult*7.8); 
 	    		double priceRange = tn.maxmctsClearingPrice - tn.minmctsClearingPrice;
 	    		double minMWh = 1;
 	    		
@@ -290,7 +290,7 @@ public class TreeNode {
 	    		if(tn.actionType == ACTION_TYPE.BUY){
 					// Buy energy
 	    			double surplus = Math.abs(ob.initialNeededEneryMCTSBroker)*(tn.volPercentage-1);
-					double totalE = surplus + Math.abs(neededMWh);
+					double totalE = surplus + (Math.abs(neededMWh)/5);
 					
 	    			minMWh= Math.abs(totalE) / numberofbids;
 		    		for(int i = 1; i <=numberofbids; i++){
@@ -357,8 +357,8 @@ public class TreeNode {
     		double numberofbids = 10;
     		double unitPriceIncrement = 1.00;
     		double clearingPrice = Math.abs((r.nextGaussian()*7.8)+arrPredClearingPrice[tn.hourAheadAuction]);//arrPredClearingPrice[tn.hourAheadAuction];
-    		double limitPrice = clearingPrice + (tn.minMult*7.8); //tn.minmctsClearingPrice;
-    		double maxPrice = clearingPrice + (tn.maxMult*7.8); //tn.minmctsClearingPrice;
+    		double limitPrice = tn.minmctsClearingPrice; // clearingPrice + (tn.minMult*7.8); //
+    		double maxPrice = tn.minmctsClearingPrice; // clearingPrice + (tn.maxMult*7.8);
     		double priceRange = maxPrice - limitPrice; // tn.maxmctsClearingPrice - tn.minmctsClearingPrice;
     		double minMWh = 1;
     		
@@ -369,7 +369,7 @@ public class TreeNode {
     		if(tn.actionType == ACTION_TYPE.BUY)
     		{
     			double surplus = Math.abs(ob.initialNeededEneryMCTSBroker)*(tn.volPercentage-1);
-				double totalE = surplus + Math.abs(neededMWh);
+				double totalE = surplus + (Math.abs(neededMWh)/Configure.getNUMBER_OF_BROKERS());
 				
     			minMWh= Math.abs(totalE) / numberofbids;
 	    		for(int i = 1; i <=numberofbids; i++){
@@ -390,6 +390,8 @@ public class TreeNode {
 					minMWh /= numberofbids;
 				else
 					minMWh = surplus / numberofbids;
+				
+				minMWh /= Configure.getNUMBER_OF_PRODUCERS();
 				
 				for(int i = 1; i <=numberofbids; i++){
 					//if(limitPrice >= arrPredClearingPrice[tn.hourAheadAuction]){

@@ -143,12 +143,12 @@ public class Observer {
 		printableAgents = new ArrayList<Agent>();
 		arrBalacingPrice = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()];
 		
-		arrProducerBidPrice = new double[Configure.getNUMBER_OF_PRODUCERS()][Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()*Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
-		arrProducerBidVolume = new double[Configure.getNUMBER_OF_PRODUCERS()][Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()*Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];;
+		arrProducerBidPrice = new double[Configure.getNUMBER_OF_PRODUCERS()][Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()];
+		arrProducerBidVolume = new double[Configure.getNUMBER_OF_PRODUCERS()][Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()];
 		arrProducerGreenPoints = new double[Configure.getNUMBER_OF_PRODUCERS()];
 		
 		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
-		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
 		
 	}
 	
@@ -199,7 +199,7 @@ public class Observer {
 	            }
                 initialized = true;
                 hour++;
-                if(hour >= 7*24)
+                if(hour >= Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())
                 	break;
             }
             parser.close();
@@ -224,7 +224,7 @@ public class Observer {
 	                arrProducerBidPrice[i][hour] = Double.parseDouble(strLBMP);
                 }
                 hour++;
-                if(hour >= 7*24)
+                if(hour >= Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())
                 	break;
             }
             parser.close();
@@ -510,7 +510,7 @@ public class Observer {
 			    
 			    if(a.playerName.equalsIgnoreCase("MCTSX")){
 			    	mctsxRealCostPerHour += (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
-			    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
+			    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][hourAhead] = (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
 			    }
 			    
 		    } else {
@@ -546,7 +546,7 @@ public class Observer {
 				
 				realCost += mctsxRealCost[totHours][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
 				
-				pwOutput.println(MCTSSimulation + "," + totHours/Configure.getHOURS_IN_A_DAY() + "," + totHours%Configure.getHOURS_IN_A_DAY() + "," + totHA + "," + (realCost - mctsxPredictedCost[totHours][totHA]));
+				pwOutput.println(MCTSSimulation + "," + totHours + "," + totHours/Configure.getHOURS_IN_A_DAY() + "," + totHours%Configure.getHOURS_IN_A_DAY() + "," + totHA + "," + (realCost - mctsxPredictedCost[totHours][totHA]));
 			}
 		}
 		pwOutput.close();
@@ -743,11 +743,7 @@ public class Observer {
 		    if(a.playerName.equalsIgnoreCase("MCTSX")){
 		    	mctsxRealCostPerHour -= (clearedBalancingMWh*balancingPrice);
 		    	mctsxPredictedCostPerHour += (clearedBalancingMWh*balancingPrice);
-		    	
-		    	if(day == 1 && hour == 5)
-					System.out.println("I am here");
-		    	
-		    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice;
+		    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice*(-1);
 		    }
 		    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
 		    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
