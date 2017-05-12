@@ -45,8 +45,6 @@ public class MCTSAgent extends Agent {
 		observer.neededEneryMCTSBroker = this.neededMWh; 
 		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
 		
-		if(this.neededMWh > 0)
-		{
 			TreeNode bestMove = mcts.getBestMCTSMove(observer);
 			if(bestMove == null)
 				System.out.println("BestMove is null");
@@ -81,6 +79,9 @@ public class MCTSAgent extends Agent {
 			
 			
 			unitPriceIncrement = priceRange / numberofbids;
+			
+			if(playerName.equalsIgnoreCase("MCTSX"))
+				observer.recordBestMove(bestMove);
 			
 			if(!bestMove.nobid){
 				
@@ -123,6 +124,6 @@ public class MCTSAgent extends Agent {
 					}
 				}
 			}
-		}
+		
 	}
 }
