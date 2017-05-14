@@ -45,42 +45,42 @@ public class MCTS {
 		////this.arrPredictedClearingPrices = observer.arrPredictedClearingPrices15;
 
     	// Create all the actions
-		Action action = new Action("A0",-2,0,false, Action.ACTION_TYPE.BUY, 1.00);
+		Action action = new Action("0",-2,0,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A1",-1,1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("1",-1,1,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A2",-1,0,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("2",-1,0,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A3",0,1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("3",0,1,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
-    	action = new Action("A4",0,2,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action("4",0,2,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
     	
-    	action = new Action("A5",-2,0,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("5",-2,0,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A6",-1,1,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("6",-1,1,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A7",-1,0,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("7",-1,0,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A8",0,1,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("8",0,1,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
-    	action = new Action("A9",0,2,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("9",0,2,false, Action.ACTION_TYPE.BUY, 1.20);
     	actions.add(action);
 
     	// no bid
-		action = new Action("A10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
+		action = new Action("10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
     	actions.add(action);
     	
     	// Selling
-    	action = new Action("A11",-2,0,false, Action.ACTION_TYPE.SELL, 1.20);
+    	action = new Action("11",-2,0,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A12",-1,1,false, Action.ACTION_TYPE.SELL, 1.20);
+    	action = new Action("12",-1,1,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A13",-1,0,false, Action.ACTION_TYPE.SELL, 1.20);
+    	action = new Action("13",-1,0,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A14",0,1,false, Action.ACTION_TYPE.SELL, 1.20);
+    	action = new Action("14",0,1,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-    	action = new Action("A15",0,2,false, Action.ACTION_TYPE.SELL, 1.20);
+    	action = new Action("15",0,2,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
 
     }

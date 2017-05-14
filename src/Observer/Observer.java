@@ -17,11 +17,11 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import configure.Configure;
-
 import Agents.Agent;
 import Agents.Agent.agentType;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
+import MCTS.TreeNode;
 
 public class Observer {
 	public Configure config;
@@ -41,6 +41,8 @@ public class Observer {
 	
 	public double[][] mctsxRealCost;
 	public double[][] mctsxPredictedCost;
+	
+	public int[][] recordMCTSMove;
 	
 	public static enum COST_ARRAY_INDICES{
 		VOL_BUY(0),
@@ -150,6 +152,8 @@ public class Observer {
 		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
 		
+		recordMCTSMove = new int[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][16];
+		
 	}
 	
 	public void setTime(int day, int hour, int hourAhead, int currentTimeSlot){
@@ -158,6 +162,11 @@ public class Observer {
 		this.hourAhead = hourAhead;
 		this.currentTimeSlot = currentTimeSlot;
 		this.date = this.date + this.day;
+	}
+	
+	public void recordBestMove(TreeNode n){
+		int action = Integer.parseInt(n.actionName);
+		recordMCTSMove[hourAhead][action] += 1;
 	}
 	
 	public void importProducerData(){
@@ -535,7 +544,7 @@ public class Observer {
 		// Print to the error log
 		FileWriter fwOutput = new FileWriter("mcts_HA_prediction_error.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
-		pwOutput.println("MCTS_SIM,Day,Hour,HourAhead,Error");
+		pwOutput.println("MCTS_SIM,TS,Day,Hour,HourAhead,Error");
 		for(int totHours = 0; totHours < Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY(); totHours++){
 			for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
 				
@@ -555,6 +564,19 @@ public class Observer {
 		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		
+	}
+	
+	public void writeMCTSMoves() throws IOException{
+		FileWriter fwOutput = new FileWriter("mcts_moves.csv", true);
+		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
+		pwOutput.println("HourAhead,Action,Count");
+		
+		for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
+			for(int j = 0; j < 16; j++)
+				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]);
+		}
+		pwOutput.close();
+		fwOutput.close();
 	}
 	
 	public void printTotalClearedVolume() throws IOException{

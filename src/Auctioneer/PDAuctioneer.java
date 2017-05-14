@@ -195,6 +195,7 @@ public class PDAuctioneer {
 						// Rest costTotal
 						observer.printTotalClearedVolume();
 						observer.calculateError();
+						observer.writeMCTSMoves();
 
 					} catch (IOException e) {
 						e.printStackTrace();
