@@ -7,6 +7,7 @@ import Agents.Agent.agentType;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
 import Observer.Observer;
+import TacTex.PriceMwhPair;
 
 
 public class Producer extends Agent{
@@ -28,11 +29,18 @@ public class Producer extends Agent{
 	}
 	
 	public void initCap(){
+		this.cap[23] = 0.45;
+		this.cap[22] = this.cap[21] = 0.50;
+		this.cap[20] = this.cap[19] = 0.55;
+		this.cap[18] = this.cap[17] = 0.60;
+		this.cap[16] = this.cap[15] = 0.65;
+		this.cap[14] = this.cap[13] = 0.70;
+		this.cap[12] = this.cap[11] = 0.75;
 		this.cap[10] = this.cap[9] = 0.80;
 		this.cap[8] = this.cap[7] = 0.85;
 		this.cap[6] = this.cap[5] = 0.90;
 		this.cap[4] = this.cap[3] = 0.95;
-		this.cap[2] = this.cap[1] = this.cap[0] = 1;
+		this.cap[2] = this.cap[1] = this.cap[0] = 0.99;
 	}
 	
 	public Producer(){
@@ -46,6 +54,32 @@ public class Producer extends Agent{
 	
 	@Override
 	public void submitOrders(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer ob) {
+		try {
+			ArrayList<PriceMwhPair> orders = ob.powerTACproducerOrders.get(ob.hour).get(ob.hourAhead);
+			for(PriceMwhPair o:orders) {
+				Double price = o.getPricePerMwh();
+				if(price == 0.0)
+					price = null;
+				double mwh = o.getMwh(); 
+				if(mwh < 0) {
+					Ask ask = new Ask(this.playerName, this.id, price, mwh, this.type);
+					if(ob.DEBUG)
+						System.out.println(ask.toString());
+					asks.add(ask);
+				}
+				else 
+				{
+					Bid bid = new Bid(this.playerName, this.id, price, mwh, this.type);
+					if(ob.DEBUG)
+						System.out.println(bid.toString());
+					bids.add(bid);
+				}
+			}
+		}
+		catch(Exception ex) {
+			System.out.println("THIS SHOULD NOT HAPPEN! " + ex.getMessage());
+		}
+		/*
 		double greenpoints = 1;
 		if(ob.GREEN_AUCTION_FLAG)
 			greenpoints = ob.arrProducerGreenPoints[this.id];
@@ -57,6 +91,7 @@ public class Producer extends Agent{
 		Ask ask = new Ask(this.playerName, this.id, price, bandwidth, this.type);
 		if(ob.DEBUG)
 			System.out.println(ask.toString());
-		asks.add(ask);	
+		asks.add(ask);
+		*/	
 	}
 }

@@ -65,12 +65,15 @@ public class ZI extends Agent {
 				ZIlimitPrice = Math.abs((r.nextGaussian()*stddevPrice)+meanBidPrice);
 			}
 			else{
-				double [] param = new double[11];
-				param = ob.getFeatures(param);
-				double limitPrice = pricePredictor.getLimitPrice(param);
+//				double [] param = new double[11];
+//				param = ob.getFeatures(param);
+				double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
 				ZIlimitPrice = Math.abs((r.nextGaussian()*5)+limitPrice);
 			}
 			
+			if((this.neededMWh-MIN_MWH) <= 0) {
+				return;
+			}
 			
 			Bid bid = new Bid(this.playerName, this.id, ZIlimitPrice, this.neededMWh, this.type);
 			if(ob.DEBUG)

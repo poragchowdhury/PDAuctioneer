@@ -22,14 +22,15 @@ public class MCTS {
 	// Predicted Clearing Price
 	public PricePredictor pricePredictor = new PricePredictor(Agent.predictorName);
 	public TreeNode root;
+	public int debugCounter=0;
 	public double totalSuccessfulBids = 0;
 	public double lastmctsClearingPrice = 0.0;
 	public double lastPriceDiffPerTradeAction = 0.0;
 	double [] arrMctsPredClearingPrice = new double[25];
 	
-	int thresholdLowAuctionsPerc = 40;
+	public int thresholdLowAuctionsPerc = 40;
 	public boolean booNobid = false;
-    ArrayList<Action> actions;
+    public ArrayList<Action> actions;
     public double mctsSim;
     public String playerName;
     
@@ -40,10 +41,58 @@ public class MCTS {
 	}
 
 	public void setup(Observer observer){
-		
+		/*
 		// Need a predictor
 		////this.arrPredictedClearingPrices = observer.arrPredictedClearingPrices15;
-
+		double volModi2 = 0.80;
+		double volModi1 = 1.0;
+		Action action = new Action("0",-2,2,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("1",-2,1,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("2",-2,0,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("3",-2,-1,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("4",-1,2,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("5",-1,1,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("6",-1,0,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("7",0,2,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("8",0,1,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	action = new Action("9",1,2,false, Action.ACTION_TYPE.BUY, volModi1);
+    	actions.add(action);
+    	
+    	// no bid
+		action = new Action("10",0,0,true, Action.ACTION_TYPE.NO_BID, 1);
+    	actions.add(action);
+    	
+		/*
+    	action = new Action("11",-2,2,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("12",-2,1,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("13",-2,0,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("14",-2,-1,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("15",-1,2,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("16",-1,1,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("17",-1,0,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("18",0,2,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("19",0,1,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+    	action = new Action("20",1,2,false, Action.ACTION_TYPE.BUY, volModi2);
+    	actions.add(action);
+		*/
     	// Create all the actions
 		Action action = new Action("0",-2,0,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
@@ -56,21 +105,21 @@ public class MCTS {
     	action = new Action("4",0,2,false, Action.ACTION_TYPE.BUY, 1.00);
     	actions.add(action);
     	
-    	action = new Action("5",-2,0,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("5",-2,0,false, Action.ACTION_TYPE.BUY, 0.80);
     	actions.add(action);
-    	action = new Action("6",-1,1,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("6",-1,1,false, Action.ACTION_TYPE.BUY, 0.80);
     	actions.add(action);
-    	action = new Action("7",-1,0,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("7",-1,0,false, Action.ACTION_TYPE.BUY, 0.80);
     	actions.add(action);
-    	action = new Action("8",0,1,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("8",0,1,false, Action.ACTION_TYPE.BUY, 0.80);
     	actions.add(action);
-    	action = new Action("9",0,2,false, Action.ACTION_TYPE.BUY, 1.20);
+    	action = new Action("9",0,2,false, Action.ACTION_TYPE.BUY, 0.80);
     	actions.add(action);
-
-    	// no bid
+		
+		// no bid
 		action = new Action("10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
     	actions.add(action);
-    	
+    	/*
     	// Selling
     	action = new Action("11",-2,0,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
@@ -82,7 +131,7 @@ public class MCTS {
     	actions.add(action);
     	action = new Action("15",0,2,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
-
+		*/
     }
 	
     public TreeNode getBestMCTSMove(Observer observer) {
@@ -100,16 +149,13 @@ public class MCTS {
     	else{
     		// use the default agent's mctssim
     	}
-    	
-    	//System.out.println("Iterations " + i);
-    	double [] param = new double[11];
-    	param = observer.getFeatures(param);
-    	
+		
     	for(int j = 0; j <= observer.hourAhead; j++){
-    		param[2] = j;
-    		arrMctsPredClearingPrice[j] = pricePredictor.getLimitPrice(param); //Math.abs((r.nextGaussian()*2)+observer.arrPredictedClearingPrices15[observer.currentTimeSlot][j]);
+    		arrMctsPredClearingPrice[j] = observer.pricepredictor.getPrice(j);
     		arrCounterHigherBids[j] = 0;
     	}
+	
+    	
     	root.minmctsClearingPrice = arrMctsPredClearingPrice[observer.hourAhead];
     	
 		// loop it and do some number of simulations

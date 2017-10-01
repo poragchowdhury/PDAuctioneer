@@ -31,8 +31,8 @@ public class SPOT extends Agent {
 		
 		if(this.neededMWh > 0){
 			
-			double [] param = new double[11];
-			param = ob.getFeatures(param);
+			double [] param = new double[15];
+			param = ob.getFeatures(param,ob.hourAhead);
 			double limitPrice = pricePredictor.getLimitPrice(param);
 			
 			// Bidding configuration

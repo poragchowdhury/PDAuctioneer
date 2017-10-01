@@ -22,7 +22,7 @@ public class ZIP extends Agent {
 	public double meanBidPrice = 0;
 	public double stddevPrice = 0;
 	public double offSet = 0;
-	public boolean prevBidFailed = false;
+	public boolean prevBidPassed = false;
 	public PricePredictor pricePredictor;
 	
 	public ZIP(String name, int id, double neededMWh, double mean, double stddev){
@@ -37,7 +37,7 @@ public class ZIP extends Agent {
 	
 	@Override
 	public void setFlag(boolean flag) {
-		this.prevBidFailed = flag;	
+		this.prevBidPassed = flag;	
 	}
 	
 	
@@ -47,18 +47,26 @@ public class ZIP extends Agent {
 		
 		if(this.neededMWh > 0){
 			
-			double [] param = new double[11];
-			param = ob.getFeatures(param);
-			double limitPrice = pricePredictor.getLimitPrice(param);
+//			double [] param = new double[11];
+//			param = ob.getFeatures(param);
+			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
 			double profitmargin = limitPrice*0.01;
+			
 			if(ob.hourAhead == Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
 			{
 				// reset the offSet
-				offSet = 0; 
-				prevBidFailed = false;
+				offSet = 0.0; 
+				prevBidPassed = false;
 			}
-			if(prevBidFailed){
-				limitPrice = offSet + limitPrice * 0.1; 
+			else{
+				if(!prevBidPassed)
+					offSet = offSet + limitPrice * 0.1; 
+				
+				limitPrice += offSet;
+			}
+			
+			if((this.neededMWh-MIN_MWH) <= 0) {
+				return;
 			}
 			
 			Bid bid = new Bid(this.playerName, this.id, (limitPrice+profitmargin), this.neededMWh, this.type);

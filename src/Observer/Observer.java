@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,9 +20,12 @@ import org.apache.commons.csv.CSVRecord;
 import configure.Configure;
 import Agents.Agent;
 import Agents.Agent.agentType;
+import Agents.TacTex;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
 import MCTS.TreeNode;
+import TacTex.ChargeMwhPair;
+import TacTex.PriceMwhPair;
 
 public class Observer {
 	public Configure config;
@@ -38,11 +42,22 @@ public class Observer {
 	public int[] mctsDebugVals;
 	public double mctsxRealCostPerHour = 0.0;
 	public double mctsxPredictedCostPerHour = 0.0;
+	public Double lowestAskPrice = null;
+	public int [] minCPHourAhead;
+	public double [] MCPrice;
+	public double [] MCPriceCount;
 	
 	public double[][] mctsxRealCost;
 	public double[][] mctsxPredictedCost;
+	public double[] pp_error_ha;
+	public double[] pp_error_ha_count;
 	
 	public int[][] recordMCTSMove;
+	public PredictorFactory pricepredictor;
+	public PricePredictor REPTreePricePredictor;
+	
+	public HashMap <Integer, HashMap<Integer, ArrayList<PriceMwhPair>>> powerTACproducerOrders;
+	public double [][][] weatherPrediction;
 	
 	public static enum COST_ARRAY_INDICES{
 		VOL_BUY(0),
@@ -60,6 +75,11 @@ public class Observer {
 		return currentTimeSlot + "," + hour + "," + hourAhead + "," + date + "," + month + "," + year + "," + Configure.getNUMBER_OF_BROKERS() + "," + Configure.getNUMBER_OF_PRODUCERS() + ",";
 	}
 	
+	public String getWeatherPrediction(){
+		return weatherPrediction[hour][hourAhead][0] + "," + weatherPrediction[hour][hourAhead][1] + "," + weatherPrediction[hour][hourAhead][2] + "," + weatherPrediction[hour][hourAhead][3];
+	}
+	
+	
 	public boolean DEBUG = false;
 	public double neededEneryMCTSBroker = 0;
 	public double initialNeededEneryMCTSBroker = 0;
@@ -73,7 +93,7 @@ public class Observer {
 	public double [] arrProducerGreenPoints;
 	public int ERROR_PERCENTAGE;
 	public boolean GREEN_AUCTION_FLAG = false;
-	public int MCTSSimulation = 1000;
+	public int MCTSSimulation = 10000;
 	public double nanoTime = 0;
 	public double nanoTimeCount = 0;
 	public int printNamesCount = 0;
@@ -105,19 +125,23 @@ public class Observer {
 	
 	public double [] arrBalacingPrice;
 	
-	public double[] getFeatures(double[] param){
+	public double[] getFeatures(double[] param, int ha){
 		param[0] = currentTimeSlot;
 		param[1] = hour;
-		param[2] = hourAhead;
+		param[2] = ha;
 		param[3] = date;
 		param[4] = month;
 		param[5] = year;
 		param[6] = Configure.getNUMBER_OF_BROKERS();
 		param[7] = Configure.getNUMBER_OF_PRODUCERS();
 		if(currentTimeSlot >= Configure.getHOURS_IN_A_DAY())
-			param[8] = arrMarketClearingPriceHistory[currentTimeSlot-Configure.getHOURS_IN_A_DAY()][hour][hourAhead];
-		if(hourAhead < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
-			param[9] = arrMarketClearingPriceHistory[currentTimeSlot][hour][hourAhead+1];
+			param[8] = arrMarketClearingPriceHistory[currentTimeSlot-Configure.getHOURS_IN_A_DAY()][hour][ha];
+		if(ha < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
+			param[9] = arrMarketClearingPriceHistory[currentTimeSlot][hour][ha+1];
+		param[10] = weatherPrediction[hour][ha][0];
+		param[11] = weatherPrediction[hour][ha][1];
+		param[12] = weatherPrediction[hour][ha][2];
+		param[13] = weatherPrediction[hour][ha][3];
 		
 		return param;
 	}
@@ -151,9 +175,18 @@ public class Observer {
 		
 		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
+		pp_error_ha = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		pp_error_ha_count = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		
-		recordMCTSMove = new int[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][16];
+		recordMCTSMove = new int[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][21];
+		REPTreePricePredictor = new PricePredictor(Configure.getPREDICTOR_NAME());
+		pricepredictor = new PredictorFactory(this);
 		
+		minCPHourAhead = new int[24];
+		MCPrice = new double [24];
+		MCPriceCount = new double [24];
+		
+		weatherPrediction = new double[168][24][4];
 	}
 	
 	public void setTime(int day, int hour, int hourAhead, int currentTimeSlot){
@@ -167,6 +200,89 @@ public class Observer {
 	public void recordBestMove(TreeNode n){
 		int action = Integer.parseInt(n.actionName);
 		recordMCTSMove[hourAhead][action] += 1;
+	}
+	
+	public void importPowerTACData() {
+		try {
+			powerTACproducerOrders = new HashMap<Integer, HashMap<Integer, ArrayList<PriceMwhPair>>>();
+			//boolean initialized = false;
+	        //File gFile = new File("boots//"+Configure.getBootName());
+	        File gFile = new File("boots-misobuyer//boot"+(SEED-1)+".csv");
+	        if(!gFile.exists()){
+	            System.out.println("Load file doesn't exist");
+	        	return;
+	        }
+	        CSVParser parser = CSVParser.parse(gFile, StandardCharsets.US_ASCII, CSVFormat.DEFAULT);
+			int prevhour = -1;
+			int prevhourAhead = -1;
+			Random r = new Random(SEED);
+			
+	        for (CSVRecord csvRecord : parser) {
+	            Iterator<String> itr = csvRecord.iterator();
+	            // Hour	
+	            String strHour = itr.next();
+	            int hour = Integer.parseInt(strHour);
+	            // HourAhead
+	            String strHourAhead = itr.next();
+	            int hourAhead = Integer.parseInt(strHourAhead);
+	            
+	            HashMap<Integer, ArrayList<PriceMwhPair>> hourAheadOrders = powerTACproducerOrders.get(hour);
+	            if(hourAheadOrders == null) {
+	            	hourAheadOrders = new HashMap<Integer, ArrayList<PriceMwhPair>>();
+	            }
+	            
+	            ArrayList<PriceMwhPair> orders = hourAheadOrders.get(hourAhead);
+	            if(orders == null) {
+	            	orders = new ArrayList<PriceMwhPair>();
+	            }
+	            
+	            // mwh
+	            String strMWh = itr.next();
+	            Double mwh = Double.parseDouble(strMWh);
+	            // $
+	            String strPrice = itr.next();
+	            Double price;
+	            if(strPrice.equalsIgnoreCase("null"))
+	            	price = 0.0;
+	            else
+	            	price = Double.parseDouble(strPrice);
+	            
+	            PriceMwhPair order = new PriceMwhPair(price, mwh.doubleValue());
+	            orders.add(order);
+	            hourAheadOrders.put(hourAhead, orders);
+	            powerTACproducerOrders.put(hour, hourAheadOrders);
+	            
+	            // cloud coverage
+	            String cc = itr.next();
+	            Double couldCoverage = Double.parseDouble(cc);
+	            // temp
+	            String temp = itr.next();
+	            Double temperature = Double.parseDouble(temp);
+	            // wspeed
+	            String wspeed = itr.next();
+	            Double speed = Double.parseDouble(wspeed);
+	            // wdirection
+	            String wdirection = itr.next();
+	            Double direction = Double.parseDouble(wdirection);
+	            
+	            weatherPrediction[hour][hourAhead][0] = couldCoverage;
+	            weatherPrediction[hour][hourAhead][1] = temperature;
+	            weatherPrediction[hour][hourAhead][2] = speed;
+	            weatherPrediction[hour][hourAhead][3] = direction;
+	            
+	            //initialized = true;
+	            
+	            if(hour >= Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())
+	            	break;
+	            
+	            prevhour = hour;
+	            prevhourAhead = hourAhead;
+	        }
+	        parser.close();
+		}
+		catch(Exception ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 	
 	public void importProducerData(){
@@ -204,7 +320,7 @@ public class Observer {
 	                // Add a gaussian noise to the volume
 	                double noise = (r.nextGaussian()*200)+ 0;
 	                
-	                arrProducerBidVolume[i][hour] = Double.parseDouble(strLBMP)+noise;
+	                arrProducerBidVolume[i][hour] = (Double.parseDouble(strLBMP)+noise);
 	            }
                 initialized = true;
                 hour++;
@@ -246,7 +362,7 @@ public class Observer {
 	
 	public void generateBalancingPrices(int mean, int stddev){
         if(mean == 0)
-        	mean = 40;
+        	mean = 350*2;
         if(stddev == 0) 
         	stddev = 5;
 		Random r = new Random(SEED);
@@ -254,7 +370,7 @@ public class Observer {
 		double NUMBER_OF_AUCTIONS = Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY();
 		
 		for(int i = 0; i < NUMBER_OF_AUCTIONS; i++){
-	    	arrBalacingPrice[i] = Math.abs(Math.abs((r.nextGaussian()*stddev))+(mean*2));
+	    	arrBalacingPrice[i] = Math.abs(Math.abs((r.nextGaussian()*stddev))+(mean));
 		}
 		
    	}
@@ -376,10 +492,10 @@ public class Observer {
 		for(Agent agent : agents){
 			if(agent.type == Agent.agentType.BROKER)
 				if(agent.playerName.equalsIgnoreCase("MCTSX")){
-					agent.neededMWh = Configure.getPERHOURENERGYDEMAND()*Configure.getMCTSBROKERDEMANDPERC();
+					agent.neededMWh = (Configure.getPERHOURENERGYDEMAND() * Configure.avgSupply_REPTree[SEED-1])*Configure.getMCTSBROKERDEMANDPERC();//Configure.getPERHOURENERGYDEMAND()*Configure.getMCTSBROKERDEMANDPERC();
 				}
 				else{
-					agent.neededMWh = Configure.getPERHOURENERGYDEMAND()*((1-Configure.getMCTSBROKERDEMANDPERC())/(Configure.getNUMBER_OF_BROKERS()-1));
+					agent.neededMWh = (Configure.getPERHOURENERGYDEMAND() * Configure.avgSupply_REPTree[SEED-1])*((1-Configure.getMCTSBROKERDEMANDPERC())/(Configure.getNUMBER_OF_BROKERS()-1));//Configure.getPERHOURENERGYDEMAND()*((1-Configure.getMCTSBROKERDEMANDPERC())/(Configure.getNUMBER_OF_BROKERS()-1));//Configure.getPERHOURENERGYDEMAND()*((1-Configure.getMCTSBROKERDEMANDPERC())/(Configure.getNUMBER_OF_BROKERS()-1));
 				}
 			else{
 				agent.neededMWh = arrProducerBidVolume[agent.id][currentTimeSlot];
@@ -413,12 +529,12 @@ public class Observer {
 				{
 					// check if agent is ZIP to say that the volume is not cleared
 					if(agent.playerName == "ZIP")
-						agent.setFlag(true);
+						agent.setFlag(false);
 					volumeCleared = 0.0;
 				}
 				else{
 					if(agent.playerName == "ZIP")
-						agent.setFlag(false);
+						agent.setFlag(true);
 				}
 				
 				Double volumeAskCleared = 0.0;
@@ -496,9 +612,10 @@ public class Observer {
 	public void printClearedVolume(double clearingPrice){
 		
 		arrMarketClearingPriceHistory[currentTimeSlot][hour][hourAhead] = clearingPrice;
-		
+		Double totalClearedVolume = 0.0;
 		if(DEBUG)
 			System.out.println("PrintClearedVolume");
+		
 		for (Agent a : agents) {
 		    String brokerName = a.playerName;
 		    int brokerid = a.id;
@@ -506,7 +623,10 @@ public class Observer {
 			    Double clearedBidMWh = getClearedBidVolume(brokerName);
 			    if(clearedBidMWh == null)
 			    	clearedBidMWh = 0.00;
-			    addTotalClearTrade(new Bid(brokerName,brokerid,0,clearedBidMWh,a.type));
+			    
+			    totalClearedVolume += clearedBidMWh;
+			    
+			    addTotalClearTrade(new Bid(brokerName,brokerid,0.0,clearedBidMWh,a.type));
 			    addTotalTradeCost(new Bid(brokerName,brokerid,clearingPrice,clearedBidMWh,a.type), COST_ARRAY_INDICES.VOL_BUY.getValue(), COST_ARRAY_INDICES.TOT_BUY.getValue());
 			    if(DEBUG)
 			    	System.out.println(brokerName + " MWh : " + clearedBidMWh + " $ : " + clearingPrice);
@@ -514,14 +634,13 @@ public class Observer {
 			    Double clearedAskMWh = getClearedAskVolume(brokerName);
 			    if(clearedAskMWh == null)
 			    	clearedAskMWh = 0.00;
-			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
+			    addTotalClearTrade(new Ask(brokerName,brokerid,0.0,clearedAskMWh,a.type));
 			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type), COST_ARRAY_INDICES.VOL_SELL.getValue(), COST_ARRAY_INDICES.TOT_SELL.getValue());
 			    
 			    if(a.playerName.equalsIgnoreCase("MCTSX")){
 			    	mctsxRealCostPerHour += (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
 			    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][hourAhead] = (Math.abs(clearingPrice)*(Math.abs(clearedAskMWh)-Math.abs(clearedBidMWh)));
 			    }
-			    
 		    } else {
 			    Double clearedAskMWh = getClearedAskVolume(brokerName);
 			    if(clearedAskMWh == null)
@@ -532,19 +651,24 @@ public class Observer {
 			    }
 			    totalAskVolumeCleared += clearedAskMWh;
 			    
-			    addTotalClearTrade(new Ask(brokerName,brokerid,0,clearedAskMWh,a.type));
+			    addTotalClearTrade(new Ask(brokerName,brokerid,0.0,clearedAskMWh,a.type));
 			    addTotalTradeCost(new Ask(brokerName,brokerid,clearingPrice,clearedAskMWh,a.type), COST_ARRAY_INDICES.VOL_SELL.getValue(), COST_ARRAY_INDICES.TOT_SELL.getValue());
 			    if(DEBUG)
 			    	System.out.println(brokerName + " MWh : " + clearedAskMWh + " $ : " + clearingPrice);
 		    }
 		}
+		if(totalClearedVolume > 0) {
+//			if(hourAhead <= 10)
+//				System.out.println("Cleared Volume " + totalClearedVolume + " cPrice " + clearingPrice);
+			pricepredictor.recordTradeResult(currentTimeSlot, currentTimeSlot+hourAhead+1, clearingPrice, totalClearedVolume);
+		}
 	}
 	
 	public void calculateError() throws IOException{
 		// Print to the error log
-		FileWriter fwOutput = new FileWriter("mcts_HA_prediction_error.csv", true);
+		FileWriter fwOutput = new FileWriter("Results_Price_20actions.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
-		pwOutput.println("MCTS_SIM,TS,Day,Hour,HourAhead,Error");
+		//pwOutput.println("MCTS_SIM,TS,Day,Hour,HourAhead,Error");
 		for(int totHours = 0; totHours < Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY(); totHours++){
 			for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
 				
@@ -555,9 +679,18 @@ public class Observer {
 				
 				realCost += mctsxRealCost[totHours][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
 				
-				pwOutput.println(MCTSSimulation + "," + totHours + "," + totHours/Configure.getHOURS_IN_A_DAY() + "," + totHours%Configure.getHOURS_IN_A_DAY() + "," + totHA + "," + (realCost - mctsxPredictedCost[totHours][totHA]));
+				//pwOutput.println(MCTSSimulation + "," + totHours + "," + totHours/Configure.getHOURS_IN_A_DAY() + "," + totHours%Configure.getHOURS_IN_A_DAY() + "," + totHA + "," + (realCost - mctsxPredictedCost[totHours][totHA]));
 			}
 		}
+		double avg_err = 0;
+		double count = 0;
+		for(int i = 0; i < pp_error_ha.length; i++) {
+			avg_err += pp_error_ha[i];
+			count += pp_error_ha_count[i];
+		}
+		avg_err /= count;
+		System.out.println("PP err " + avg_err);
+		pwOutput.println("Avg Error " + avg_err);
 		pwOutput.close();
 		fwOutput.close();
 		
@@ -569,18 +702,39 @@ public class Observer {
 	public void writeMCTSMoves() throws IOException{
 		FileWriter fwOutput = new FileWriter("mcts_moves.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
-		pwOutput.println("HourAhead,Action,Count");
+		pwOutput.println("HourAhead,Action,Count,avgmcp,count,Err");
+		
+		//pwOutput.println("ha,avgmcp,count,err");
+		double avg_err = 0;
+		double count = 0;
 		
 		for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
-			for(int j = 0; j < 16; j++)
-				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]);
+			if(MCPriceCount[totHA] == 0)
+				MCPriceCount[totHA]=1;
+			for(int j = 0; j < 16; j++) {
+				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]+","+MCPrice[totHA]/MCPriceCount[totHA]+","+minCPHourAhead[totHA]+","+pp_error_ha[totHA]/pp_error_ha_count[totHA]);
+				recordMCTSMove[totHA][j] = 0;
+			}
+			MCPrice[totHA]=0;
+			MCPriceCount[totHA]=0;
+			minCPHourAhead[totHA]=0;
+			avg_err += pp_error_ha[totHA];
+			count += pp_error_ha_count[totHA];
+			pp_error_ha[totHA] = 0;
+			pp_error_ha_count[totHA] = 0;
 		}
+		
+		avg_err /= count;
+		System.out.println("PP err " + avg_err);
+		pwOutput.println("Avg Error " + avg_err);
+		
+		
 		pwOutput.close();
 		fwOutput.close();
 	}
 	
 	public void printTotalClearedVolume() throws IOException{
-		FileWriter fwOutput = new FileWriter("Results_Price.csv", true);
+		FileWriter fwOutput = new FileWriter("Results_Price_20actions.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
 		
 		//FileWriter fwOutputV = new FileWriter("Results_Volume.csv", true);
@@ -591,6 +745,7 @@ public class Observer {
 		{
 			printFlag = false;
 			System.out.print("Seed,\tCSDTY,\tMCTS#,\tAUCS#,\tHA#,\t");
+			pwOutput.println(config.toString());
 			pwOutput.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			//pwOutputV.print("Seed, CaseStudy, MCTSimulations, Auctions,HourAhead,");
 			for(Agent agent : printableAgents){
@@ -739,10 +894,32 @@ public class Observer {
 		currentTimeSlot = 0;
 		
 		System.out.printf("Mean Clearing Price : " + meanClearingPrice);
-		pwOutput.println("Mean Clearing Price," + meanClearingPrice);
+		pwOutput.println();
+		//pwOutput.println("Mean Clearing Price," + meanClearingPrice);
 		System.out.println(" Social Welfare Point : " + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
 		//pwOutputV.println("Green Energy Cleared," + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
-		
+		/*
+		// Printing error in prediction
+		pwOutput.println("ha,avgmcp,count,err");
+		double avg_err = 0;
+		double count = 0;
+		for(int i=0; i<Configure.getTOTAL_HOUR_AHEAD_AUCTIONS();i++)
+		{
+			if(MCPriceCount[i] == 0)
+				MCPriceCount[i]=1;
+			pwOutput.println(i+","+MCPrice[i]/MCPriceCount[i]+","+minCPHourAhead[i]+","+pp_error_ha[i]/pp_error_ha_count[i]);
+			MCPrice[i]=0;
+			MCPriceCount[i]=0;
+			minCPHourAhead[i]=0;
+			avg_err += pp_error_ha[i];
+			count += pp_error_ha_count[i];
+			pp_error_ha[i] = 0;
+			pp_error_ha_count[i] = 0;
+		}
+		avg_err /= count;
+		System.out.println("PP err " + avg_err);
+		pwOutput.println("Avg Error " + avg_err);
+		*/
 		pwOutput.close();
 		fwOutput.close();
 		//pwOutputV.close();
@@ -756,23 +933,29 @@ public class Observer {
 	
 	public void doBalancing(){
 		double balancingPrice = arrBalacingPrice[currentTimeSlot];
-	    for (Agent a : agents) {
+		boolean flag = true;
+		for (Agent a : agents) {
 		    
 			String brokerName = a.playerName;
 			int brokerid = a.id;
 		    double clearedBalancingMWh = Math.abs(a.neededMWh);
-		    
-		    if(a.playerName.equalsIgnoreCase("MCTSX")){
-		    	mctsxRealCostPerHour -= (clearedBalancingMWh*balancingPrice);
-		    	mctsxPredictedCostPerHour += (clearedBalancingMWh*balancingPrice);
-		    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice*(-1);
+		    if(clearedBalancingMWh > 0) {
+			    if(a.playerName.equalsIgnoreCase("MCTSX")){
+			    	mctsxRealCostPerHour -= (clearedBalancingMWh*balancingPrice);
+			    	mctsxPredictedCostPerHour += (clearedBalancingMWh*balancingPrice);
+			    	mctsxRealCost[(day*Configure.getHOURS_IN_A_DAY())+hour][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()] = clearedBalancingMWh*balancingPrice*(-1);
+			    }
+			    if(flag) {//a.playerName.equalsIgnoreCase("TacTex")) {
+			    	pricepredictor.shortBalanceTransactionsData.add(new ChargeMwhPair(balancingPrice*clearedBalancingMWh, clearedBalancingMWh));
+			    	flag = false;
+			    }
+			    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
+			    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
+			    if(a.type == Agent.agentType.BROKER)
+			    	addTotalTradeCost(new Bid(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type),COST_ARRAY_INDICES.VOL_BAL.getValue(),COST_ARRAY_INDICES.TOT_BAL.getValue());
+			    else 
+			    	addTotalTradeCost(new Ask(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type),COST_ARRAY_INDICES.VOL_BAL.getValue(),COST_ARRAY_INDICES.TOT_BAL.getValue());
 		    }
-		    //addTotalClearTrade(new Bid(brokerName,0,clearedBalancingMWh));
-		    //addTotalClearTrade(new Ask(brokerName,0,clearedAskMWh));
-		    if(a.type == Agent.agentType.BROKER)
-		    	addTotalTradeCost(new Bid(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type),COST_ARRAY_INDICES.VOL_BAL.getValue(),COST_ARRAY_INDICES.TOT_BAL.getValue());
-		    else 
-		    	addTotalTradeCost(new Ask(brokerName,brokerid,balancingPrice,clearedBalancingMWh,a.type),COST_ARRAY_INDICES.VOL_BAL.getValue(),COST_ARRAY_INDICES.TOT_BAL.getValue());
 		}
 	}
 	

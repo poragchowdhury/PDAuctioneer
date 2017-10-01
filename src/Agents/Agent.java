@@ -14,6 +14,7 @@ import weka.core.Instances;
 
 import Auctioneer.Ask;
 import Auctioneer.Bid;
+import TacTex.ChargeMwhPair;
 import Observer.Observer;
 
 public abstract class Agent {
@@ -22,11 +23,14 @@ public abstract class Agent {
 	public double initialNeededMWh = 0;
 	public double greenPoint = 0;
 	public int id = 0;
+	public double MIN_MWH = 0.001;
 	public static enum agentType {
 	    PRODUCER, BROKER 
 	}
+	
 	public static String predictorName = Configure.getPREDICTOR_NAME();
 	public agentType type;
+	  
 	public abstract void submitOrders(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer ob);
 	public Object getMCTS(){
 		return null;

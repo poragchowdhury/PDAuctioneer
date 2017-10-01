@@ -1,0 +1,10 @@
+boots\boot0.csv Avg -19101.62883323072
+boots\boot1.csv Avg -18293.125975105755
+boots\boot2.csv Avg -18331.592021124594
+boots\boot3.csv Avg -18973.371305311557
+boots\boot4.csv Avg -18834.452073050285
+boots\boot5.csv Avg -19505.45457199779
+boots\boot6.csv Avg -18627.507877193282
+boots\boot7.csv Avg -18706.227854240216
+boots\boot8.csv Avg -19448.886783917103
+boots\boot9.csv Avg -18935.55321496863
