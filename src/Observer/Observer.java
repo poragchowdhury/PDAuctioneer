@@ -58,6 +58,9 @@ public class Observer {
 	
 	public HashMap <Integer, HashMap<Integer, ArrayList<PriceMwhPair>>> powerTACproducerOrders;
 	public double [][][] weatherPrediction;
+	public double [] movingAvgErrorMCP;
+
+	
 	
 	public static enum COST_ARRAY_INDICES{
 		VOL_BUY(0),
@@ -80,7 +83,7 @@ public class Observer {
 	}
 	
 	
-	public boolean DEBUG = false;
+	public boolean DEBUG = true;
 	public double neededEneryMCTSBroker = 0;
 	public double initialNeededEneryMCTSBroker = 0;
 	public int NUM_MCTS_SIM = 0;
@@ -93,7 +96,7 @@ public class Observer {
 	public double [] arrProducerGreenPoints;
 	public int ERROR_PERCENTAGE;
 	public boolean GREEN_AUCTION_FLAG = false;
-	public int MCTSSimulation = 10000;
+	public int MCTSSimulation = 100;
 	public double nanoTime = 0;
 	public double nanoTimeCount = 0;
 	public int printNamesCount = 0;
@@ -186,7 +189,8 @@ public class Observer {
 		MCPrice = new double [24];
 		MCPriceCount = new double [24];
 		
-		weatherPrediction = new double[168][24][4];
+		weatherPrediction = new double[(Configure.getHOURS_IN_A_DAY())*Configure.getTOTAL_SIM_DAYS()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][4];
+		movingAvgErrorMCP = new double[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
 	}
 	
 	public void setTime(int day, int hour, int hourAhead, int currentTimeSlot){
@@ -222,6 +226,10 @@ public class Observer {
 	            // Hour	
 	            String strHour = itr.next();
 	            int hour = Integer.parseInt(strHour);
+	            
+	            if(hour >= Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())
+	            	break;
+	            
 	            // HourAhead
 	            String strHourAhead = itr.next();
 	            int hourAhead = Integer.parseInt(strHourAhead);
@@ -272,16 +280,13 @@ public class Observer {
 	            
 	            //initialized = true;
 	            
-	            if(hour >= Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())
-	            	break;
-	            
 	            prevhour = hour;
 	            prevhourAhead = hourAhead;
 	        }
 	        parser.close();
 		}
 		catch(Exception ex) {
-			System.out.println(ex.getMessage());
+			System.out.println("what?" + ex.getMessage());
 		}
 	}
 	

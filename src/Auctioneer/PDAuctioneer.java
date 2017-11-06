@@ -64,7 +64,7 @@ public class PDAuctioneer {
 				if(simCase == 0){
 					// for normal cases this will execute but there is a 
 					// DIFF_MCTS_SIM_CASE_EXP check which will not assign this value
-					observer.MCTSSimulation = 10000;
+					observer.MCTSSimulation = Configure.getVARMCTSAGENTITERATION();//100;
 				}
 				else if(simCase == 1){
 					observer.MCTSSimulation = 1000;
@@ -137,7 +137,7 @@ public class PDAuctioneer {
 								observer.setTime(day,hour,hourAhead, currentTimeSlot);
 
 								// Use dppredictor or not
-								if(Configure.getUSE_DP_PREDICTOR()) {
+								if(Configure.getUSE_MDP_PREDICTOR()) {
 									if (observer.pricepredictor.canRunDP()) {
 										if(!observer.pricepredictor.dpCache2013.isValid(observer.currentTimeSlot))
 											observer.pricepredictor.runDP2013(100, observer.currentTimeSlot);
@@ -168,10 +168,11 @@ public class PDAuctioneer {
 										minHourAhead = observer.hourAhead;
 									}
 								}
-								
+								double pcp = observer.pricepredictor.getPrice(observer.hourAhead);
 								if(clearingPrice != 0) {
 									observer.MCPrice[observer.hourAhead] += clearingPrice; 
 									observer.MCPriceCount[observer.hourAhead]++; 
+									observer.movingAvgErrorMCP[observer.hourAhead] = (observer.movingAvgErrorMCP[observer.hourAhead] * 0.8) + ((pcp-clearingPrice) * 0.2);
 								}
 								
 								// update clear trades for corresponding agents
@@ -186,7 +187,7 @@ public class PDAuctioneer {
 
 								//observer.updateNumberOfSuccessfullBids(SPOT2.playerName);
 								// Debug clearing price
-								double pcp = observer.pricepredictor.getPrice(observer.hourAhead);
+								
 								double percentage_error = Math.abs((clearingPrice-pcp)/pcp)*100;
 								if(percentage_error!=0) {
 									observer.pp_error_ha[observer.hourAhead]+=percentage_error;

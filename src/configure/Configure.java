@@ -22,7 +22,7 @@ public class Configure {
 	private static double PERHOURENERGYDEMAND = 0;
 	private static int VARMCTSAGENTITERATION = 0;
 	private static double MCTSBROKERDEMANDPERC = 0;
-	private static boolean USEDPPREDICTOR = true;
+	private static boolean USEMDPPREDICTOR = true;
 	private static boolean THRESHOLDFILTER = false;
 	
 	
@@ -195,7 +195,7 @@ public class Configure {
 			PERHOURENERGYDEMAND = Double.parseDouble(prop.getProperty("perhourenergydemand"));
 			VARMCTSAGENTITERATION = Integer.parseInt(prop.getProperty("varmctsagentiteration"));
 			MCTSBROKERDEMANDPERC = Double.parseDouble(prop.getProperty("mctsbrokerdemand"));
-			USEDPPREDICTOR = Boolean.parseBoolean(prop.getProperty("usedppredictor"));
+			USEMDPPREDICTOR = Boolean.parseBoolean(prop.getProperty("usemdppredictor"));
 			THRESHOLDFILTER = Boolean.parseBoolean(prop.getProperty("thresholdfilter"));
 			loadConfiguration();
 			
@@ -281,8 +281,8 @@ public class Configure {
 		return MCTSBROKERDEMANDPERC;
 	}
 	
-	public static boolean getUSE_DP_PREDICTOR(){
-		return USEDPPREDICTOR;
+	public static boolean getUSE_MDP_PREDICTOR(){
+		return USEMDPPREDICTOR;
 	}
 	
 	public static boolean getTHRESHOLDFILTER(){
@@ -305,7 +305,7 @@ public class Configure {
 		",PERHOURENERGYDEMAND,"+PERHOURENERGYDEMAND+
 		",VARMCTSAGENTITERATION,"+VARMCTSAGENTITERATION+
 		",MCTSBROKERDEMANDPERC,"+MCTSBROKERDEMANDPERC+
-		",USEDPPREDICTOR,"+USEDPPREDICTOR+
+		",USEDPPREDICTOR,"+USEMDPPREDICTOR+
 		",THRESHOLDFILTER,"+THRESHOLDFILTER;
 		return str;
 	}

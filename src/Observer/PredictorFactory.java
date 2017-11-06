@@ -27,7 +27,7 @@ public class PredictorFactory {
 	}
 	
 	public double getPrice(int hourAhead) {
-		if(Configure.getUSE_DP_PREDICTOR()) {
+		if(Configure.getUSE_MDP_PREDICTOR()) {
 			if (shortBalanceTransactionsData.size() < 1)
 				return 30.0;
 			else {
@@ -43,14 +43,14 @@ public class PredictorFactory {
 			param = ob.getFeatures(param, hourAhead);
 
 			//param[2] = hourAhead;
-			double lprice = ob.REPTreePricePredictor.getLimitPrice(param);
+			double lprice = ob.REPTreePricePredictor.getLimitPrice(param)-ob.movingAvgErrorMCP[hourAhead];
 			return lprice;
 		}
 	}
 	
 	public boolean canRunDP() {//int currentTimeslotIndex, List<Integer> enabledTimeslots) {
 		
-		if(Configure.getUSE_DP_PREDICTOR()==false)
+		if(Configure.getUSE_MDP_PREDICTOR()==false)
 			return true;
 		// check 24 points in each of the previous slots 1..i
 		int largeEnoughSample = 2;
@@ -110,7 +110,7 @@ public class PredictorFactory {
 	public void runDP2013(double neededMwh, int currentTimeslot) {
 		//System.out.println("******Enter DP2013");
 		dpCache2013.clear();
-
+		
 		boolean isBuying = neededMwh > 0.0;
 		// remember that the "latest" auction is 1
 		// and the earliest is 24
@@ -122,7 +122,8 @@ public class PredictorFactory {
 		ArrayList<Double> bestActions = dpCache2013.getBestActions();
 
 		// step-0 value: any amount that was not purchased is balanced
-		double valueOfStep0 = -meanOfBalancingPrices(shortBalanceTransactionsData);
+		double movingAvgErrMCP = ob.movingAvgErrorMCP[0];
+		double valueOfStep0 = -(meanOfBalancingPrices(shortBalanceTransactionsData)-movingAvgErrMCP);
 		// if buys too well at start => underestimates balancing-costs,
 		// so we add protection in the first week until there is enough 
 		// data.
@@ -137,11 +138,12 @@ public class PredictorFactory {
 		// seed the DP algorithm
 		stateValues.add(valueOfStep0); 
 		bestActions.add(null); // actually, not Market order, but noop => balancing
-		if(Configure.getUSE_DP_PREDICTOR()) {
+		if(Configure.getUSE_MDP_PREDICTOR()) {
 			// log.info(" dp balancing estimation: " + nextStateValue);
 			// DP back sweep
 			//System.out.println(supportingBidGroups.size());
 			for (int index = 1; index <= supportingBidGroups.size(); ++index) {
+				movingAvgErrMCP = ob.movingAvgErrorMCP[index];
 				//System.out.println(supportingBidGroups.size());
 				ArrayList<PriceMwhPair> currentGroup = getBidGroup(index);
 				double totalEnergyInCurrentGroup = sumTotalEnergy(currentGroup);
@@ -173,8 +175,8 @@ public class PredictorFactory {
 						}        
 					}
 				}
-				stateValues.add(bestActionValue);
-				bestActions.add(bestPrice);
+				stateValues.add(bestActionValue-movingAvgErrMCP);
+				bestActions.add(bestPrice-movingAvgErrMCP);
 				//System.out.println("******loop" + index);
 				
 			}
@@ -186,6 +188,7 @@ public class PredictorFactory {
 	    	for(int j = 0; j < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); j++){
 	    		param = ob.getFeatures(param,j);
 		    	double lprice = ob.REPTreePricePredictor.getLimitPrice(param);
+		    	lprice -= ob.movingAvgErrorMCP[j];
 	    		stateValues.add(-lprice);
 	    		bestActions.add(-lprice);
 	    	}

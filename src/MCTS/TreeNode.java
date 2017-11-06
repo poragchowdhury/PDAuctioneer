@@ -38,8 +38,8 @@ public class TreeNode {
     
     public String actionName;
     
-    int hourAheadAuction,
-    	appliedAction;
+    int hourAheadAuction;
+    String	appliedAction;
     
     public boolean nobid = false;
     
@@ -133,6 +133,9 @@ public class TreeNode {
     	double balancingSimCost = Math.abs(neededEnergy)*ob.arrBalacingPrice[ob.currentTimeSlot]*(-1);
         simCost += balancingSimCost;
 
+        // make the sim cost as unit cost
+        simCost /= ob.neededEneryMCTSBroker;
+        
         for (TreeNode node : visited) {
             // would need extra logic for n-player game
             // System.out.println(node);
@@ -157,7 +160,7 @@ public class TreeNode {
             double [] prices = actions.get(i).getAdjustedPrice(mean, stddev);
             children[i].minmctsClearingPrice = prices[0];
             children[i].maxmctsClearingPrice = prices[1];
-            children[i].appliedAction = i;
+            children[i].appliedAction = actions.get(i).actionName;
             children[i].nobid = actions.get(i).nobid;
             children[i].maxMult = actions.get(i).maxMult;
             children[i].minMult = actions.get(i).minMult;
@@ -179,10 +182,10 @@ public class TreeNode {
         
         for (TreeNode c : children) {
          	double totlPoint = c.totValue;// / ((c.nVisits) + epsilon);
-         	double dividend = -Math.abs(ob.arrBalacingPrice[ob.currentTimeSlot]*ob.neededEneryMCTSBroker);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
+         	double dividend = -Math.abs(ob.arrBalacingPrice[ob.currentTimeSlot]);//*ob.neededEneryMCTSBroker);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
          	totlPoint = (1-(totlPoint/(dividend)));
          	
-         	if(dividend == 0)
+         	if(dividend == 0 || ob.neededEneryMCTSBroker <= 0.001)
          		totlPoint = 0;
          	
          	double visitPoint = Math.sqrt(2*Math.log(this.nVisits+1) / (c.nVisits + epsilon));
@@ -192,7 +195,7 @@ public class TreeNode {
          	// small random number to break ties randomly in unexpanded nodes
             // System.out.println("UCT value = " + uctValue);
          	if(printOn)
-            	System.out.print("Action " + c.appliedAction + " UCT value = " + uctValue + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " c.nvisits " + c.nVisits + " totalVisits " + this.nVisits);
+            	System.out.print("Action " + c.appliedAction + " Points " + c.totValue +" UCT value = " + uctValue + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " c.nvisits " + c.nVisits + " totalVisits " + this.nVisits);
          	
          	if (totlPoint > bestValue) {
                 selected = c;
@@ -268,11 +271,11 @@ public class TreeNode {
 	         		totlPoint = c.totValue;// / ((c.nVisits) + epsilon);
 	         	}
 	         	
-	         	double dividend = -Math.abs(observer.arrBalacingPrice[observer.currentTimeSlot]*neededEnergy);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
+	         	double dividend = -Math.abs(observer.arrBalacingPrice[observer.currentTimeSlot]);//*neededEnergy);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
 	         	
 	         	totlPoint = (1-(totlPoint/(dividend)));
 	         	
-	         	if(dividend == 0)
+	         	if(dividend == 0 || neededEnergy <= 0.001)
 	         		totlPoint = 0;
 	         	
 	         	double visitPoint = Math.sqrt(2*Math.log(nVisits+1) / nVisitValue);
@@ -296,6 +299,10 @@ public class TreeNode {
         	System.out.println();
         }
         // System.out.println("Returning: " + selected);
+        
+        if(selected == null) {
+        	System.out.println("bestValue " + bestValue + " Max " + (Double.MAX_VALUE *-1));
+        }
         return selected;
     }
 
@@ -342,8 +349,9 @@ public class TreeNode {
 			    		for(int i = 1; i <=numberofbids; i++){
 			    			if(limitPrice >= clearingPrice) //arrPredClearingPrice[tn.hourAheadAuction]){
 			    			{
+			    				double tcp = (clearingPrice+limitPrice)/2;
 			    				//if(limitPrice >= ob.arrPredictedClearingPrices[ob.currentTimeSlot][tn.hourAheadAuction]){
-			    				costValue+=minMWh*clearingPrice;//arrPredClearingPrice[tn.hourAheadAuction];
+			    				costValue+=minMWh*tcp;//arrPredClearingPrice[tn.hourAheadAuction];
 			    				totalBidVolume+=minMWh;
 			    				singleBidVolume+=minMWh;
 			    			}
@@ -363,8 +371,9 @@ public class TreeNode {
 					for(int i = 1; i <=numberofbids; i++){
 						if(limitPrice <= clearingPrice)//arrPredClearingPrice[tn.hourAheadAuction]){
 						{
+							double tcp = (clearingPrice+limitPrice)/2;
 							//if(limitPrice >= ob.arrPredictedClearingPrices[ob.currentTimeSlot][tn.hourAheadAuction]){
-		    				costValue-=minMWh*clearingPrice;//arrPredClearingPrice[tn.hourAheadAuction];
+		    				costValue-=minMWh*tcp;//arrPredClearingPrice[tn.hourAheadAuction];
 		    				totalBidVolume-=minMWh;
 		    				singleBidVolume-=minMWh;
 		    			}
@@ -426,9 +435,10 @@ public class TreeNode {
 	    			minMWh= Math.abs(totalE) / numberofbids;
 		    		for(int i = 1; i <=numberofbids; i++){
 		    			if(limitPrice >= clearingPrice){
+		    				double tcp = (clearingPrice+limitPrice)/2;
 		    			//if(limitPrice >= arrPredClearingPrice[tn.hourAheadAuction]){
 		    			//if(limitPrice >= ob.arrPredictedClearingPrices[ob.currentTimeSlot][tn.hourAheadAuction]){
-		    				costValue+=minMWh*clearingPrice;
+		    				costValue+=minMWh*tcp;
 		    				totalBidVolume+=minMWh;
 		    			}
 		    			limitPrice+=unitPriceIncrement;

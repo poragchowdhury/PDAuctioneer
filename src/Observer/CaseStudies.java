@@ -179,6 +179,7 @@ public class CaseStudies {
 			observer.agents.clear();
 			observer.printableAgents.clear();
 			observer.GREEN_AUCTION_FLAG = false;
+			/*
 			List<Integer> available = new ArrayList<Integer>();
 	        List<Integer> visitedNodes = new ArrayList<Integer>();
 	        
@@ -186,7 +187,8 @@ public class CaseStudies {
 	            available.add(i);
 	        }
 	        dfs(available,visitedNodes);
-	        
+	        */
+			
 			Agent ZI = new ZI("ZI", 0, neededMWhBroker, 40, 10);
 			observer.printableAgents.add(ZI);
 			Agent TacTex = new TacTex("TacTex", 0, neededMWhBroker, 30, 10);
@@ -196,10 +198,16 @@ public class CaseStudies {
 			Agent ZIP = new ZIP("ZIP", 0, neededMWhBroker, 40, 10);
 			observer.printableAgents.add(ZIP);
 			
+			observer.addAgents(ZI);
+			observer.addAgents(TacTex);
+			observer.addAgents(MCTSX);
+			observer.addAgents(ZIP);
+			/*
 			List<Integer> combinationIndex = list.get((observer.SEED-1)%24);
 			for(Integer i:combinationIndex) {
 				observer.addAgents(observer.printableAgents.get(i.intValue()));
 			}
+			*/
 		}
 		else if(Configure.getCASE_STUDY_NO() == Configure.CASE_STUDY.MCTS_4Agents.getValue()){
 			observer.agents.clear();

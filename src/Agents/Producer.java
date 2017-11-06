@@ -54,6 +54,7 @@ public class Producer extends Agent{
 	
 	@Override
 	public void submitOrders(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer ob) {
+		double askMult = 1.0;
 		try {
 			ArrayList<PriceMwhPair> orders = ob.powerTACproducerOrders.get(ob.hour).get(ob.hourAhead);
 			for(PriceMwhPair o:orders) {
@@ -62,7 +63,7 @@ public class Producer extends Agent{
 					price = null;
 				double mwh = o.getMwh(); 
 				if(mwh < 0) {
-					Ask ask = new Ask(this.playerName, this.id, price, mwh, this.type);
+					Ask ask = new Ask(this.playerName, this.id, price, mwh*askMult, this.type);
 					if(ob.DEBUG)
 						System.out.println(ask.toString());
 					asks.add(ask);
