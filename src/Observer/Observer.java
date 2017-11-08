@@ -83,7 +83,7 @@ public class Observer {
 	}
 	
 	
-	public boolean DEBUG = true;
+	public boolean DEBUG = false;
 	public double neededEneryMCTSBroker = 0;
 	public double initialNeededEneryMCTSBroker = 0;
 	public int NUM_MCTS_SIM = 0;

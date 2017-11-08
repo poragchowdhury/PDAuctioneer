@@ -63,7 +63,7 @@ public class Configure {
 	*/
 	
 	public static double [] avgSupply_REPTree = {
-			18058.026559324575/300, // boot0
+			18058.026559324575/30, // boot0
 			17823.889356603955/300, // boot1
 			17340.669759841992/300, // boot2
 			17561.182118107197/300, // boot3
