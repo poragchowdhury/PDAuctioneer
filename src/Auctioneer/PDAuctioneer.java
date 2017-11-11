@@ -173,6 +173,8 @@ public class PDAuctioneer {
 									observer.MCPrice[observer.hourAhead] += clearingPrice; 
 									observer.MCPriceCount[observer.hourAhead]++; 
 									observer.movingAvgErrorMCP[observer.hourAhead] = (observer.movingAvgErrorMCP[observer.hourAhead] * 0.8) + ((pcp-clearingPrice) * 0.2);
+									observer.updateMean(clearingPrice);
+									observer.updateSTDDEV();
 								}
 								
 								// update clear trades for corresponding agents
@@ -193,7 +195,7 @@ public class PDAuctioneer {
 									observer.pp_error_ha[observer.hourAhead]+=percentage_error;
 									observer.pp_error_ha_count[observer.hourAhead]++;
 								}
-								System.out.println("hour " + observer.hour + " hourAhead " + observer.hourAhead + " cp " + clearingPrice + " pcp " + pcp + " err " + percentage_error);
+								System.out.println("hour " + observer.hour + " hourAhead " + observer.hourAhead + " cp " + clearingPrice + " pcp " + pcp + " err " + percentage_error + " mvn err " + observer.movingAvgErrorMCP[observer.hourAhead]);
 								
 								// clean auctioner's bids asks
 								asks.clear();
@@ -202,7 +204,6 @@ public class PDAuctioneer {
 							}
 							observer.minCPHourAhead[minHourAhead]++;
 							observer.doBalancing();
-
 							currentTimeSlot++;
 							observer.currentTimeSlot++;
 							if(observer.DEBUG)
@@ -244,6 +245,7 @@ public class PDAuctioneer {
 				observer.printFlag = true;
 				// Print the average results
 				//printAvgResults();
+				observer.printSTDDEV();
 			}
 		}
 		//System.out.println("TOT_HA " + observer.pricepredictor.hourAheadAuctions.size() + " Array : " + observer.pricepredictor.hourAheadAuctions.toString());
@@ -317,17 +319,16 @@ public class PDAuctioneer {
 		double clearingPrice = 0;
 		double PrevDayHAMarketClearingPrice = 0;
 		double PrevHAMarketClearingPrice = 0;
-		
 		Collections.shuffle(asks);
 		Collections.shuffle(bids);
 		Collections.sort(asks);
 		Collections.sort(bids);
 		
 		if(observer.currentTimeSlot > 23)
-			PrevDayHAMarketClearingPrice = observer.arrMarketClearingPriceHistory[observer.currentTimeSlot-24][observer.hour][observer.hourAhead];
+			PrevDayHAMarketClearingPrice = observer.arrMarketClearingPriceHistory[observer.currentTimeSlot-24][observer.hourAhead];
 		
 		if(observer.hourAhead != Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
-			PrevHAMarketClearingPrice = observer.arrMarketClearingPriceHistory[observer.currentTimeSlot][observer.hour][observer.hourAhead+1];
+			PrevHAMarketClearingPrice = observer.arrMarketClearingPriceHistory[observer.currentTimeSlot][observer.hourAhead+1];
 		Ask oldask = new Ask();
 		Bid oldbid = new Bid();
 

@@ -27,14 +27,15 @@ public class PredictorFactory {
 	}
 	
 	public double getPrice(int hourAhead) {
+		double mvnErr = ob.movingAvgErrorMCP[hourAhead];
 		if(Configure.getUSE_MDP_PREDICTOR()) {
 			if (shortBalanceTransactionsData.size() < 1)
-				return 30.0;
+				return 30.0-mvnErr;
 			else {
 				if(dpCache2013.isValid(ob.currentTimeSlot)) {
-					return Math.abs(dpCache2013.stateValues.get(ob.hourAhead+1));
+					return Math.abs(dpCache2013.stateValues.get(ob.hourAhead+1))-mvnErr;
 				}
-				return 60.0;//(meanOfBalancingPrices(shortBalanceTransactionsData));
+				return 60.0-mvnErr;//(meanOfBalancingPrices(shortBalanceTransactionsData));
 			}
 		}
 		else {
@@ -43,7 +44,7 @@ public class PredictorFactory {
 			param = ob.getFeatures(param, hourAhead);
 
 			//param[2] = hourAhead;
-			double lprice = ob.REPTreePricePredictor.getLimitPrice(param)-ob.movingAvgErrorMCP[hourAhead];
+			double lprice = ob.REPTreePricePredictor.getLimitPrice(param)-mvnErr;
 			return lprice;
 		}
 	}
@@ -122,7 +123,7 @@ public class PredictorFactory {
 		ArrayList<Double> bestActions = dpCache2013.getBestActions();
 
 		// step-0 value: any amount that was not purchased is balanced
-		double movingAvgErrMCP = ob.movingAvgErrorMCP[0];
+		double movingAvgErrMCP = 0;//ob.movingAvgErrorMCP[0];
 		double valueOfStep0 = -(meanOfBalancingPrices(shortBalanceTransactionsData)-movingAvgErrMCP);
 		// if buys too well at start => underestimates balancing-costs,
 		// so we add protection in the first week until there is enough 
@@ -143,7 +144,7 @@ public class PredictorFactory {
 			// DP back sweep
 			//System.out.println(supportingBidGroups.size());
 			for (int index = 1; index <= supportingBidGroups.size(); ++index) {
-				movingAvgErrMCP = ob.movingAvgErrorMCP[index];
+				movingAvgErrMCP = 0;//ob.movingAvgErrorMCP[index-1];
 				//System.out.println(supportingBidGroups.size());
 				ArrayList<PriceMwhPair> currentGroup = getBidGroup(index);
 				double totalEnergyInCurrentGroup = sumTotalEnergy(currentGroup);
@@ -188,7 +189,7 @@ public class PredictorFactory {
 	    	for(int j = 0; j < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); j++){
 	    		param = ob.getFeatures(param,j);
 		    	double lprice = ob.REPTreePricePredictor.getLimitPrice(param);
-		    	lprice -= ob.movingAvgErrorMCP[j];
+		    	//lprice -= ob.movingAvgErrorMCP[j];
 	    		stateValues.add(-lprice);
 	    		bestActions.add(-lprice);
 	    	}

@@ -39,6 +39,9 @@ public class Observer {
 	public int SEED = 1;
 	public int SUB_CASE_STUDY = 1;
 	public HashMap<Integer, HashMap<String, ArrayList<Double>>> results;
+	public double [] arrMCPMean;
+	public double [] arrMCPCount;
+	
 	public int[] mctsDebugVals;
 	public double mctsxRealCostPerHour = 0.0;
 	public double mctsxPredictedCostPerHour = 0.0;
@@ -60,6 +63,60 @@ public class Observer {
 	public double [][][] weatherPrediction;
 	public double [] movingAvgErrorMCP;
 
+	public double [] STDDEV = {
+			
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8,
+			7.8
+			
+			/*
+			7.6011651048203825-5,
+			7.534673513797154-5,
+			13.885980528858367-5,
+			7.371604751094366-5,
+			7.334558933426562-5,
+			14.744177674603007-5,
+			15.441179642538206-5,
+			12.510704851503748-5,
+			12.704920910230943-5,
+			12.894321899454713-5,
+			13.163495679667275-5,
+			19.226502487085746-5,
+			18.91134608023634-5,
+			13.489131457995954-5,
+			13.798582038642978-5,
+			13.602595371178728-5,
+			12.655378913965938-5,
+			12.883158738012872-5,
+			13.444526714625912-5,
+			14.21377759556834-5,
+			15.750774630084477-5,
+			17.190269133890784-5,
+			7.462504821928083-5,
+			7.315001774695123-5
+			*/
+	};
 	
 	
 	public static enum COST_ARRAY_INDICES{
@@ -89,7 +146,7 @@ public class Observer {
 	public int NUM_MCTS_SIM = 0;
 	public double [][] arrProducerBidPrice;
 	public double [][] arrProducerBidVolume;
-	public double [][][] arrMarketClearingPriceHistory;
+	public double [][] arrMarketClearingPriceHistory;
 	// Green Energy 80; Red energy 20
 	public final double GREEN_POINTS = 80.00;
 	public final double RED_POINTS = 20.00;
@@ -138,9 +195,9 @@ public class Observer {
 		param[6] = Configure.getNUMBER_OF_BROKERS();
 		param[7] = Configure.getNUMBER_OF_PRODUCERS();
 		if(currentTimeSlot >= Configure.getHOURS_IN_A_DAY())
-			param[8] = arrMarketClearingPriceHistory[currentTimeSlot-Configure.getHOURS_IN_A_DAY()][hour][ha];
+			param[8] = arrMarketClearingPriceHistory[currentTimeSlot-Configure.getHOURS_IN_A_DAY()][ha];
 		if(ha < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
-			param[9] = arrMarketClearingPriceHistory[currentTimeSlot][hour][ha+1];
+			param[9] = arrMarketClearingPriceHistory[currentTimeSlot][ha+1];
 		param[10] = weatherPrediction[hour][ha][0];
 		param[11] = weatherPrediction[hour][ha][1];
 		param[12] = weatherPrediction[hour][ha][2];
@@ -151,7 +208,7 @@ public class Observer {
 	
 	public Observer(){
 		config = new Configure();
-		arrMarketClearingPriceHistory = new double[(Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())+1][Configure.getHOURS_IN_A_DAY()+1][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		arrMarketClearingPriceHistory = new double[(Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY())+1][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		mctsDebugVals = new int[6];
 	
 		clearedVolumes = new HashMap<String, Double>();
@@ -188,7 +245,8 @@ public class Observer {
 		minCPHourAhead = new int[24];
 		MCPrice = new double [24];
 		MCPriceCount = new double [24];
-		
+		arrMCPMean = new double [24];
+		arrMCPCount = new double [24];
 		weatherPrediction = new double[(Configure.getHOURS_IN_A_DAY())*Configure.getTOTAL_SIM_DAYS()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][4];
 		movingAvgErrorMCP = new double[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
 	}
@@ -204,6 +262,47 @@ public class Observer {
 	public void recordBestMove(TreeNode n){
 		int action = Integer.parseInt(n.actionName);
 		recordMCTSMove[hourAhead][action] += 1;
+	}
+	
+	public void updateMean(double mcp) {
+		if(mcp != 0) {
+			arrMCPMean[hourAhead] = arrMCPMean[hourAhead]*arrMCPCount[hourAhead]+mcp;
+			arrMCPCount[hourAhead]++;
+			arrMCPMean[hourAhead]  /= arrMCPCount[hourAhead];
+		}
+	}
+	
+	public void printSTDDEV() {
+		for(int i = 0; i < 24; i++)
+			System.out.println(STDDEV[i]);
+	}
+	
+	public void updateSTDDEV() {
+		double oldStdev = STDDEV[hourAhead];
+		double newStddev = calcSTDDEV();
+		newStddev = oldStdev * 0.8 + newStddev * 0.2;
+		STDDEV[hourAhead] = newStddev;
+	}
+	
+	public double calcSTDDEV() {
+		double stddev = 7.8;
+		double mean = arrMCPMean[hourAhead];
+		double sum = 0.0;
+		double count = 0.0;
+		for(int i = currentTimeSlot-1; i >= 0 ; i--) {
+			if(arrMarketClearingPriceHistory[i][hourAhead] != 0) {
+				count++;
+				double diff = (mean - arrMarketClearingPriceHistory[i][hourAhead]);
+				diff = diff * diff;
+				sum += diff;
+			}
+		}
+		if(count > 1) {
+			sum = sum / (count-1);
+			stddev = Math.sqrt(sum);
+		}
+		//System.out.println("********************STDDEV "+ stddev);
+		return stddev;
 	}
 	
 	public void importPowerTACData() {
@@ -616,7 +715,7 @@ public class Observer {
 	
 	public void printClearedVolume(double clearingPrice){
 		
-		arrMarketClearingPriceHistory[currentTimeSlot][hour][hourAhead] = clearingPrice;
+		arrMarketClearingPriceHistory[currentTimeSlot][hourAhead] = clearingPrice;
 		Double totalClearedVolume = 0.0;
 		if(DEBUG)
 			System.out.println("PrintClearedVolume");
