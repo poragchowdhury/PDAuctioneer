@@ -187,6 +187,7 @@ public class MCTS {
     public TreeNode getBestMCTSMove(Observer observer) {
     	int [] arrCounterHigherBids = new int[25];
     	TreeNode root = new TreeNode();
+    	//root.parent = null;
     	root.hourAheadAuction = observer.hourAhead+1;
     	
     	// Set the number of Simulations

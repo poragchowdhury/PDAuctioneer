@@ -27,6 +27,7 @@ public class TreeNode {
     
     //TreeNode[] children;
     ArrayList<TreeNode> children;
+    //public TreeNode parent;
     public double nVisits, 
 	    totValue, 
 //	    minmctsClearingPrice,
@@ -71,6 +72,7 @@ public class TreeNode {
     	this.volPercentage = tn.volPercentage;
     	this.actionName = tn.actionName;
     	this.dynamicState = tn.dynamicState;
+    	//this.parent = tn.parent;
     }
     
     public int unvisitedChildren(TreeNode tn){
@@ -141,14 +143,25 @@ public class TreeNode {
     		int childrensize = cur.children.size();
     		if(childrensize < actionsize)
         	{
-    			//cur.nVisits = childrensize;
+    			// check if root
+    			//if(cur.parent == null) {
+    			//	cur.nVisits = 0;
+    			//}
+//    			else {
+//    				TreeNode tempparent = cur.parent;
+//    				while(tempparent != null) {
+//    					tempparent.nVisits += actionsize;
+//    					tempparent = tempparent.parent;
+//    				}
+//    			}
     			// Reset the exploration count to 1 for all children
     			//for(TreeNode child : cur.children)
-    			//	child.nVisits = 1;
+    			//	child.nVisits = 0;
     			// add a new child
     			for(int i = childrensize; i < actionsize; i++) {
 	    			Action action = actions.get(i);
 	        		TreeNode newchild = new TreeNode();
+	        		//newchild.parent = cur;
 	            	newchild.hourAheadAuction =cur.hourAheadAuction-1;
 	                newchild.appliedAction = action.actionName;
 	                newchild.nobid = action.nobid;
@@ -207,6 +220,7 @@ public class TreeNode {
     	int nActions = actions.size();
     	//children = new TreeNode[nActions];
     	children = new ArrayList<TreeNode>();
+    	
     	int newHourAheadAuction = this.hourAheadAuction-1;
     	//double [] param = new double[15];
     	//param = ob.getFeatures(param, newHourAheadAuction);
@@ -221,6 +235,7 @@ public class TreeNode {
 //            double [] prices = actions.get(i).getAdjustedPrice(mean, stddev);
 //            newchild.minmctsClearingPrice = prices[0];
 //            newchild.maxmctsClearingPrice = prices[1];
+            //newchild.parent = this;
             newchild.appliedAction = action.actionName;
             newchild.nobid = action.nobid;
             newchild.maxMult = action.maxMult;
