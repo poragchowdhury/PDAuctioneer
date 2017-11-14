@@ -28,7 +28,7 @@ public class MCTS {
 	public double lastPriceDiffPerTradeAction = 0.0;
 	double [] arrMctsPredClearingPrice = new double[25];
 	
-	public double thresholdMCTS = 10;
+	public double [] thresholdMCTS = new double[4];
 	public double varthreshold = 10;
 	
 	
@@ -38,13 +38,16 @@ public class MCTS {
     public ArrayList<Action> dynamicactionsMCTS2;
     public double mctsSim;
     public String playerName;
+    public int thresholdcount = 0;
     
 	public MCTS(double mctsSim, String name){
 		actions = new ArrayList<Action>();
 		dynamicactionsMCTS2 = new ArrayList<Action>();
 		this.mctsSim = mctsSim;
-		this.varthreshold = mctsSim*0.25;
-		this.thresholdMCTS = mctsSim*0.25;
+		this.thresholdMCTS[0] = mctsSim*0.05;
+		this.thresholdMCTS[1] = mctsSim*0.1;
+		this.thresholdMCTS[2] = mctsSim*0.2;
+		this.thresholdMCTS[3] = mctsSim*0.5;
 		this.playerName = name;
 	}
 

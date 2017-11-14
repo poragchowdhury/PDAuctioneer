@@ -95,7 +95,7 @@ public class TreeNode {
         visited.add(this);
         
         // add dynamic action space logic
-        if(cur.nVisits > mcts.varthreshold) {
+        if(cur.nVisits > mcts.thresholdMCTS[mcts.thresholdcount]) {
         	int actionsize = actions.size();
         	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob);
         	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
@@ -109,7 +109,7 @@ public class TreeNode {
 //        	action = new Action(actionsize+4,pmctsprice,0.1,false, Action.ACTION_TYPE.BUY, 1.00, true);
 //        	actions.add(action);
         	
-        	mcts.varthreshold += mcts.thresholdMCTS;
+        	mcts.thresholdcount++;
         }
         
         int actionsize = actions.size();
@@ -141,6 +141,10 @@ public class TreeNode {
     		int childrensize = cur.children.size();
     		if(childrensize < actionsize)
         	{
+    			cur.nVisits = childrensize;
+    			// Reset the exploration count to 1 for all children
+    			for(TreeNode child : cur.children)
+    				child.nVisits = 1;
     			// add a new child
     			for(int i = childrensize; i < actionsize; i++) {
 	    			Action action = actions.get(i);
