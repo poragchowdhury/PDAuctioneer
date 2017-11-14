@@ -278,7 +278,7 @@ public class PDAuctioneer {
 
 	public static void main(String [] args) throws IOException{
 		PDAuctioneer auctioneer = new PDAuctioneer();
-		String fileName = "training.arff";
+		String fileName = Configure.getRESULT_FILE() + "-training.arff";
 		fwriter = new FileWriter(fileName, true);
 		logger = new PrintWriter(new BufferedWriter(fwriter));
 

@@ -808,7 +808,7 @@ public class Observer {
 	
 	public void writeMCTSMoves() throws IOException{
 		String file = Configure.getRESULT_FILE();
-		FileWriter fwOutput = new FileWriter("mcts_moves_" + file + ".csv", true);
+		FileWriter fwOutput = new FileWriter(file + "-mcts-moves.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
 		pwOutput.println("HourAhead,Action,MoveTakenCount,avgmcp,minmAuctioncount,PredictionErr");
 		
