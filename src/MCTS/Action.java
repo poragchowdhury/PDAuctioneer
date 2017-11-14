@@ -3,12 +3,14 @@ package MCTS;
 import java.util.Random;
 
 public class Action {
-	public String actionName;
+	public int actionName;
 	public double minMult;
 	public double maxMult;
 	public boolean nobid;
 	public ACTION_TYPE type;
 	public double percentage;
+	public boolean dynamicAction;
+	public double [] predictions;
 	public static enum ACTION_TYPE{
 		BUY,
 		SELL,
@@ -19,13 +21,15 @@ public class Action {
 		
 	}
 	
-	public Action(String actionName, double minMult, double maxMult, boolean noBid, ACTION_TYPE type, double percentage){
+	public Action(int actionName, double minMult, double maxMult, boolean noBid, ACTION_TYPE type, double percentage, boolean dynamicAction){
 		this.actionName = actionName;
 		this.minMult = minMult;
 		this.maxMult = maxMult;
 		this.nobid = noBid;
 		this.type = type;
 		this.percentage = percentage;
+		this.dynamicAction = dynamicAction;
+		this.predictions = new double [24];
 	}
 	
 	public double [] getAdjustedPrice(double meanPrice, double stddev){

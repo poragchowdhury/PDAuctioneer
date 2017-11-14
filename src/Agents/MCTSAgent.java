@@ -124,7 +124,7 @@ public class MCTSAgent extends Agent {
 		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
 		if(this.neededMWh <= 0.001)
 			return;
-		TreeNode bestMove = mcts.getBestDoubleMCTSMove(observer);
+		TreeNode bestMove = mcts.getBestMCTSMove(observer);
 		if(bestMove == null)
 			System.out.println("BestMove is null");
 		//else 
@@ -155,10 +155,14 @@ public class MCTSAgent extends Agent {
     		double maxPrice = clearingPrice + (bestMove.maxMult*7.8); //tn.minmctsClearingPrice;
     		double priceRange = maxPrice - limitPrice; // tn.maxmctsClearingPrice - tn.minmctsClearingPrice;
 		 */
-		double pcp = observer.pricepredictor.getPrice(observer.hourAhead);
 		//double limitPrice = bestMove.totValue;//pcp+bestMove.minMult*observer.STDDEV[observer.hourAhead]; //bestMove.minmctsClearingPrice;// 
-		double limitPrice = bestMove.minMult+(bestMove.minMult*bestMove.maxMult);
-		
+		double limitPrice = 0;//bestMove.minMult+bestMove.minMult*bestMove.maxMult;
+		if(bestMove.dynamicState)
+			limitPrice = bestMove.minMult+bestMove.minMult*bestMove.maxMult;
+		else {
+			double pcp = observer.pricepredictor.getPrice(observer.hourAhead);
+			limitPrice = pcp+bestMove.minMult*observer.STDDEV[observer.hourAhead];
+		}
 		System.out.println("LimitPricecMCTS " + limitPrice + " unitcost " + bestMove.minMult + " perc " + bestMove.maxMult);
 		double priceRange = 0;//bestMove.maxmctsClearingPrice - bestMove.minmctsClearingPrice;
 		double minMWh = 1;

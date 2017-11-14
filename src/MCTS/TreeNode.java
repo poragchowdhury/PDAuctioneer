@@ -25,21 +25,25 @@ public class TreeNode {
     
     public Action.ACTION_TYPE actionType;
     
-    TreeNode[] children;
+    //TreeNode[] children;
+    ArrayList<TreeNode> children;
     public double nVisits, 
 	    totValue, 
-	    minmctsClearingPrice,
-	    maxmctsClearingPrice,
+//	    minmctsClearingPrice,
+//	    maxmctsClearingPrice,
     	minMult,
     	maxMult,
     	volPercentage,
     	currentNodeCostAvg,
-    	currentNodeCostLast;
+    	currentNodeCostLast,
+    	dynamicPrice;
     
-    public String actionName;
+    public boolean dynamicState = false;
+    
+    public int actionName;
     
     int hourAheadAuction;
-    String	appliedAction;
+    int	appliedAction;
     
     public boolean nobid = false;
     
@@ -48,7 +52,7 @@ public class TreeNode {
     }
     
     public TreeNode(int n, boolean nobid){
-    	this.actionName = "" + n;
+    	this.actionName = n;
     	this.nobid = nobid;
     }
     
@@ -57,8 +61,8 @@ public class TreeNode {
     	this.totValue = tn.totValue;
     	this.currentNodeCostAvg = tn.currentNodeCostAvg;
     	this.currentNodeCostLast = tn.currentNodeCostLast;
-    	this.minmctsClearingPrice = tn.minmctsClearingPrice;
-    	this.maxmctsClearingPrice = tn.maxmctsClearingPrice;
+//    	this.minmctsClearingPrice = tn.minmctsClearingPrice;
+//    	this.maxmctsClearingPrice = tn.maxmctsClearingPrice;
     	this.minMult = tn.minMult;
     	this.maxMult = tn.maxMult;
     	this.hourAheadAuction = tn.hourAheadAuction;
@@ -67,6 +71,8 @@ public class TreeNode {
     	this.actionType = tn.actionType;
     	this.volPercentage = tn.volPercentage;
     	this.actionName = tn.actionName;
+    	this.dynamicState = tn.dynamicState;
+    	this.dynamicPrice = tn.dynamicPrice;
     }
     
     public int unvisitedChildren(TreeNode tn){
@@ -80,7 +86,7 @@ public class TreeNode {
     	return count;
     }
     
-    public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob, boolean doubleMCTS) {
+    public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob) {
     	
     	double simCost = 0.0;
     	double neededEnergy = ob.neededEneryMCTSBroker;
@@ -90,12 +96,35 @@ public class TreeNode {
         
         visited.add(this);
         
+        // add dynamic action space logic
+        if(cur.nVisits > mcts.varthreshold) {
+        	//int actionsize = actions.size();
+        	double pmctsp = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[ob.hourAhead], ob, actions);
+        	int actionsize = actions.size();
+        	Action action = new Action(actionsize,pmctsp,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
+        	actions.add(action);
+        	//Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
+        	
+//        	action = new Action(actionsize+1,pmctsprice,-0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
+//        	actions.add(action);
+//        	action = new Action(actionsize+2,pmctsprice,0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
+//        	actions.add(action);
+//        	action = new Action(actionsize+3,pmctsprice,-0.1,false, Action.ACTION_TYPE.BUY, 1.00, true);
+//        	actions.add(action);
+//        	action = new Action(actionsize+4,pmctsprice,0.1,false, Action.ACTION_TYPE.BUY, 1.00, true);
+//        	actions.add(action);
+        	
+        	mcts.varthreshold += mcts.thresholdMCTS;
+        }
+        
+        int actionsize = actions.size();
+        
     	while (!cur.isLeaf()) {
     		//if(neededEnergy == 0)
     		//	break;
         	
         	if(cur.children == null){
-        		cur.expand(actions, mcts, ob, mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1]);
+        		cur.expand(actions, mcts, ob, mcts.arrMctsPredClearingPrice[ob.hourAhead]);
         	}
         	
         	//int unvisitedChildren = unvisitedChildren(cur);
@@ -107,12 +136,42 @@ public class TreeNode {
         		cur = unvisitedNode;//cur.selectRandomUnvisited(mcts, ob);
         		visited.add(cur);
         		// do the rollout
-        		double [] retValue = rollout(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, actions, mcts, doubleMCTS);
+        		double [] retValue = rollout(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, actions, mcts);
         		// add to the sim cost
         		neededEnergy -= retValue[0];
                 simCost += retValue[1]*(-1);
                 break;
         	}
+    		
+    		int childrensize = cur.children.size();
+    		if(childrensize < actionsize)
+        	{
+    			// add a new child
+    			for(int i = childrensize; i < actionsize; i++) {
+	    			Action action = actions.get(i);
+	        		TreeNode newchild = new TreeNode();
+	            	newchild.hourAheadAuction =cur.hourAheadAuction-1;
+	                newchild.appliedAction = action.actionName;
+	                newchild.nobid = action.nobid;
+	                newchild.minMult = action.minMult;
+	                newchild.maxMult = action.maxMult;
+	                newchild.actionType = action.type;
+	                newchild.volPercentage = action.percentage;
+	                newchild.actionName = action.actionName;
+	                newchild.dynamicState = action.dynamicAction;
+	                cur.children.add(newchild);
+    			}
+    			unvisitedNode = cur.selectRandomUnvisited(mcts, ob);	
+                cur = unvisitedNode;
+                visited.add(cur);
+        		// do the rollout
+        		double [] retValue = rollout(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, actions, mcts);
+        		// add to the sim cost
+        		neededEnergy -= retValue[0];
+                simCost += retValue[1]*(-1);
+                break;
+        	}
+        	
     		
 //    		if(mcts.debugCounter>1)
 //	    		System.out.println("debugCounter" + mcts.debugCounter);
@@ -123,15 +182,16 @@ public class TreeNode {
     		if(cur == null)
     			System.out.println("hi");
             // Do the simulation-rollout for wholesale auction
-            double [] retValue = simulation(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, doubleMCTS);
+            double [] retValue = simulation(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy);
             neededEnergy -= retValue[0];
             simCost += retValue[1]*(-1);
             
             visited.add(cur);
         }
         
-    	double balancingSimCost = Math.abs(neededEnergy)*ob.arrBalacingPrice[ob.currentTimeSlot]*(-1);
-        simCost += balancingSimCost;
+    	double balancingSimCost = Math.abs(neededEnergy)*ob.arrBalacingPrice[ob.currentTimeSlot]*(-1); //
+    	
+    	simCost += balancingSimCost;
 
         // make the sim cost as unit cost
         simCost /= ob.neededEneryMCTSBroker;
@@ -146,29 +206,32 @@ public class TreeNode {
 
     public void expand(ArrayList<Action> actions, MCTS mcts, Observer ob, double mean) {
     	int nActions = actions.size();
-    	children = new TreeNode[nActions];
+    	//children = new TreeNode[nActions];
+    	children = new ArrayList<TreeNode>();
     	int newHourAheadAuction = this.hourAheadAuction-1;
     	//double [] param = new double[15];
     	//param = ob.getFeatures(param, newHourAheadAuction);
 		//double mean = ob.pricepredictor.getPrice(newHourAheadAuction);
-		double stddev = ob.STDDEV[newHourAheadAuction];//7.8;
+//		double stddev = ob.STDDEV[newHourAheadAuction];//7.8;
 		
         for (int i=0; i<nActions; i++) {
-            children[i] = new TreeNode();
-            children[i].hourAheadAuction =newHourAheadAuction;
+            TreeNode newchild = new TreeNode();
+            Action action = actions.get(i);
+            newchild.hourAheadAuction =newHourAheadAuction;
             
-            double [] prices = actions.get(i).getAdjustedPrice(mean, stddev);
-            children[i].minmctsClearingPrice = prices[0];
-            children[i].maxmctsClearingPrice = prices[1];
-            children[i].appliedAction = actions.get(i).actionName;
-            children[i].nobid = actions.get(i).nobid;
-            children[i].maxMult = actions.get(i).maxMult;
-            children[i].minMult = actions.get(i).minMult;
-            children[i].actionType = actions.get(i).type;
-            children[i].volPercentage = actions.get(i).percentage;
-            children[i].currentNodeCostAvg = 0.0;
-            children[i].currentNodeCostLast = 0.0;
-            children[i].actionName = actions.get(i).actionName;
+//            double [] prices = actions.get(i).getAdjustedPrice(mean, stddev);
+//            newchild.minmctsClearingPrice = prices[0];
+//            newchild.maxmctsClearingPrice = prices[1];
+            newchild.appliedAction = action.actionName;
+            newchild.nobid = action.nobid;
+            newchild.maxMult = action.maxMult;
+            newchild.minMult = action.minMult;
+            newchild.actionType = action.type;
+            newchild.volPercentage = action.percentage;
+            newchild.currentNodeCostAvg = 0.0;
+            newchild.currentNodeCostLast = 0.0;
+            newchild.actionName = action.actionName;
+            children.add(newchild);
         }
     }
 
@@ -195,7 +258,7 @@ public class TreeNode {
          	// small random number to break ties randomly in unexpanded nodes
             // System.out.println("UCT value = " + uctValue);
          	if(printOn)
-            	System.out.print("Action " + c.appliedAction + " Points " + c.totValue +" UCT value = " + uctValue + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " c.nvisits " + c.nVisits + " totalVisits " + this.nVisits);
+            	System.out.print("Action " + c.appliedAction + " NodeUCost " + c.totValue  + " childnvisit " + c.nVisits + " parentVisits " + this.nVisits + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " UCTval = " + uctValue);
          	
          	if (totlPoint > bestValue) {
                 selected = c;
@@ -216,7 +279,7 @@ public class TreeNode {
         return selected;
     }
 
-    public double getMCTSValue(double [] arrMctsPredClearingPrice, Observer ob) {
+    public double getMCTSValue(double arrMCTSPred, Observer ob, ArrayList<Action> actions) {
     	boolean printOn = false;
         TreeNode selected = null;
         double bestValue = Double.MAX_VALUE *-1;
@@ -226,50 +289,63 @@ public class TreeNode {
         
         TreeNode cur = this;
 
-    	if(cur == null || cur.children == null || cur.hourAheadAuction-1 == 0)
-    		flag = false;
+        //while(flag) {
+	    	if(cur == null || cur.children == null || cur.hourAheadAuction == 0)
+	    		flag = false;
         	if(cur.children != null) {
-	        for (TreeNode c : cur.children) {
-	         	double totlPoint = c.totValue;// / ((c.nVisits) + epsilon);
-	         	double dividend = -Math.abs(ob.arrBalacingPrice[ob.currentTimeSlot]);//*ob.neededEneryMCTSBroker);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
-	         	totlPoint = (1-(totlPoint/(dividend)));
-	         	
-	         	if(dividend == 0 || ob.neededEneryMCTSBroker <= 0.001)
-	         		totlPoint = 0;
-	         	
-	         	double visitPoint = Math.sqrt(2*Math.log(this.nVisits+1) / (c.nVisits + epsilon));
-	         	
-	         	double randPoint = r.nextDouble() * epsilon;
-	            double uctValue = totlPoint + visitPoint + randPoint;
-	         	// small random number to break ties randomly in unexpanded nodes
-	            // System.out.println("UCT value = " + uctValue);
-	         	if(printOn)
-	            	System.out.print("Action " + c.appliedAction + " Points " + c.totValue +" UCT value = " + uctValue + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " c.nvisits " + c.nVisits + " totalVisits " + this.nVisits);
-	         	
-	         	if (totlPoint > bestValue) {
-	                selected = c;
-	                bestValue = totlPoint;
-	                if(printOn)
-	                	System.out.println(" [best] ");
-	            }
-	         	else{
-	         		if(printOn)
-	         			System.out.println("");
-	         	}
-	         	
-	        }
+		        for (TreeNode c : cur.children) {
+		         	double totlPoint = c.totValue;// / ((c.nVisits) + epsilon);
+		         	double dividend = -Math.abs(ob.arrBalacingPrice[ob.currentTimeSlot]);//*ob.neededEneryMCTSBroker);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
+		         	totlPoint = (1-(totlPoint/(dividend)));
+		         	
+		         	if(dividend == 0 || ob.neededEneryMCTSBroker <= 0.001)
+		         		totlPoint = 0;
+		         	
+		         	double visitPoint = Math.sqrt(2*Math.log(this.nVisits+1) / (c.nVisits + epsilon));
+		         	
+		         	double randPoint = r.nextDouble() * epsilon;
+		            double uctValue = totlPoint + visitPoint + randPoint;
+		         	// small random number to break ties randomly in unexpanded nodes
+		            // System.out.println("UCT value = " + uctValue);
+		         	if(printOn)
+		            	System.out.print("Action " + c.appliedAction + " Points " + c.totValue +" UCT value = " + uctValue + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " c.nvisits " + c.nVisits + " totalVisits " + this.nVisits);
+		         	
+		         	if (totlPoint > bestValue) {
+		                selected = c;
+		                bestValue = totlPoint;
+		                if(printOn)
+		                	System.out.println(" [best] ");
+		            }
+		         	else{
+		         		if(printOn)
+		         			System.out.println("");
+		         	}
+		        }
+		        // set the price to predicted price array inside the action
+		        //action.predictions[selected.hourAheadAuction] = Math.abs(selected.totValue);
+		        cur = selected;
+		        return Math.abs(selected.totValue);
+        	}
 	        
-	        return Math.abs(selected.totValue);
+	    //}
+        
+        return Math.abs(arrMCTSPred);
+        
+        /*
+        for(int i = 23; i >= 0; i--) {
+        	if(action.predictions[i] == 0) {
+        		action.predictions[i] = Math.abs(arrMCTSPred[i]);//action.predictions[hourAheadnow];
+        	}
         }
+        */
         	
-        return arrMctsPredClearingPrice[ob.hourAhead]; 
     }
 
     
     public TreeNode selectRandom(MCTS mcts, Observer observer) {
     	Random r = new Random();
     	int i = r.nextInt(mcts.actions.size()) + 0;
-    	return children[i];
+    	return children.get(i);
     }
     
     public TreeNode selectRandomUnvisited(MCTS mcts, Observer observer) {
@@ -361,7 +437,7 @@ public class TreeNode {
     }
 
     
-    public double [] rollout(TreeNode tempNode, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, ArrayList<Action> actions, MCTS mcts, boolean doubleMCTS) {
+    public double [] rollout(TreeNode tempNode, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, ArrayList<Action> actions, MCTS mcts) {
     	TreeNode tn = new TreeNode(tempNode);
         // ultimately a roll out will end in some value
         // assume for now that it ends in a win or a loss
@@ -370,20 +446,21 @@ public class TreeNode {
 		double costValue = 0.00;
 		double stddev = ob.STDDEV[tn.hourAheadAuction];
 		while(true){
-//			if(neededMWh==0)
-//				break;
+			
 			double singleBidVolume = 0.00;
 			if(!tn.nobid){
 	    		// Bidding configuration
 				double numberofbids = 1;
 	    		double unitPriceIncrement = 1.00;
 	    		double clearingPrice = Math.abs((r.nextGaussian()*stddev)+arrPredClearingPrice[tn.hourAheadAuction]);
+	    		
 	    		double limitPrice = 0;
 	    		
-	    		if(doubleMCTS)
-	    			limitPrice = tn.minMult + (tn.minMult*tn.maxMult);
-	    		else
-	    			limitPrice = arrPredClearingPrice[tn.hourAheadAuction]+(stddev*tn.minMult);//tn.minmctsClearingPrice; // clearingPrice + (tn.minMult*7.8); //(Math.abs((r.nextGaussian()*stddev)+ 
+	    		
+    			if(tn.dynamicState)
+    				limitPrice = tn.minMult + (tn.minMult*tn.maxMult);
+    			else 	
+    				limitPrice = arrPredClearingPrice[tn.hourAheadAuction]+(stddev*tn.maxMult);//tn.minmctsClearingPrice; // clearingPrice + (tn.minMult*7.8); //(Math.abs((r.nextGaussian()*stddev)+ 
 	    		
 	    		double maxPrice = limitPrice;//tn.minmctsClearingPrice; // clearingPrice + (tn.maxMult*7.8);
 	    		double priceRange = 0;//tn.maxmctsClearingPrice - tn.minmctsClearingPrice;
@@ -447,15 +524,21 @@ public class TreeNode {
 	    	if(tn.hourAheadAuction == 0)
 	    		break;
     		
+	    	if(neededMWh==0)
+				break;
+	    	
 	    	tn.expand(actions, mcts, ob, arrPredClearingPrice[tn.hourAheadAuction-1]);
     		tn = tn.selectRandom(mcts, ob);
 	    }
+		
+//		if(totalBidVolume != 0)
+//			costValue /= totalBidVolume;
 		
     	return new double[] {totalBidVolume, costValue}; //totalBidVolume;
     }
     
     
-    public double [] simulation(TreeNode tn, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, boolean doubleMCTS) {
+    public double [] simulation(TreeNode tn, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy) {
         // ultimately a roll out will end in some value
         // assume for now that it ends in a win or a loss
         // and just return this at random
@@ -470,11 +553,10 @@ public class TreeNode {
     		double clearingPrice = Math.abs((r.nextGaussian()*stddev)+arrPredClearingPrice[tn.hourAheadAuction]);//arrPredClearingPrice[tn.hourAheadAuction];
     		double limitPrice = 0;//arrPredClearingPrice[tn.hourAheadAuction]+(stddev*tn.minMult);//tn.minmctsClearingPrice; // clearingPrice + (tn.minMult*7.8); //(Math.abs((r.nextGaussian()*stddev)+
     		
-    		if(doubleMCTS)
-    			limitPrice = tn.minMult + (tn.minMult*tn.maxMult);
-    		else
-    			limitPrice = arrPredClearingPrice[tn.hourAheadAuction]+(stddev*tn.minMult);//tn.minmctsClearingPrice; // clearingPrice + (tn.minMult*7.8); //(Math.abs((r.nextGaussian()*stddev)+ 
-    		
+			if(tn.dynamicState)
+				limitPrice = tn.minMult + (tn.minMult*tn.maxMult);
+			else 	
+				limitPrice = arrPredClearingPrice[tn.hourAheadAuction]+(stddev*tn.maxMult);//tn.minmctsClearingPrice; // clearingPrice + (tn.minMult*7.8); //(Math.abs((r.nextGaussian()*stddev)+ 
     		
     		double maxPrice = limitPrice;//tn.minmctsClearingPrice; // clearingPrice + (tn.maxMult*7.8);
     		double priceRange = maxPrice - limitPrice; // tn.maxmctsClearingPrice - tn.minmctsClearingPrice;
@@ -536,6 +618,9 @@ public class TreeNode {
 			}
     	}
 
+//    	if(totalBidVolume != 0)
+//			costValue /= totalBidVolume;
+    	
     	return new double[] {totalBidVolume, costValue}; //totalBidVolume;
     }
     
@@ -546,10 +631,10 @@ public class TreeNode {
     }
 
     public int arity() {
-        return children == null ? 0 : children.length;
+        return children == null ? 0 : children.size();
     }
     
-    public TreeNode [] getChildren(TreeNode root, int hourAhead, int count){
+    public ArrayList<TreeNode> getChildren(TreeNode root, int hourAhead, int count){
     	if(count == hourAhead){
     		return root.children;
     	}

@@ -28,17 +28,23 @@ public class MCTS {
 	public double lastPriceDiffPerTradeAction = 0.0;
 	double [] arrMctsPredClearingPrice = new double[25];
 	
+	public double thresholdMCTS = 10;
+	public double varthreshold = 10;
+	
+	
 	public int thresholdLowAuctionsPerc = 40;
 	public boolean booNobid = false;
     public ArrayList<Action> actions;
-    public ArrayList<Action> actionsMCTS2;
+    public ArrayList<Action> dynamicactionsMCTS2;
     public double mctsSim;
     public String playerName;
     
 	public MCTS(double mctsSim, String name){
 		actions = new ArrayList<Action>();
-		actionsMCTS2 = new ArrayList<Action>();
+		dynamicactionsMCTS2 = new ArrayList<Action>();
 		this.mctsSim = mctsSim;
+		this.varthreshold = mctsSim*0.25;
+		this.thresholdMCTS = mctsSim*0.25;
 		this.playerName = name;
 	}
 
@@ -120,15 +126,15 @@ public class MCTS {
     	actions.add(action);
 		*/
 		
-		Action action = new Action("0",-2,-2,false, Action.ACTION_TYPE.BUY, 1.00);
+		Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
     	actions.add(action);
-    	action = new Action("1",-1,-1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action(1,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
     	actions.add(action);
-    	action = new Action("2",0,0,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, false);
     	actions.add(action);
-    	action = new Action("3",1,1,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action(3,1,1,false, Action.ACTION_TYPE.BUY, 1.00, false);
     	actions.add(action);
-    	action = new Action("4",2,2,false, Action.ACTION_TYPE.BUY, 1.00);
+    	action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
     	actions.add(action);
 		
 		
@@ -157,7 +163,7 @@ public class MCTS {
     	actions.add(action);
 		*/
 		// no bid
-		action = new Action("10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
+		action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
     	actions.add(action);
     	/*
     	// Selling
@@ -172,20 +178,6 @@ public class MCTS {
     	action = new Action("15",0,2,false, Action.ACTION_TYPE.SELL, 1.20);
     	actions.add(action);
 		*/
-    	
-    	action = new Action("0",0,-0.1,false, Action.ACTION_TYPE.BUY, 1.00);
-    	actionsMCTS2.add(action);
-    	action = new Action("1",0,-0.05,false, Action.ACTION_TYPE.BUY, 1.00);
-    	actionsMCTS2.add(action);
-    	action = new Action("2",0,0,false, Action.ACTION_TYPE.BUY, 1.00);
-    	actionsMCTS2.add(action);
-    	action = new Action("3",0,0.05,false, Action.ACTION_TYPE.BUY, 1.00);
-    	actionsMCTS2.add(action);
-    	action = new Action("4",0,0.1,false, Action.ACTION_TYPE.BUY, 1.00);
-    	actionsMCTS2.add(action);
-		// no bid
-		action = new Action("10",0,0,true, Action.ACTION_TYPE.NO_BID, 1.00);
-		actionsMCTS2.add(action);
     }
 	
     public TreeNode getBestMCTSMove(Observer observer) {
@@ -210,11 +202,11 @@ public class MCTS {
     	}
 	
     	
-    	root.minmctsClearingPrice = arrMctsPredClearingPrice[observer.hourAhead];
+//    	root.minmctsClearingPrice = arrMctsPredClearingPrice[observer.hourAhead];
     	
 		// loop it and do some number of simulations
     	for(int i=0; i < this.mctsSim; i++){
-    		root.runMonteCarlo(actions, this, observer, false);
+    		root.runMonteCarlo(actions, this, observer);
     	}
     	
     	for(int jj=observer.hourAhead-1; jj>= 0; jj--){
@@ -256,11 +248,11 @@ public class MCTS {
     	}
 	
     	
-    	root.minmctsClearingPrice = arrMctsPredClearingPrice[observer.hourAhead];
+//    	root.minmctsClearingPrice = arrMctsPredClearingPrice[observer.hourAhead];
     	
 		// loop it and do some number of simulations
-    	for(int i=0; i < this.mctsSim; i++){
-    		root.runMonteCarlo(actions, this, observer, false);
+    	for(int i=0; i < this.mctsSim/2; i++){
+    		root.runMonteCarlo(actions, this, observer);
     	}
     	
     	/*
@@ -281,22 +273,34 @@ public class MCTS {
 //    	for(int i = observer.hourAhead; i >= 0; i--)
 //    		System.out.print(arrMctsPredClearingPrice[i] + " ");
 //    	System.out.println();
-    	double pmctsprice = root.getMCTSValue(arrMctsPredClearingPrice, observer);
+    	//root.getMCTSValue(observer, actions);
 //    	for(int i = observer.hourAhead; i >= 0; i--)
 //    		System.out.print(arrMctsPredClearingPrice[i] + " ");
 //    	System.out.println();
 //    	
     	
-    	for(Action a : actionsMCTS2) {
-    		a.minMult = pmctsprice;
-    	}
+    	actions.clear();
+    	
+    	Action action = new Action(0,0,-0.1,false, Action.ACTION_TYPE.BUY, 1.00, true);
+    	actions.add(action);
+    	action = new Action(1,0,-0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
+    	actions.add(action);
+    	action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
+    	actions.add(action);
+    	action = new Action(3,0,0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
+    	actions.add(action);
+    	action = new Action(4,0,0.1,false, Action.ACTION_TYPE.BUY, 1.00, true);
+    	actions.add(action);
+		// no bid
+		action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, true);
+		actions.add(action);
     	
     	root = new TreeNode();
     	root.hourAheadAuction = observer.hourAhead+1;
-    	root.minmctsClearingPrice = arrMctsPredClearingPrice[observer.hourAhead];
+//    	root.minmctsClearingPrice = pmctsprice;
     	// loop it and do some number of simulations
-    	for(int i=0; i < this.mctsSim; i++){
-    		root.runMonteCarlo(actionsMCTS2, this, observer, true);
+    	for(int i=0; i < this.mctsSim/2; i++){
+    		root.runMonteCarlo(actions, this, observer);
     	}
     	return root.finalSelect(observer);
     	

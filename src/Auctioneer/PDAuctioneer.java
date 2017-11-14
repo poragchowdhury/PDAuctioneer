@@ -172,9 +172,9 @@ public class PDAuctioneer {
 								if(clearingPrice != 0) {
 									observer.MCPrice[observer.hourAhead] += clearingPrice; 
 									observer.MCPriceCount[observer.hourAhead]++; 
-									observer.movingAvgErrorMCP[observer.hourAhead] = (observer.movingAvgErrorMCP[observer.hourAhead] * 0.8) + ((pcp-clearingPrice) * 0.2);
-									observer.updateMean(clearingPrice);
-									observer.updateSTDDEV();
+									observer.movingAvgErrorMCP[observer.hourAhead] = 0;//(observer.movingAvgErrorMCP[observer.hourAhead] * 0.95) + ((pcp-clearingPrice) * 0.05);
+								//	observer.updateMean(clearingPrice);
+								//	observer.updateSTDDEV();
 								}
 								
 								// update clear trades for corresponding agents

@@ -24,7 +24,7 @@ public class Configure {
 	private static double MCTSBROKERDEMANDPERC = 0;
 	private static boolean USEMDPPREDICTOR = true;
 	private static boolean THRESHOLDFILTER = false;
-	
+	private static String RESULT_FILE = "ADAPTIVE";
 	
 	///////////////////////////////
 	// Simulation configuration ///
@@ -60,10 +60,17 @@ public class Configure {
 	boots-misobuyer\boot27.csv Avg ,17689.034681228743, Min, 2220.528674525673, Max,25156.113419565336
 	boots-misobuyer\boot28.csv Avg ,17797.09100557944, Min, 2093.4729305191017, Max,25173.57947626865
 	boots-misobuyer\boot29.csv Avg ,17916.662147747193, Min, 2107.63236734164, Max,26263.269524371543
+	
+	boots-misobuyer\boot30.csv count 1418 Min 2300.9621908705326 Avg 17618.831856948465 Max 25886.75429420311
+	boots-misobuyer\boot31.csv count 1403 Min 2048.2156328264273 Avg 17957.314634839393 Max 26590.72246458285
+	boots-misobuyer\boot32.csv count 1440 Min 12754.034128366831 Avg 18004.577615548686 Max 25426.665225439472
+	boots-misobuyer\boot33.csv count 1440 Min 11109.753908774215 Avg 17412.84125002765 Max 25073.383519156665
+	boots-misobuyer\boot34.csv count 1409 Min 2054.3916140598326 Avg 17633.465207168832 Max 25778.554407023083
+
 	*/
 	
 	public static double [] avgSupply_REPTree = {
-			18058.026559324575/7, // boot0
+			18058.026559324575/300, // boot0
 			17823.889356603955/300, // boot1
 			17340.669759841992/300, // boot2
 			17561.182118107197/300, // boot3
@@ -94,7 +101,13 @@ public class Configure {
 			17461.97105780761/300, // boot26
 			17689.034681228743/300, // boot27
 			17797.09100557944/300, // boot28
-			17916.662147747193/300 // boot29
+			17916.662147747193/300, // boot29
+			
+			17618.831856948465/300, // boot30
+			17957.314634839393/300,
+			18004.577615548686/300,
+			17412.84125002765/300,
+			17633.465207168832/300
 	};
 	
 	public static enum CASE_STUDY{
@@ -141,6 +154,7 @@ public class Configure {
 			MCTSBROKERDEMANDPERC = Double.parseDouble(prop.getProperty("mctsbrokerdemand"));
 			USEMDPPREDICTOR = Boolean.parseBoolean(prop.getProperty("usemdppredictor"));
 			THRESHOLDFILTER = Boolean.parseBoolean(prop.getProperty("thresholdfilter"));
+			RESULT_FILE = prop.getProperty("resultfilename");
 			loadConfiguration();
 			
 		} catch (IOException ex) {
@@ -231,6 +245,10 @@ public class Configure {
 	
 	public static boolean getTHRESHOLDFILTER(){
 		return THRESHOLDFILTER;
+	}
+	
+	public static String getRESULT_FILE(){
+		return RESULT_FILE;
 	}
 	
 	public String toString() {

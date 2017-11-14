@@ -238,7 +238,7 @@ public class Observer {
 		pp_error_ha = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		pp_error_ha_count = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		
-		recordMCTSMove = new int[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][21];
+		recordMCTSMove = new int[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][26];
 		REPTreePricePredictor = new PricePredictor(Configure.getPREDICTOR_NAME());
 		pricepredictor = new PredictorFactory(this);
 		
@@ -260,7 +260,7 @@ public class Observer {
 	}
 	
 	public void recordBestMove(TreeNode n){
-		int action = Integer.parseInt(n.actionName);
+		int action = n.actionName;
 		recordMCTSMove[hourAhead][action] += 1;
 	}
 	
@@ -280,7 +280,7 @@ public class Observer {
 	public void updateSTDDEV() {
 		double oldStdev = STDDEV[hourAhead];
 		double newStddev = calcSTDDEV();
-		newStddev = oldStdev * 0.8 + newStddev * 0.2;
+		newStddev = oldStdev * 0.95 + newStddev * 0.05;
 		STDDEV[hourAhead] = newStddev;
 	}
 	
@@ -333,6 +333,9 @@ public class Observer {
 	            String strHourAhead = itr.next();
 	            int hourAhead = Integer.parseInt(strHourAhead);
 	            
+	            if(hourAhead >= Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
+	            	continue;
+	            	            
 	            HashMap<Integer, ArrayList<PriceMwhPair>> hourAheadOrders = powerTACproducerOrders.get(hour);
 	            if(hourAheadOrders == null) {
 	            	hourAheadOrders = new HashMap<Integer, ArrayList<PriceMwhPair>>();
@@ -804,9 +807,10 @@ public class Observer {
 	}
 	
 	public void writeMCTSMoves() throws IOException{
-		FileWriter fwOutput = new FileWriter("mcts_moves.csv", true);
+		String file = Configure.getRESULT_FILE();
+		FileWriter fwOutput = new FileWriter("mcts_moves_" + file + ".csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
-		pwOutput.println("HourAhead,Action,Count,avgmcp,count,Err");
+		pwOutput.println("HourAhead,Action,MoveTakenCount,avgmcp,minmAuctioncount,PredictionErr");
 		
 		//pwOutput.println("ha,avgmcp,count,err");
 		double avg_err = 0;
@@ -815,7 +819,7 @@ public class Observer {
 		for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
 			if(MCPriceCount[totHA] == 0)
 				MCPriceCount[totHA]=1;
-			for(int j = 0; j < 16; j++) {
+			for(int j = 0; j < 10; j++) {
 				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]+","+MCPrice[totHA]/MCPriceCount[totHA]+","+minCPHourAhead[totHA]+","+pp_error_ha[totHA]/pp_error_ha_count[totHA]);
 				recordMCTSMove[totHA][j] = 0;
 			}
@@ -838,7 +842,8 @@ public class Observer {
 	}
 	
 	public void printTotalClearedVolume() throws IOException{
-		FileWriter fwOutput = new FileWriter("Results_Price_20actions.csv", true);
+		String filename = Configure.getRESULT_FILE()+".csv";
+		FileWriter fwOutput = new FileWriter(filename, true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
 		
 		//FileWriter fwOutputV = new FileWriter("Results_Volume.csv", true);

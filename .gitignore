@@ -9,3 +9,4 @@ training.arff
 *.csv
 *.log
 *.others
+*.xlsx
