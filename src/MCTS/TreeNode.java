@@ -84,7 +84,7 @@ public class TreeNode {
     	return count;
     }
     
-    public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob) {
+    public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob, int sims) {
     	
     	double simCost = 0.0;
     	double neededEnergy = ob.neededEneryMCTSBroker;
@@ -95,7 +95,7 @@ public class TreeNode {
         visited.add(this);
         
         // add dynamic action space logic
-        if(cur.nVisits > mcts.thresholdMCTS[mcts.thresholdcount]) {
+        if(sims > mcts.thresholdMCTS[mcts.thresholdcount]) {
         	int actionsize = actions.size();
         	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob);
         	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
@@ -141,10 +141,10 @@ public class TreeNode {
     		int childrensize = cur.children.size();
     		if(childrensize < actionsize)
         	{
-    			cur.nVisits = childrensize;
+    			//cur.nVisits = childrensize;
     			// Reset the exploration count to 1 for all children
-    			for(TreeNode child : cur.children)
-    				child.nVisits = 1;
+    			//for(TreeNode child : cur.children)
+    			//	child.nVisits = 1;
     			// add a new child
     			for(int i = childrensize; i < actionsize; i++) {
 	    			Action action = actions.get(i);

@@ -210,7 +210,7 @@ public class MCTS {
     	
 		// loop it and do some number of simulations
     	for(int i=0; i < this.mctsSim; i++){
-    		root.runMonteCarlo(actions, this, observer);
+    		root.runMonteCarlo(actions, this, observer,i);
     	}
     	
     	for(int jj=observer.hourAhead-1; jj>= 0; jj--){
@@ -256,7 +256,7 @@ public class MCTS {
     	
 		// loop it and do some number of simulations
     	for(int i=0; i < this.mctsSim/2; i++){
-    		root.runMonteCarlo(actions, this, observer);
+    		//root.runMonteCarlo(actions, this, observer);
     	}
     	
     	/*
@@ -304,7 +304,7 @@ public class MCTS {
 //    	root.minmctsClearingPrice = pmctsprice;
     	// loop it and do some number of simulations
     	for(int i=0; i < this.mctsSim/2; i++){
-    		root.runMonteCarlo(actions, this, observer);
+    		//root.runMonteCarlo(actions, this, observer);
     	}
     	return root.finalSelect(observer);
     	
