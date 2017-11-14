@@ -10,7 +10,7 @@ public class Action {
 	public ACTION_TYPE type;
 	public double percentage;
 	public boolean dynamicAction;
-	public double [] predictions;
+	
 	public static enum ACTION_TYPE{
 		BUY,
 		SELL,
@@ -29,7 +29,6 @@ public class Action {
 		this.type = type;
 		this.percentage = percentage;
 		this.dynamicAction = dynamicAction;
-		this.predictions = new double [24];
 	}
 	
 	public double [] getAdjustedPrice(double meanPrice, double stddev){

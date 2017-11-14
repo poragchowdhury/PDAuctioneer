@@ -97,7 +97,7 @@ public class TreeNode {
         // add dynamic action space logic
         if(cur.nVisits > mcts.varthreshold) {
         	int actionsize = actions.size();
-        	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob, actions);
+        	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob);
         	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
         	actions.add(action);	
 //        	action = new Action(actionsize+1,pmctsprice,-0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
@@ -154,7 +154,6 @@ public class TreeNode {
 	                newchild.volPercentage = action.percentage;
 	                newchild.actionName = action.actionName;
 	                newchild.dynamicState = action.dynamicAction;
-	                newchild.minMult = action.predictions[cur.hourAheadAuction-1];
 	                cur.children.add(newchild);
     			}
     			unvisitedNode = cur.selectRandomUnvisited(mcts, ob);	
@@ -276,7 +275,7 @@ public class TreeNode {
         return selected;
     }
 
-    public double getMCTSValue(double mean, Observer ob, ArrayList<Action> actions) {
+    public double getMCTSValue(double mean, Observer ob) {
     	//int actionsize = actions.size();
     	//Action action = new Action(actionsize,0,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
     	boolean printOn = false;
