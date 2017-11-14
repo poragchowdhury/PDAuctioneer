@@ -35,8 +35,7 @@ public class TreeNode {
     	maxMult,
     	volPercentage,
     	currentNodeCostAvg,
-    	currentNodeCostLast,
-    	dynamicPrice;
+    	currentNodeCostLast;
     
     public boolean dynamicState = false;
     
@@ -72,7 +71,6 @@ public class TreeNode {
     	this.volPercentage = tn.volPercentage;
     	this.actionName = tn.actionName;
     	this.dynamicState = tn.dynamicState;
-    	this.dynamicPrice = tn.dynamicPrice;
     }
     
     public int unvisitedChildren(TreeNode tn){
@@ -98,13 +96,10 @@ public class TreeNode {
         
         // add dynamic action space logic
         if(cur.nVisits > mcts.varthreshold) {
-        	//int actionsize = actions.size();
-        	double pmctsp = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[ob.hourAhead], ob, actions);
         	int actionsize = actions.size();
-        	Action action = new Action(actionsize,pmctsp,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
-        	actions.add(action);
-        	//Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
-        	
+        	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob, actions);
+        	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
+        	actions.add(action);	
 //        	action = new Action(actionsize+1,pmctsprice,-0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
 //        	actions.add(action);
 //        	action = new Action(actionsize+2,pmctsprice,0.05,false, Action.ACTION_TYPE.BUY, 1.00, true);
@@ -124,7 +119,7 @@ public class TreeNode {
     		//	break;
         	
         	if(cur.children == null){
-        		cur.expand(actions, mcts, ob, mcts.arrMctsPredClearingPrice[ob.hourAhead]);
+        		cur.expand(actions, mcts, ob, mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1]);
         	}
         	
         	//int unvisitedChildren = unvisitedChildren(cur);
@@ -159,6 +154,7 @@ public class TreeNode {
 	                newchild.volPercentage = action.percentage;
 	                newchild.actionName = action.actionName;
 	                newchild.dynamicState = action.dynamicAction;
+	                newchild.minMult = action.predictions[cur.hourAheadAuction-1];
 	                cur.children.add(newchild);
     			}
     			unvisitedNode = cur.selectRandomUnvisited(mcts, ob);	
@@ -231,6 +227,7 @@ public class TreeNode {
             newchild.currentNodeCostAvg = 0.0;
             newchild.currentNodeCostLast = 0.0;
             newchild.actionName = action.actionName;
+            newchild.dynamicState = action.dynamicAction;
             children.add(newchild);
         }
     }
@@ -279,7 +276,9 @@ public class TreeNode {
         return selected;
     }
 
-    public double getMCTSValue(double arrMCTSPred, Observer ob, ArrayList<Action> actions) {
+    public double getMCTSValue(double mean, Observer ob, ArrayList<Action> actions) {
+    	//int actionsize = actions.size();
+    	//Action action = new Action(actionsize,0,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
     	boolean printOn = false;
         TreeNode selected = null;
         double bestValue = Double.MAX_VALUE *-1;
@@ -290,7 +289,7 @@ public class TreeNode {
         TreeNode cur = this;
 
         //while(flag) {
-	    	if(cur == null || cur.children == null || cur.hourAheadAuction == 0)
+	    	if(cur == null || cur.children == null || cur.hourAheadAuction-1 == 0)
 	    		flag = false;
         	if(cur.children != null) {
 		        for (TreeNode c : cur.children) {
@@ -323,22 +322,11 @@ public class TreeNode {
 		        }
 		        // set the price to predicted price array inside the action
 		        //action.predictions[selected.hourAheadAuction] = Math.abs(selected.totValue);
-		        cur = selected;
 		        return Math.abs(selected.totValue);
         	}
-	        
-	    //}
-        
-        return Math.abs(arrMCTSPred);
-        
-        /*
-        for(int i = 23; i >= 0; i--) {
-        	if(action.predictions[i] == 0) {
-        		action.predictions[i] = Math.abs(arrMCTSPred[i]);//action.predictions[hourAheadnow];
-        	}
-        }
-        */
-        	
+	        //cur = selected;
+       //}
+        return Math.abs(mean);
     }
 
     
