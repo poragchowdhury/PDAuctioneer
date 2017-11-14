@@ -28,7 +28,7 @@ public class MCTS {
 	public double lastPriceDiffPerTradeAction = 0.0;
 	double [] arrMctsPredClearingPrice = new double[25];
 	
-	public double [] thresholdMCTS = new double[4];
+	public double [] thresholdMCTS = new double[5];
 	public double varthreshold = 10;
 	
 	
@@ -48,6 +48,7 @@ public class MCTS {
 		this.thresholdMCTS[1] = mctsSim*0.1;
 		this.thresholdMCTS[2] = mctsSim*0.2;
 		this.thresholdMCTS[3] = mctsSim*0.5;
+		this.thresholdMCTS[4] = mctsSim;
 		this.playerName = name;
 	}
 
