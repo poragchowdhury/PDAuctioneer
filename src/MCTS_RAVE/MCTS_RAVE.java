@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_RAVE;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,7 +8,7 @@ import java.util.Random;
 import configure.Configure;
 
 import Agents.Agent;
-import MCTS.TreeNode;
+import MCTS_RAVE.TreeNode;
 import Observer.Observer;
 import Observer.PricePredictor;
 
@@ -18,7 +18,7 @@ import Observer.PricePredictor;
  * Date: 19-March-2016
  * Time: 21:51:31
  */
-public class MCTS {
+public class MCTS_RAVE {
 	// Predicted Clearing Price
 	public PricePredictor pricePredictor = new PricePredictor(Agent.predictorName);
 	public TreeNode root;
@@ -40,7 +40,7 @@ public class MCTS {
     public String playerName;
     public int thresholdcount = 0;
     
-	public MCTS(double mctsSim, String name){
+	public MCTS_RAVE(double mctsSim, String name){
 		actions = new ArrayList<Action>();
 		dynamicactionsMCTS2 = new ArrayList<Action>();
 		this.mctsSim = mctsSim;

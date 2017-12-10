@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_RAVE;
 /**
 
  * Created by Moinul Morshed Porag Chowdhury
@@ -15,7 +15,7 @@ import java.util.Random;
 import configure.Configure;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
-import MCTS.Action.ACTION_TYPE;
+import MCTS_RAVE.Action.ACTION_TYPE;
 import Observer.Observer;
 
 public class TreeNode {
@@ -88,7 +88,7 @@ public class TreeNode {
     	return count;
     }
     
-    public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob, int sims) {
+    public void runMonteCarlo(ArrayList<Action> actions, MCTS_RAVE mcts, Observer ob, int sims) {
     	
     	double simCost = 0.0;
     	double neededEnergy = ob.neededEneryMCTSBroker;
@@ -220,7 +220,7 @@ public class TreeNode {
         
     }
 
-    public void expand(ArrayList<Action> actions, MCTS mcts, Observer ob, double mean) {
+    public void expand(ArrayList<Action> actions, MCTS_RAVE mcts, Observer ob, double mean) {
     	int nActions = actions.size();
     	//children = new TreeNode[nActions];
     	children = new ArrayList<TreeNode>();
@@ -338,13 +338,13 @@ public class TreeNode {
     }
 
     
-    public TreeNode selectRandom(MCTS mcts, Observer observer) {
+    public TreeNode selectRandom(MCTS_RAVE mcts, Observer observer) {
     	Random r = new Random();
     	int i = r.nextInt(mcts.actions.size()) + 0;
     	return children.get(i);
     }
     
-    public TreeNode selectRandomUnvisited(MCTS mcts, Observer observer) {
+    public TreeNode selectRandomUnvisited(MCTS_RAVE mcts, Observer observer) {
     	for(TreeNode child : this.children)
     	{
     		if(child.nVisits == 0)
@@ -353,7 +353,7 @@ public class TreeNode {
     	return null;
     }
     
-    public TreeNode select(MCTS mcts, Observer observer, double neededEnergy) {
+    public TreeNode select(MCTS_RAVE mcts, Observer observer, double neededEnergy) {
     	boolean printOn = false;
     	TreeNode nobidaction;
         TreeNode selected = null;
@@ -433,7 +433,7 @@ public class TreeNode {
     }
 
     
-    public double [] rollout(TreeNode tempNode, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, ArrayList<Action> actions, MCTS mcts) {
+    public double [] rollout(TreeNode tempNode, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, ArrayList<Action> actions, MCTS_RAVE mcts) {
     	TreeNode tn = new TreeNode(tempNode);
         // ultimately a roll out will end in some value
         // assume for now that it ends in a win or a loss

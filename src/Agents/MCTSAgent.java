@@ -163,6 +163,7 @@ public class MCTSAgent extends Agent {
 			double pcp = observer.pricepredictor.getPrice(observer.hourAhead);
 			limitPrice = pcp+bestMove.minMult*observer.STDDEV[observer.hourAhead];
 		}
+		//limitPrice = bestMove.totValue;
 		System.out.println("LimitPricecMCTS " + limitPrice + " unitcost " + bestMove.minMult + " perc " + bestMove.maxMult);
 		double priceRange = 0;//bestMove.maxmctsClearingPrice - bestMove.minmctsClearingPrice;
 		double minMWh = 1;
