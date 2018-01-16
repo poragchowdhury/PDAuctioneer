@@ -1,4 +1,4 @@
-package MCTS_RAVE;
+package MCTS_Kernel;
 
 import java.util.Random;
 

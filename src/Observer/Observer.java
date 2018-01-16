@@ -992,8 +992,8 @@ public class Observer {
 		    neededTotalVolumes.put(brokerName, 0.0);
 		    clearedTotalBidVolumes.put(brokerName, 0.0);
 		    clearedTotalAskVolumes.put(brokerName, 0.0);
-		    nanoTime = 0;
-		    nanoTimeCount = 0;
+		    //nanoTime = 0;
+		    //nanoTimeCount = 0;
 		}
 
 		costTotal.clear();
@@ -1001,6 +1001,9 @@ public class Observer {
 		clearedTotalBidVolumes.clear();
 		clearedTotalAskVolumes.clear();
 		currentTimeSlot = 0;
+		
+		
+		//System.out.printf("\nMean Clearing Price : " + meanClearingPrice);
 		
 		System.out.printf("Mean Clearing Price : " + meanClearingPrice);
 		pwOutput.println();

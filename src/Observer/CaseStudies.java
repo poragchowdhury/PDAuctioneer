@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import Agents.Agent;
+import Agents.KR_MCTSAgent;
 import Agents.MCTSAgent;
 import Agents.Producer;
 import Agents.SPOT;
@@ -193,7 +194,7 @@ public class CaseStudies {
 			observer.printableAgents.add(ZI);
 			Agent TacTex = new TacTex("TacTex", 0, neededMWhBroker, 30, 10);
 			observer.printableAgents.add(TacTex);
-			Agent MCTSX = new MCTSAgent("MCTSX",0, neededMCTSMWhBroker,30,10,Configure.getVARMCTSAGENTITERATION());
+			Agent MCTSX = new KR_MCTSAgent("KR_MCTSX",0, neededMCTSMWhBroker,30,10,Configure.getVARMCTSAGENTITERATION());
 			observer.printableAgents.add(MCTSX);
 			Agent ZIP = new ZIP("ZIP", 0, neededMWhBroker, 40, 10);
 			observer.printableAgents.add(ZIP);

@@ -1,4 +1,4 @@
-package MCTS_RAVE;
+package MCTS_Kernel;
 /**
 
  * Created by Moinul Morshed Porag Chowdhury
@@ -15,7 +15,7 @@ import java.util.Random;
 import configure.Configure;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
-import MCTS_RAVE.Action.ACTION_TYPE;
+import MCTS_Kernel.Action.ACTION_TYPE;
 import Observer.Observer;
 
 public class TreeNode {
@@ -25,6 +25,8 @@ public class TreeNode {
     
     public Action.ACTION_TYPE actionType;
     
+    public double kernel [][][];
+    public double limitprices [];
     //TreeNode[] children;
     ArrayList<TreeNode> children;
     public TreeNode parent;
@@ -48,15 +50,17 @@ public class TreeNode {
     
     public boolean nobid = false;
     
-    public TreeNode(){
-    	
+    public TreeNode(double pprice, ArrayList<Action> actions, double stddev){
+    	this.limitprices = new double[20];
+    	this.kernel = new double[20][20][4];
+    	for(Action a:actions) {
+    		if(a.dynamicAction)
+    			this.limitprices[a.actionName] = a.minMult;
+    		else
+    			this.limitprices[a.actionName] = pprice + (stddev * a.minMult);
+    	}
     }
-    
-    public TreeNode(int n, boolean nobid){
-    	this.actionName = n;
-    	this.nobid = nobid;
-    }
-    
+
     public TreeNode(TreeNode tn){
     	this.nVisits = tn.nVisits;
     	this.ntotValueVisits = tn.ntotValueVisits; 
@@ -75,6 +79,18 @@ public class TreeNode {
     	this.actionName = tn.actionName;
     	this.dynamicState = tn.dynamicState;
     	this.parent = tn.parent;
+    	this.limitprices = new double[20];
+    	this.kernel = new double[20][20][4];
+    	for(int i = 0; i < 20; i++) {
+    		this.limitprices[i] = tn.limitprices[i];
+    		for(int j = 0; j < 20; j++) {
+    			this.kernel[i][j][0] = tn.kernel[i][j][0];
+    			this.kernel[i][j][1] = tn.kernel[i][j][1];
+    			this.kernel[i][j][0] = tn.kernel[i][j][2];
+    			this.kernel[i][j][1] = tn.kernel[i][j][3];
+    		}
+    	}
+    	
     }
     
     public int unvisitedChildren(TreeNode tn){
@@ -88,7 +104,7 @@ public class TreeNode {
     	return count;
     }
     
-    public void runMonteCarlo(ArrayList<Action> actions, MCTS_RAVE mcts, Observer ob, int sims) {
+    public void runMonteCarlo(ArrayList<Action> actions, MCTS_Kernel mcts, Observer ob, int sims) {
     	
     	double simCost = 0.0;
     	double neededEnergy = ob.neededEneryMCTSBroker;
@@ -97,7 +113,7 @@ public class TreeNode {
         TreeNode cur = this;
         
         visited.add(this);
-        
+        //System.out.println("Sim number: " + sims);
         // add dynamic action space logic
         if(mcts.thresholdcount < 4 && sims > mcts.thresholdMCTS[mcts.thresholdcount]) {
         	int actionsize = actions.size();
@@ -132,7 +148,7 @@ public class TreeNode {
     			mcts.debugCounter++;
     			// Initiate all 11 nodes
         		// select a random node
-        		cur = unvisitedNode;//cur.selectRandomUnvisited(mcts, ob);
+    			cur = unvisitedNode;//cur.selectRandomUnvisited(mcts, ob);
         		visited.add(cur);
         		// do the rollout
         		double [] retValue = rollout(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, actions, mcts);
@@ -161,12 +177,12 @@ public class TreeNode {
     			// Reset the exploration count to 1 for all children
     			//for(TreeNode child : cur.children)
     			//	child.nVisits = 0;
-    			// add a new child
+    			// add a new child :: EXPAND
     			for(int i = childrensize; i < actionsize; i++) {
 	    			Action action = actions.get(i);
-	        		TreeNode newchild = new TreeNode();
+	        		TreeNode newchild = new TreeNode(mcts.arrMctsPredClearingPrice[cur.hourAheadAuction-2], actions, ob.STDDEV[cur.hourAheadAuction-2]);
 	        		newchild.parent = cur;
-	            	newchild.hourAheadAuction =cur.hourAheadAuction-1;
+	        		newchild.hourAheadAuction =cur.hourAheadAuction-1;
 	                newchild.appliedAction = action.actionName;
 	                newchild.nobid = action.nobid;
 	                newchild.minMult = action.minMult;
@@ -177,8 +193,8 @@ public class TreeNode {
 	                newchild.dynamicState = action.dynamicAction;
 	                cur.children.add(newchild);
     			}
-    			unvisitedNode = cur.selectRandomUnvisited(mcts, ob);	
-                cur = unvisitedNode;
+    			unvisitedNode = cur.selectRandomUnvisited(mcts, ob);
+    			cur = unvisitedNode;
                 visited.add(cur);
         		// do the rollout
         		double [] retValue = rollout(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, actions, mcts);
@@ -196,7 +212,7 @@ public class TreeNode {
     		cur = cur.select(mcts, ob, neededEnergy);
     		
     		if(cur == null)
-    			System.out.println("hi");
+    			System.out.println("hi, its null");
             // Do the simulation-rollout for wholesale auction
             double [] retValue = simulation(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy);
             neededEnergy -= retValue[0];
@@ -220,7 +236,7 @@ public class TreeNode {
         
     }
 
-    public void expand(ArrayList<Action> actions, MCTS_RAVE mcts, Observer ob, double mean) {
+    public void expand(ArrayList<Action> actions, MCTS_Kernel mcts, Observer ob, double mean) {
     	int nActions = actions.size();
     	//children = new TreeNode[nActions];
     	children = new ArrayList<TreeNode>();
@@ -232,7 +248,7 @@ public class TreeNode {
 //		double stddev = ob.STDDEV[newHourAheadAuction];//7.8;
 		
         for (int i=0; i<nActions; i++) {
-            TreeNode newchild = new TreeNode();
+            TreeNode newchild = new TreeNode(mcts.arrMctsPredClearingPrice[newHourAheadAuction], actions, ob.STDDEV[newHourAheadAuction]);
             Action action = actions.get(i);
             newchild.hourAheadAuction =newHourAheadAuction;
             
@@ -338,13 +354,13 @@ public class TreeNode {
     }
 
     
-    public TreeNode selectRandom(MCTS_RAVE mcts, Observer observer) {
+    public TreeNode selectRandom(MCTS_Kernel mcts, Observer observer) {
     	Random r = new Random();
     	int i = r.nextInt(mcts.actions.size()) + 0;
     	return children.get(i);
     }
     
-    public TreeNode selectRandomUnvisited(MCTS_RAVE mcts, Observer observer) {
+    public TreeNode selectRandomUnvisited(MCTS_Kernel mcts, Observer observer) {
     	for(TreeNode child : this.children)
     	{
     		if(child.nVisits == 0)
@@ -353,7 +369,7 @@ public class TreeNode {
     	return null;
     }
     
-    public TreeNode select(MCTS_RAVE mcts, Observer observer, double neededEnergy) {
+    public TreeNode select(MCTS_Kernel mcts, Observer observer, double neededEnergy) {
     	boolean printOn = false;
     	TreeNode nobidaction;
         TreeNode selected = null;
@@ -373,59 +389,52 @@ public class TreeNode {
         }
         
         double bestValue = Double.MAX_VALUE *-1;
-        for (TreeNode c : children) {
-        	if(booNobid){
-        		if(c.nobid) {
-        			selected = c;
-        			break;
-        		}
-        	}
-        	else{
-	        	double nVisitValue = 0;
-	         	double totlPoint = 0;
-	         	
-	         	if(c.nVisits == 0){
-	         		nVisitValue = 1 + epsilon;
-	         		totlPoint = c.totValue;// / (1 + epsilon);
-	         	}
-	         	else{
-	         		nVisitValue = c.nVisits + epsilon;
-	         		totlPoint = c.totValue;// / ((c.nVisits) + epsilon);
-	         	}
-	         	
-	         	double dividend = -Math.abs(observer.arrBalacingPrice[observer.currentTimeSlot]);//*neededEnergy);//(Configure.getPERHOURENERGYDEMAND()/Configure.getNUMBER_OF_BROKERS());
-	         	
-	         	totlPoint = (1-(totlPoint/(dividend)));
-	         	
-	         	if(dividend == 0 || neededEnergy <= 0.001)
-	         		totlPoint = 0;
-	         	
-	         	double visitPoint = Math.sqrt(2*Math.log(nVisits+1) / nVisitValue);
-	        	
-	         	double randPoint = r.nextDouble() * epsilon;
-	            double uctValue = totlPoint + visitPoint + randPoint; 
-	            
-	            // small random number to break ties randomly in unexpanded nodes
-	            if(printOn)
-	            	System.out.println("Action " + c.appliedAction + " UCT value = " + uctValue + " totlPoint " + totlPoint + " nvisitPoint " + visitPoint + " c.nvisits " + c.nVisits + " totalVisits " + nVisits);
-	            
-	            if (uctValue > bestValue) {
-	                selected = c;
-	                bestValue = uctValue;
-	            }
-	        }
+        
+        double kernelValue [] = new double[20];
+     	double kernelDensity [] = new double[20];
+     	double kernelW = 0;
+     	double dividend = -Math.abs(observer.arrBalacingPrice[observer.currentTimeSlot]);
+     	double [] kernelDividend = new double[20]; 
+     	//double totalP = 0;
+     	for(int i = 0; i < this.children.size(); i++) {
+     		for(int j = 0; j < this.children.size(); j++) {
+     			double d = kernel[i][j][1];
+     			if(d == 0)
+     				d = 1;
+     			kernelValue[i] += (kernel[i][j][0]/d) * kernel[0][j][2] * kernel[0][j][3]; 
+     			kernelDividend[i] += (kernel[i][j][0]/d) * dividend * kernel[0][j][3]; 
+     			kernelDensity[i] += (kernel[i][j][0]/d) * kernel[0][j][3]; 
+     		}
+     		kernelValue[i] = (1- kernelValue[i]/kernelDividend[i]);
+ 			if(dividend == 0 || neededEnergy <= 0.001) {
+ 				kernelValue[i] = 0;
+ 				kernelDividend[i] = 1;
+ 			}
+ 			
+     		kernelW += kernelDensity[i];
      	}
-        
-        if(printOn){
-        	System.out.println("HourAhead " + selected.hourAheadAuction + " Action " + selected.appliedAction);
-        	System.out.println();
-        }
-        // System.out.println("Returning: " + selected);
-        
-        if(selected == null) {
-        	System.out.println("bestValue " + bestValue + " Max " + (Double.MAX_VALUE *-1));
-        }
-        return selected;
+     	
+     	for(int i = 0; i < this.children.size(); i++) {
+     		
+         	double visitPoint = Math.sqrt(2*Math.log(kernelW) / kernelDensity[i]);
+     		double randPoint = r.nextDouble() * epsilon;
+     		//System.out.println("value: " + kernelValue[i] + " points: " + visitPoint);
+            double uctValue = kernelValue[i] + visitPoint + randPoint; 
+     		
+            if (uctValue > bestValue) {
+                selected = this.children.get(i);
+                bestValue = uctValue;
+            }
+     	}
+     	
+     	if(selected == null) {
+     		System.out.println("Pick Random");
+     		Random ran = new Random();
+     		int x = ran.nextInt(this.children.size()) + 0;
+     		selected = children.get(x);
+     	}
+     	
+     	return selected;
     }
 
     public boolean isLeaf() {
@@ -433,8 +442,10 @@ public class TreeNode {
     }
 
     
-    public double [] rollout(TreeNode tempNode, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, ArrayList<Action> actions, MCTS_RAVE mcts) {
+    public double [] rollout(TreeNode tempNode, double [] arrPredClearingPrice, Observer ob, Double neededMWh, Double iniNeededEnergy, ArrayList<Action> actions, MCTS_Kernel mcts) {
+    	boolean updateKernel = true;
     	TreeNode tn = new TreeNode(tempNode);
+    	
         // ultimately a roll out will end in some value
         // assume for now that it ends in a win or a loss
         // and just return this at random
@@ -473,7 +484,7 @@ public class TreeNode {
 					double totalE = surplus + Math.abs(neededMWh);
 
 					if(totalE > 0) {
-						
+						int count = 0;
 						minMWh= Math.abs(totalE) / numberofbids;
 			    		for(int i = 1; i <=numberofbids; i++){
 			    			if(limitPrice >= clearingPrice) //arrPredClearingPrice[tn.hourAheadAuction]){
@@ -483,8 +494,20 @@ public class TreeNode {
 			    				costValue+=minMWh*clearingPrice; // tcp;//
 			    				totalBidVolume+=minMWh;
 			    				singleBidVolume+=minMWh;
+			    				count++;
 			    			}
 			    			limitPrice+=unitPriceIncrement;
+			    		}
+			    		
+			    		if(updateKernel)
+			    		{
+			    			for(int i = 0; i < tempNode.parent.children.size(); i++) {
+			    				if(tempNode.limitprices[i] >= clearingPrice)
+			    					tempNode.parent.kernel[i][tempNode.actionName][0]++;
+			    				
+								tempNode.parent.kernel[i][tempNode.actionName][1]++;
+							}
+							updateKernel = false;
 			    		}
 					}
 	    		}
@@ -514,6 +537,16 @@ public class TreeNode {
 					tn.currentNodeCostLast = singleBidVolume * clearingPrice * -1;
 				}
 	     	}
+
+			// update kernel for NOBID
+			if(updateKernel && tempNode.nobid)
+			{
+				for(int i = 0; i < tempNode.parent.children.size(); i++) {
+					tempNode.parent.kernel[i][tempNode.actionName][0]++;
+					tempNode.parent.kernel[i][tempNode.actionName][1]++;
+				}
+				updateKernel = false;
+			}	
 	    	
 			neededMWh -= singleBidVolume; 
 	    	
@@ -584,6 +617,14 @@ public class TreeNode {
 		    			}
 		    			limitPrice+=unitPriceIncrement;
 		    		}
+		    		
+	    			for(int i = 0; i < tn.parent.children.size(); i++) {
+	    				if(tn.limitprices[i] >= clearingPrice)
+	    					tn.parent.kernel[i][tn.actionName][0]++;
+	    				
+						tn.parent.kernel[i][tn.actionName][1]++;
+					}
+					
 				}
     		}
     		else{
@@ -613,6 +654,13 @@ public class TreeNode {
 				tn.currentNodeCostLast = totalBidVolume * clearingPrice * -1;
 			}
     	}
+    	else {
+    		// NO BID
+			for(int i = 0; i < tn.parent.children.size(); i++) {
+				tn.parent.kernel[i][tn.actionName][0]++;
+				tn.parent.kernel[i][tn.actionName][1]++;
+			}
+    	}
 
 //    	if(totalBidVolume != 0)
 //			costValue /= totalBidVolume;
@@ -625,6 +673,10 @@ public class TreeNode {
     	currentNodeCostAvg = ((currentNodeCostAvg*this.ntotValueVisits) + currentNodeCostLast)/(this.ntotValueVisits+1);
         nVisits+=1;
         ntotValueVisits+=1;
+        if(parent!=null) {
+	        parent.kernel[0][actionName][2] = totValue;
+	        parent.kernel[0][actionName][3] = nVisits;
+        }
         
     }
 
@@ -637,6 +689,16 @@ public class TreeNode {
     		return root.children;
     	}
     	return getChildren(root, hourAhead, count++);
+    }
+    
+    public void printKernel() {
+    	for(int i = 0; i < children.size(); i++) {
+    		for(int j = 0; j < children.size(); j++) {
+    			System.out.print("" + kernel[i][j][0] + "/" + kernel[i][j][1] + " ");
+    		}
+    		System.out.println();	
+    	}
+    	
     }
     
 }
