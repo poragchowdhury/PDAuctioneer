@@ -22,7 +22,6 @@ public class MCTS_Kernel {
 	// Predicted Clearing Price
 	public PricePredictor pricePredictor = new PricePredictor(Agent.predictorName);
 	public TreeNode root;
-	public int debugCounter=0;
 	public double totalSuccessfulBids = 0;
 	public double lastmctsClearingPrice = 0.0;
 	public double lastPriceDiffPerTradeAction = 0.0;
@@ -195,6 +194,7 @@ public class MCTS_Kernel {
     	
     	TreeNode root = new TreeNode(arrMctsPredClearingPrice[observer.hourAhead], actions, observer.STDDEV[observer.hourAhead], thresholdcount);
     	root.parent = null;
+    	root.nVisits = actions.size();
     	root.hourAheadAuction = observer.hourAhead+1;
     	
     	// Set the number of Simulations

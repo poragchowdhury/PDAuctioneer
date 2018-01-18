@@ -94,7 +94,7 @@ public class KR_MCTSAgent extends Agent {
 			limitPrice = pcp+bestMove.minMult*observer.STDDEV[observer.hourAhead];
 		}
 		//limitPrice = bestMove.totValue;
-		System.out.println("LimitPricecMCTS " + limitPrice + " unitcost " + bestMove.minMult + " perc " + bestMove.maxMult);
+		System.out.println("Action " + bestMove.actionName + " LimitPriceMCTS " + limitPrice + " minMult " + bestMove.minMult + " maxMult " + bestMove.maxMult);
 		double priceRange = 0;//bestMove.maxmctsClearingPrice - bestMove.minmctsClearingPrice;
 		double minMWh = 1;
 
