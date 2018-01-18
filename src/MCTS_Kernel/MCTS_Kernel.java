@@ -193,7 +193,7 @@ public class MCTS_Kernel {
     	}
     	
     	
-    	TreeNode root = new TreeNode(arrMctsPredClearingPrice[observer.hourAhead], actions, observer.STDDEV[observer.hourAhead]);
+    	TreeNode root = new TreeNode(arrMctsPredClearingPrice[observer.hourAhead], actions, observer.STDDEV[observer.hourAhead], thresholdcount);
     	root.parent = null;
     	root.hourAheadAuction = observer.hourAhead+1;
     	
