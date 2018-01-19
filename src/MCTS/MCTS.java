@@ -22,7 +22,6 @@ public class MCTS {
 	// Predicted Clearing Price
 	public PricePredictor pricePredictor = new PricePredictor(Agent.predictorName);
 	public TreeNode root;
-	public int debugCounter=0;
 	public double totalSuccessfulBids = 0;
 	public double lastmctsClearingPrice = 0.0;
 	public double lastPriceDiffPerTradeAction = 0.0;
