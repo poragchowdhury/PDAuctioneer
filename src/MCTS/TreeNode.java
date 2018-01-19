@@ -117,9 +117,7 @@ public class TreeNode {
         int actionsize = actions.size();
         
     	while (!cur.isLeaf()) {
-    		//if(neededEnergy == 0)
-    		//	break;
-        	
+    		
         	if(cur.children == null){
         		cur.expand(actions, mcts, ob, mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1]);
         	}
