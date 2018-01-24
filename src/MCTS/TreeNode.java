@@ -129,7 +129,6 @@ public class TreeNode {
     			for(int i = childrensize; i < actionsize; i++) {
 	    			Action action = actions.get(i);
 	        		TreeNode newchild = new TreeNode();
-	        		//newchild.parent = cur;
 	            	newchild.hourAheadAuction =cur.hourAheadAuction-1;
 	                newchild.appliedAction = action.actionName;
 	                newchild.nobid = action.nobid;
@@ -152,7 +151,6 @@ public class TreeNode {
                 break;
         	}
         	
-    		
     		cur = cur.select(mcts, ob, neededEnergy);
     		
     		if(cur == null)
