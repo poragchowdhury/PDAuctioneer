@@ -59,22 +59,22 @@ public class C2 extends Agent {
 				else
 					threshold *= probability[0];
 			}
-			
+
 			//threshold = roundup(threshold);
 
 			double totP = Double.MIN_VALUE;
-			
+
 			int lastCounter = 0;
 			while(totP < threshold) {
 				totP = 1;
 				for(int i = 0; i < newPIndices.length; i++) {
-//					if(newPIndices[0] == 8 && newPIndices[1] == 8)
-//						System.out.println("Ok");
+					//					if(newPIndices[0] == 8 && newPIndices[1] == 8)
+					//						System.out.println("Ok");
 					totP *= probability[newPIndices[i]];
 				}
-				
+
 				//totP = roundup(totP);
-				
+
 				if(totP < threshold)
 				{
 					// update newP[lastIndex]
@@ -83,16 +83,20 @@ public class C2 extends Agent {
 				}
 				lastCounter++;
 			}
-			
+
 			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
 			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
 			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
 				double d = ob.pricepredictor.getPrice(HA);
-	    		arrPredClearingPrice[HA] = d;
-	    		arrsortedPredClearingPrice[HA] = d;
-	    	}
-			
+				arrPredClearingPrice[HA] = d;
+				arrsortedPredClearingPrice[HA] = d;
+			}
+
+			arrPredClearingPrice[ob.hourAhead] += 0.00001;
+			arrsortedPredClearingPrice[ob.hourAhead] += 0.00001;
+
 			Arrays.sort(arrsortedPredClearingPrice);
+
 			int index = 0;
 			for(int i = 0; i < arrPredClearingPrice.length; i++) {
 				if(arrPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
@@ -101,22 +105,11 @@ public class C2 extends Agent {
 					break;
 				}
 			}
-			
-			/*double [] param = new double[9];
-			param = ob.getTime(param);
-			Instance myIns = getTestInstance(param);
-			if (myIns == null)
-				System.out.println("*****************My Ins Null : ");
-			try{
-				limitPrice = this.classifier.classifyInstance(myIns);
-			}
-			catch(Exception ex){
-				ex.printStackTrace();
-			}*/
+
 			double C1limitPrice = 0.0;
-			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+			double limitPrice = arrPredClearingPrice[ob.hourAhead];
 			C1limitPrice = Math.abs(limitPrice+sigma[newPIndices[index]]*7.8);
-			//System.out.println("C1limitPrice" + C1limitPrice);
+			System.out.println("C2limitPrice" + C1limitPrice);
 			if((this.neededMWh-MIN_MWH) <= 0) {
 				return;
 			}
@@ -127,9 +120,9 @@ public class C2 extends Agent {
 			bids.add(bid);
 		}
 	}
-	
+
 	public double roundup(double totP) {
-		
+
 		// rounding values
 		totP = totP*100;
 		totP = Math.round(totP);

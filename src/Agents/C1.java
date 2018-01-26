@@ -58,7 +58,7 @@ public class C1 extends Agent {
 					threshold *= probability[0];
 			}
 			
-			threshold = roundup(threshold);
+			//threshold = roundup(threshold);
 
 			double totP = Double.MIN_VALUE;
 			
@@ -71,7 +71,7 @@ public class C1 extends Agent {
 					totP *= probability[newPIndices[i]];
 				}
 				
-				totP = roundup(totP);
+				//totP = roundup(totP);
 				
 				if(totP < threshold)
 				{
