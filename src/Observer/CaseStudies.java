@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import Agents.Agent;
+import Agents.C1;
+import Agents.C2;
 import Agents.MCTSAgent;
 import Agents.Producer;
 import Agents.SPOT;
@@ -201,6 +203,74 @@ public class CaseStudies {
 			observer.addAgents(ZI);
 			observer.addAgents(TacTex);
 			observer.addAgents(MCTSX);
+			observer.addAgents(ZIP);
+			/*
+			List<Integer> combinationIndex = list.get((observer.SEED-1)%24);
+			for(Integer i:combinationIndex) {
+				observer.addAgents(observer.printableAgents.get(i.intValue()));
+			}
+			*/
+		}
+		else if(Configure.getCASE_STUDY_NO() == Configure.CASE_STUDY.C1.getValue()){
+			observer.agents.clear();
+			observer.printableAgents.clear();
+			observer.GREEN_AUCTION_FLAG = false;
+			/*
+			List<Integer> available = new ArrayList<Integer>();
+	        List<Integer> visitedNodes = new ArrayList<Integer>();
+	        
+	        for(int i = 0; i < 4; i++){
+	            available.add(i);
+	        }
+	        dfs(available,visitedNodes);
+	        */
+			
+			Agent ZI = new ZI("ZI", 0, neededMWhBroker, 40, 10);
+			observer.printableAgents.add(ZI);
+			Agent TacTex = new TacTex("TacTex", 0, neededMWhBroker, 30, 10);
+			observer.printableAgents.add(TacTex);
+			Agent c1 = new C1("C1",0, neededMCTSMWhBroker,30,10);
+			observer.printableAgents.add(c1);
+			Agent ZIP = new ZIP("ZIP", 0, neededMWhBroker, 40, 10);
+			observer.printableAgents.add(ZIP);
+			
+			observer.addAgents(ZI);
+			observer.addAgents(TacTex);
+			observer.addAgents(c1);
+			observer.addAgents(ZIP);
+			/*
+			List<Integer> combinationIndex = list.get((observer.SEED-1)%24);
+			for(Integer i:combinationIndex) {
+				observer.addAgents(observer.printableAgents.get(i.intValue()));
+			}
+			*/
+		}
+		else if(Configure.getCASE_STUDY_NO() == Configure.CASE_STUDY.C2.getValue()){
+			observer.agents.clear();
+			observer.printableAgents.clear();
+			observer.GREEN_AUCTION_FLAG = false;
+			/*
+			List<Integer> available = new ArrayList<Integer>();
+	        List<Integer> visitedNodes = new ArrayList<Integer>();
+	        
+	        for(int i = 0; i < 4; i++){
+	            available.add(i);
+	        }
+	        dfs(available,visitedNodes);
+	        */
+			
+			Agent ZI = new ZI("ZI", 0, neededMWhBroker, 40, 10);
+			observer.printableAgents.add(ZI);
+			Agent TacTex = new TacTex("TacTex", 0, neededMWhBroker, 30, 10);
+			observer.printableAgents.add(TacTex);
+			Agent c2 = new C2("C2",0, neededMCTSMWhBroker,30,10);
+			observer.printableAgents.add(c2);
+			Agent ZIP = new ZIP("ZIP", 0, neededMWhBroker, 40, 10);
+			observer.printableAgents.add(ZIP);
+			
+			observer.addAgents(ZI);
+			observer.addAgents(TacTex);
+			observer.addAgents(c2);
 			observer.addAgents(ZIP);
 			/*
 			List<Integer> combinationIndex = list.get((observer.SEED-1)%24);

@@ -122,7 +122,9 @@ public class Configure {
 		TRANINIG_WITH_2BrokerGame(9),
 		TACTEX(10),
 		TACTEX_4Agents(11),
-		MCTS_4Agents(12);
+		MCTS_4Agents(12),
+		C1(13),
+		C2(14);
 		
 		private final int id;
 		CASE_STUDY(int id) { this.id = id; }
