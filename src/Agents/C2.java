@@ -34,6 +34,10 @@ public class C2 extends Agent {
 	public PricePredictor pricePredictor;
 	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.93, 0.97};
 	public double [] sigma = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
+	
+	double totalLayerInput;
+	double [] arrPredClearingPrice;
+	
 	public C2(String name, int id, double neededMWh, double mean, double stddev){
 		this.playerName = name;
 		this.id = id;
@@ -60,8 +64,6 @@ public class C2 extends Agent {
 					threshold *= probability[0];
 			}
 
-			//threshold = roundup(threshold);
-
 			double totP = Double.MIN_VALUE;
 
 			int lastCounter = 0;
@@ -73,8 +75,6 @@ public class C2 extends Agent {
 					totP *= probability[newPIndices[i]];
 				}
 
-				//totP = roundup(totP);
-
 				if(totP < threshold)
 				{
 					// update newP[lastIndex]
@@ -84,17 +84,35 @@ public class C2 extends Agent {
 				lastCounter++;
 			}
 
-			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
+			double minCP = Double.MAX_VALUE;
+			double maxCP = Double.MIN_VALUE;
+			double minCPIndex = 0.0;
+			double maxCPIndex = 0.0;
+			arrPredClearingPrice = new double[ob.hourAhead+1];
 			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
 			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
 				double d = ob.pricepredictor.getPrice(HA);
 				arrPredClearingPrice[HA] = d;
 				arrsortedPredClearingPrice[HA] = d;
+				if(minCP > d){
+					minCP = d;
+					minCPIndex = HA;
+				}
+				if(maxCP < d){
+					maxCP = d;
+					maxCPIndex = HA;
+				}
+				
 			}
-
-			arrPredClearingPrice[ob.hourAhead] += 0.00001;
-			arrsortedPredClearingPrice[ob.hourAhead] += 0.00001;
-
+			
+			
+			
+			double tpr = 0;
+			for(int i = 0; i < arrPredClearingPrice.length; i++){
+				tpr += getOutput(arrsortedPredClearingPrice[i]);
+			}
+			System.out.println(tpr);
+			
 			Arrays.sort(arrsortedPredClearingPrice);
 
 			int index = 0;
@@ -120,13 +138,19 @@ public class C2 extends Agent {
 			bids.add(bid);
 		}
 	}
+	
+	public double getOutput(double netInput) {
+        totalLayerInput = 0;
+        // add max here for numerical stability - find max netInput for all neurons in this lyer
+        double max = 0;
+        
+        for (double neuron : arrPredClearingPrice) {
+            totalLayerInput += Math.exp(neuron-max);
+        }
 
-	public double roundup(double totP) {
-
-		// rounding values
-		totP = totP*100;
-		totP = Math.round(totP);
-		totP = totP /100;
-		return totP;
-	}
+        double output = Math.exp(netInput-max) / totalLayerInput;
+        
+        System.out.println("CP " + netInput + " : pr " + output);
+        return output;
+    }
 }
