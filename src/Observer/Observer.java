@@ -992,8 +992,6 @@ public class Observer {
 		    neededTotalVolumes.put(brokerName, 0.0);
 		    clearedTotalBidVolumes.put(brokerName, 0.0);
 		    clearedTotalAskVolumes.put(brokerName, 0.0);
-		    nanoTime = 0;
-		    nanoTimeCount = 0;
 		}
 
 		costTotal.clear();
@@ -1003,7 +1001,8 @@ public class Observer {
 		currentTimeSlot = 0;
 		
 		System.out.printf("Mean Clearing Price : " + meanClearingPrice);
-		pwOutput.println();
+		pwOutput.println("MCTS RunTime,"+(nanoTime/nanoTimeCount));
+		//pwOutput.println();
 		//pwOutput.println("Mean Clearing Price," + meanClearingPrice);
 		System.out.println(" Social Welfare Point : " + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
 		//pwOutputV.println("Green Energy Cleared," + totalGreenAskVolumeCleared/totalAskVolumeCleared*100);
@@ -1038,6 +1037,8 @@ public class Observer {
 		meanClearingPrice = 0;
 		clearedAuctionCount = 0;
 		//printNamesCount = 0;
+		nanoTime = 0;
+	    nanoTimeCount = 0;
 	}
 	
 	public void doBalancing(){

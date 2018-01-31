@@ -195,7 +195,7 @@ public class CaseStudies {
 			observer.printableAgents.add(ZI);
 			Agent TacTex = new TacTex("TacTex", 0, neededMWhBroker, 30, 10);
 			observer.printableAgents.add(TacTex);
-			Agent MCTSX = new MCTSAgent("MCTSX",0, neededMCTSMWhBroker,30,10,Configure.getVARMCTSAGENTITERATION());
+			Agent MCTSX = new MCTSAgent("MCTSX-5act-dyn-C2",0, neededMCTSMWhBroker,30,10,Configure.getVARMCTSAGENTITERATION());
 			observer.printableAgents.add(MCTSX);
 			Agent ZIP = new ZIP("ZIP", 0, neededMWhBroker, 40, 10);
 			observer.printableAgents.add(ZIP);

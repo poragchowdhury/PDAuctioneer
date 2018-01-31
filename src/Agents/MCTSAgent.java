@@ -35,111 +35,41 @@ public class MCTSAgent extends Agent {
 		return this.mcts;
 	}
 
-
-	// ZIP featured
-	public void submitOrdersZIP(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer observer) {
-		// Bidding configuration
-		////System.out.println("\nSPOT2 neededMWh " + neededMWh);
-		if(firstTimeFlags){
-			mcts.setup(observer);
-			firstTimeFlags = false;
-		}
-		//long start = System.currentTimeMillis();
-		observer.neededEneryMCTSBroker = this.neededMWh; 
-		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
-
-		if(observer.hourAhead == 0) {
-			// submit market order 
-			// because we don't want to buy from balancing market
-			Bid bid = new Bid(this.playerName, this.id, null, observer.neededEneryMCTSBroker, this.type);
-			if(observer.DEBUG)
-				System.out.println(bid.toString());
-			bids.add(bid);
-			return;
-		}
-
-		TreeNode bestMove = mcts.getBestMCTSMove(observer);
-		if(bestMove == null)
-			System.out.println("BestMove is null");
-		else 
-			System.out.println("BestMove " + bestMove.actionName);
-		
-		
-		if(!bestMove.nobid){
-
-			if(bestMove.actionType == ACTION_TYPE.BUY){
-				// Submit buy orders
-				double surplus = Math.abs(this.initialNeededMWh)*(bestMove.volPercentage-1);
-
-				double totalE = surplus + this.neededMWh;
-
-				if((totalE-MIN_MWH) <= 0) {
-					return;
-				}
-				if(observer.hourAhead > 6)
-					totalE *= 0.8;
-				//				double [] param = new double[11];
-				//			param = ob.getFeatures(param);
-				double limitPrice = observer.pricepredictor.getPrice(observer.hourAhead);
-				double profitmargin = limitPrice*0.01;
-
-				if(observer.hourAhead == Configure.getTOTAL_HOUR_AHEAD_AUCTIONS())
-				{
-					// reset the offSet
-					offSet = 0.0; 
-					prevBidPassed = false;
-				}
-				else{
-					if(!prevBidPassed)
-						offSet = offSet + limitPrice * 0.1; 
-
-					limitPrice += offSet;
-				}
-
-				Bid bid = new Bid(this.playerName, this.id, (limitPrice+profitmargin), this.neededMWh, this.type);
-				if(observer.DEBUG)
-					System.out.println(bid.toString());
-				bids.add(bid);
-			}
-			else{
-				// No sell
-			}
-		}
-	}
-
 	@Override
 	public void setFlag(boolean flag) {
 		this.prevBidPassed = flag;	
 	}
 	@Override
 	public void submitOrders(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer observer) {
-
 		////System.out.println("\nSPOT2 neededMWh " + neededMWh);
 		if(firstTimeFlags){
 			mcts.setup(observer);
 			firstTimeFlags = false;
 		}
-		//long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 		observer.neededEneryMCTSBroker = this.neededMWh; 
 		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
 		if(this.neededMWh <= 0.001)
 			return;
 		TreeNode bestMove = mcts.getBestMCTSMove(observer);
+		System.out.println("Action size " + mcts.actions.size());
+		mcts.actions.clear();
+		mcts.thresholdcount=0;
 		if(bestMove == null)
 			System.out.println("BestMove is null");
 		//else 
 		//	System.out.println("BestMove " + bestMove.actionName);;
 		
 		//double minMWh = bestMove.demand / bestMove.iteration;
-		//long end = System.currentTimeMillis();
-		//NumberFormat formatter = new DecimalFormat("#0.00000");
-		//String totalTime =  formatter.format((end - start) / 1000d); 
-		//double dTotalTime =  Double.parseDouble(totalTime);
-		////System.out.print("Execution time is " + formatter.format((end - start) / 1000d) + " seconds");
-		//if(dTotalTime > 0){
-		//	observer.nanoTime += dTotalTime;
-		//	observer.nanoTimeCount++;
-		//}
+		long end = System.currentTimeMillis();
+		NumberFormat formatter = new DecimalFormat("#0.00000");
+		String totalTime =  formatter.format((end - start) / 1000d); 
+		double dTotalTime =  Double.parseDouble(totalTime);
+		//System.out.print("Execution time is " + formatter.format((end - start) / 1000d) + " seconds");
+		if(dTotalTime > 0){
+			observer.nanoTime += dTotalTime;
+			observer.nanoTimeCount++;
+		}
 		//System.out.println(totalTime);
 
 		//double limitPrice = bestMove.mctsClearingPrice;
@@ -163,7 +93,7 @@ public class MCTSAgent extends Agent {
 			double pcp = observer.pricepredictor.getPrice(observer.hourAhead);
 			limitPrice = pcp+bestMove.minMult*observer.STDDEV[observer.hourAhead];
 		}
-		System.out.println("LimitPricecMCTS " + limitPrice + " unitcost " + bestMove.minMult + " perc " + bestMove.maxMult);
+		System.out.println("LimitPricecMCTS " + limitPrice + " minMult " + bestMove.minMult + " maxMult " + bestMove.maxMult);
 		double priceRange = 0;//bestMove.maxmctsClearingPrice - bestMove.minmctsClearingPrice;
 		double minMWh = 1;
 

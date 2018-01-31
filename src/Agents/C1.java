@@ -8,6 +8,7 @@ import Auctioneer.Ask;
 import Auctioneer.Bid;
 import Observer.Observer;
 import Observer.PricePredictor;
+import Observer.Utility;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -30,7 +31,10 @@ public class C1 extends Agent {
 	public double meanBidPrice = 0;
 	public double stddevPrice = 0;
 	public PricePredictor pricePredictor;
-	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.93, 0.97};
+	public Utility utility;
+	public double MIN_PR = 0.025;
+	public double MAX_PR = 0.975;
+	public double [] probability = {0.025, 0.069, 0.160, 0.300, 0.500, 0.690, 0.840, 0.930, 0.975};
 	public double [] sigma = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
 	public C1(String name, int id, double neededMWh, double mean, double stddev){
 		this.playerName = name;
@@ -40,12 +44,54 @@ public class C1 extends Agent {
 		stddevPrice = stddev;
 		this.type = agentType.BROKER;
 		pricePredictor = new PricePredictor(Agent.predictorName);
+		utility = new Utility();
 	}
 
 	@Override
 	public void submitOrders(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer ob) {
+
 		// Bidding configuration
 		if(this.neededMWh > 0){
+			
+			double [] newP = new double[ob.hourAhead+1];
+			double threshold = 1;
+			
+			for(int i = 0; i < newP.length; i++) {
+				newP[i] = MIN_PR;
+				if(i == 0)
+					threshold *= MAX_PR;
+				else
+					threshold *= MIN_PR;
+			}
+
+			double totP = Double.MIN_VALUE;
+
+			int lastCounter = 0;
+			while(totP < threshold) {
+				totP = 1;
+				for(int i = 0; i < newP.length; i++) {
+					totP *= newP[i];
+				}
+
+				if(totP < threshold)
+				{
+					int index = lastCounter%newP.length;
+					newP[index]+=MIN_PR;
+				}
+				lastCounter++;
+			}
+
+			double C1limitPrice = 0.0;
+			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+			int index = newP.length-1;// 0;//
+			double z = utility.calc_q(newP[index]);
+			if(newP[index] < 0.5)
+				z *= -1;
+			System.out.println("Pr: " + newP[index] + " z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			
+			/*
+			// Initial algorithm
 			int [] newPIndices = new int[ob.hourAhead+1];
 			double threshold = 1;
 			for(int i = 0; i < newPIndices.length; i++) {
@@ -55,16 +101,16 @@ public class C1 extends Agent {
 				else
 					threshold *= probability[0];
 			}
-			
+
 			double totP = Double.MIN_VALUE;
-			
+
 			int lastCounter = 0;
 			while(totP < threshold) {
 				totP = 1;
 				for(int i = 0; i < newPIndices.length; i++) {
 					totP *= probability[newPIndices[i]];
 				}
-				
+
 				if(totP < threshold)
 				{
 					int index = lastCounter%newPIndices.length;
@@ -73,10 +119,15 @@ public class C1 extends Agent {
 				lastCounter++;
 			}
 			
+
 			double C1limitPrice = 0.0;
 			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
-			C1limitPrice = Math.abs(limitPrice+sigma[newPIndices[newPIndices.length-1]]*7.8);
-			//System.out.println("C1limitPrice" + C1limitPrice);
+			double z = sigma[newPIndices[0]];
+			System.out.println(" z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			*/
+			
+			System.out.println("C1limitPrice" + C1limitPrice);
 			if((this.neededMWh-MIN_MWH) <= 0) {
 				return;
 			}

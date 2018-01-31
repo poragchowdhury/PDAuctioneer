@@ -10,6 +10,7 @@ import Auctioneer.Ask;
 import Auctioneer.Bid;
 import Observer.Observer;
 import Observer.PricePredictor;
+import Observer.Utility;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -32,11 +33,13 @@ public class C2 extends Agent {
 	public double meanBidPrice = 0;
 	public double stddevPrice = 0;
 	public PricePredictor pricePredictor;
-	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.93, 0.97};
+	public double MIN_PR = 0.069;
+	public double MAX_PR = 0.975;
+	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.932, 0.975};
 	public double [] sigma = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
-	
+	public Utility utility;
 	double totalLayerInput;
-	double [] arrPredClearingPrice;
+	double [] normalized;
 	
 	public C2(String name, int id, double neededMWh, double mean, double stddev){
 		this.playerName = name;
@@ -46,6 +49,7 @@ public class C2 extends Agent {
 		stddevPrice = stddev;
 		this.type = agentType.BROKER;
 		pricePredictor = new PricePredictor(Agent.predictorName);
+		utility = new Utility();
 	}
 
 	@Override
@@ -53,7 +57,67 @@ public class C2 extends Agent {
 		// Bidding configuration
 		if(this.neededMWh > 0){
 			Random r = new Random();
-
+			/*
+			double [] newP = new double[ob.hourAhead+1];
+			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
+			normalized = new double[ob.hourAhead+1];
+			double minCP = Double.MAX_VALUE;
+			double maxCP = Double.MIN_VALUE;
+			int minCPIndex = 0;
+			int maxCPIndex = 0;
+			double sum = 0.0;
+			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+				double d = ob.pricepredictor.getPrice(HA);
+				arrPredClearingPrice[HA] = d;
+				normalized[HA] = d;
+				if(minCP > d){
+					minCP = d;
+					minCPIndex = HA;
+				}
+				if(maxCP < d){
+					maxCP = d;
+					maxCPIndex = HA;
+				}
+				sum += d;
+			}
+			
+			minCP = Double.MAX_VALUE;
+			maxCP = Double.MIN_VALUE;
+			
+			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+				double nvalue = 1-(arrPredClearingPrice[HA]/sum);
+				arrPredClearingPrice[HA] = nvalue;
+				if(minCP > nvalue){
+					minCP = nvalue;
+					minCPIndex = HA;
+				}
+				if(maxCP < nvalue){
+					maxCP = nvalue;
+				}
+			}
+			
+			double range = maxCP-minCP;
+			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+				double nvalue = ((arrPredClearingPrice[HA]-minCP)/range);
+				normalized[HA] = nvalue;
+			}
+			
+			double tpr = 0;
+			double pr = 0.0;
+			
+			pr = getOutput(normalized[ob.hourAhead]);
+			
+			double C1limitPrice = 0.0;
+			double limitPrice = arrPredClearingPrice[ob.hourAhead];
+			double z = utility.calc_q(pr);
+			if(newP[0] < 0.5)
+				z *= -1;
+			//System.out.println("Pr: " + newP[0] + " z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			*/
+			
+			/*
+			// First method: Modified Working oKay
 			int [] newPIndices = new int[ob.hourAhead+1];
 			double threshold = 1;
 			for(int i = 0; i < newPIndices.length; i++) {
@@ -70,25 +134,90 @@ public class C2 extends Agent {
 			while(totP < threshold) {
 				totP = 1;
 				for(int i = 0; i < newPIndices.length; i++) {
-					//					if(newPIndices[0] == 8 && newPIndices[1] == 8)
-					//						System.out.println("Ok");
 					totP *= probability[newPIndices[i]];
 				}
 
 				if(totP < threshold)
 				{
 					// update newP[lastIndex]
-					int index = lastCounter%newPIndices.length;
-					newPIndices[index]++;
+					if(newPIndices[lastCounter] == (probability.length-4))
+						lastCounter++;
+					
+					if(lastCounter >= newPIndices.length)
+						break;
+					
+					newPIndices[lastCounter]++;
 				}
-				lastCounter++;
 			}
 
+			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
+			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
+			
+			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+				double d = ob.pricepredictor.getPrice(HA);
+				arrPredClearingPrice[HA] = d;
+				arrsortedPredClearingPrice[HA] = d;
+			}
+			Arrays.sort(arrsortedPredClearingPrice);
+
+			int index = 0;
+			for(int i = 0; i < arrPredClearingPrice.length; i++) {
+				if(arrPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
+				{
+					index = i;
+					break;
+				}
+			}
+			double C1limitPrice = 0.0;
+			double limitPrice = arrPredClearingPrice[ob.hourAhead];
+			double z = sigma[newPIndices[index]];
+			System.out.println("Z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			*/
+			
+			
+			// increasing probability
+			int [] newPIndices = new int[ob.hourAhead+1];
+			int threshold = 7;
+			for(int i = 0; i < newPIndices.length; i++) {
+				newPIndices[i] = threshold;
+				//threshold = 0;
+				if(threshold > 1)
+					threshold-=1;
+			}
+
+			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
+			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
+			
+			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+				double d = ob.pricepredictor.getPrice(HA);
+				arrPredClearingPrice[HA] = d;
+				arrsortedPredClearingPrice[HA] = d;
+			}
+			Arrays.sort(arrsortedPredClearingPrice);
+
+			int index = 0;
+			for(int i = 0; i < arrPredClearingPrice.length; i++) {
+				if(arrPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
+				{
+					index = i;
+					break;
+				}
+			}
+			double C1limitPrice = 0.0;
+			double limitPrice = arrPredClearingPrice[ob.hourAhead];
+			double z = sigma[newPIndices[index]];
+			System.out.println("Z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			
+			
+			/*
+			// First method:OLD
 			double minCP = Double.MAX_VALUE;
 			double maxCP = Double.MIN_VALUE;
 			double minCPIndex = 0.0;
 			double maxCPIndex = 0.0;
-			arrPredClearingPrice = new double[ob.hourAhead+1];
+			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
 			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
 			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
 				double d = ob.pricepredictor.getPrice(HA);
@@ -102,16 +231,7 @@ public class C2 extends Agent {
 					maxCP = d;
 					maxCPIndex = HA;
 				}
-				
 			}
-			
-			
-			
-			double tpr = 0;
-			for(int i = 0; i < arrPredClearingPrice.length; i++){
-				tpr += getOutput(arrsortedPredClearingPrice[i]);
-			}
-			System.out.println(tpr);
 			
 			Arrays.sort(arrsortedPredClearingPrice);
 
@@ -123,11 +243,83 @@ public class C2 extends Agent {
 					break;
 				}
 			}
-
 			double C1limitPrice = 0.0;
 			double limitPrice = arrPredClearingPrice[ob.hourAhead];
-			C1limitPrice = Math.abs(limitPrice+sigma[newPIndices[index]]*7.8);
+			double z = sigma[newPIndices[index]];
+			//System.out.println("Pr: " + newP[0] + " z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			*/
+			
+			/*
+			// Brand new
+			double [] newP = new double[ob.hourAhead+1];
+			double threshold = 1.0;
+			double newMax_PR = MAX_PR;
+			for(int i = 0; i < newP.length; i++) {
+				newP[i] = MIN_PR;
+				if(i == 0)
+					threshold *= MAX_PR;
+				else
+					threshold *= MIN_PR;
+			}
+
+			double totP = Double.MIN_VALUE;
+
+			int lastCounter = 0;
+			double newMAX_PR = MAX_PR-0.1;
+			while(totP < threshold) {
+				totP = 1;
+				for(int i = 0; i < newP.length; i++) {
+					totP *= newP[i];
+				}
+
+				if(totP < threshold)
+				{
+					// update newP[lastIndex]
+					if(newP[lastCounter] >= newMAX_PR) {
+						if((newMAX_PR-0.3)>MIN_PR)
+							newMAX_PR -= 0.3;
+						lastCounter++;
+					}
+					
+					if(lastCounter >= newP.length)
+						break;
+					
+					newP[lastCounter]+=MIN_PR;
+				}
+			}
+
+			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
+			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
+			
+			for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+				double d = ob.pricepredictor.getPrice(HA);
+				arrPredClearingPrice[HA] = d;
+				arrsortedPredClearingPrice[HA] = d;
+			}
+			Arrays.sort(arrsortedPredClearingPrice);
+
+			int index = 0;
+			for(int i = 0; i < arrPredClearingPrice.length; i++) {
+				if(arrPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
+				{
+					index = i;
+					break;
+				}
+			}
+			
+			double C1limitPrice = 0.0;
+			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+			double z = utility.calc_q(newP[index]);
+			if(newP[index] < 0.5)
+				z *= -1;
+			System.out.println("Pr: " + newP[index] + " z: " + z);
+			C1limitPrice = Math.abs(limitPrice+z*7.8);
+			*/
+			
+			
 			System.out.println("C2limitPrice" + C1limitPrice);
+			
 			if((this.neededMWh-MIN_MWH) <= 0) {
 				return;
 			}
@@ -144,13 +336,13 @@ public class C2 extends Agent {
         // add max here for numerical stability - find max netInput for all neurons in this lyer
         double max = 0;
         
-        for (double neuron : arrPredClearingPrice) {
+        for (double neuron : normalized) {
             totalLayerInput += Math.exp(neuron-max);
         }
 
         double output = Math.exp(netInput-max) / totalLayerInput;
         
-        System.out.println("CP " + netInput + " : pr " + output);
+        //System.out.println("CP " + netInput + " : pr " + output);
         return output;
     }
 }
