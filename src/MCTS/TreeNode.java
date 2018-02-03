@@ -126,11 +126,11 @@ public class TreeNode {
     		}
 
     		double mult = mcts.utility.calc_q(newP[newP.length-1]);
-    		System.out.println("q: " + newP[newP.length-1] + " z: " + mult);
+    		//System.out.println("q: " + newP[newP.length-1] + " z: " + mult);
     		if(newP[newP.length-1] < 0.5)
     			mult *= -1;
-    		
-        	/*
+
+    		/*
         	// C2
         	int [] newPIndices = new int[ob.hourAhead+1];
 			int threshold = 7;
@@ -159,11 +159,14 @@ public class TreeNode {
 			
 			double mult = sigma[newPIndices[index]];
 			*/
+
+    		
 			Action action = new Action(0,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
     		mcts.actions.add(action);
     		action = new Action(1,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
     		mcts.actions.add(action);
         	
+    		
         	/*
         	Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
     		mcts.actions.add(action);
@@ -178,6 +181,7 @@ public class TreeNode {
         	action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
     		mcts.actions.add(action);
     		*/
+    		
     	}
         else if(sims > mcts.thresholdMCTS[mcts.thresholdcount] && enableDynamicAction) {
         	int actionsize = actions.size();
