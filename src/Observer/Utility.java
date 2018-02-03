@@ -5,7 +5,7 @@ public class Utility {
     produce given p.  We just do a bisection
     search for a value within CHI_EPSILON,
     relying on the monotonicity of pochisq().  */
-	public double Z_MAX = 6;                    // Maximum ±z value
+	public double Z_MAX = 6;                    // Maximum z value
 	public double ROUND_FLOAT = 6;              // Decimal places to round numbers
 
 	public double critz(double p) {
