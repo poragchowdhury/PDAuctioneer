@@ -29,11 +29,14 @@ import java.io.ObjectInputStream;
 import configure.Configure;
 
 public class C2 extends Agent {
-
+	public int CP = 0;
+	public int PCP = 1;
+	public int Pr = 2;
+	public int HA = 3;
 	public double meanBidPrice = 0;
 	public double stddevPrice = 0;
 	public PricePredictor pricePredictor;
-	public double MIN_PR = 0.069;
+	public double MIN_PR = 0.025;
 	public double MAX_PR = 0.975;
 	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.932, 0.975};
 	public double [] sigma = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
@@ -56,7 +59,7 @@ public class C2 extends Agent {
 	public void submitOrders(ArrayList<Bid> bids, ArrayList<Ask> asks, Observer ob) {
 		// Bidding configuration
 		if(this.neededMWh > 0){
-			Random r = new Random();
+//			Random r = new Random();
 			/*
 			double [] newP = new double[ob.hourAhead+1];
 			double [] arrPredClearingPrice = new double[ob.hourAhead+1];
@@ -175,8 +178,8 @@ public class C2 extends Agent {
 			C1limitPrice = Math.abs(limitPrice+z*7.8);
 			*/
 			
-			
-			// increasing probability
+			/*
+			// increasing probability: FINAL
 			int [] newPIndices = new int[ob.hourAhead+1];
 			int threshold = 7;
 			for(int i = 0; i < newPIndices.length; i++) {
@@ -209,7 +212,7 @@ public class C2 extends Agent {
 			double z = sigma[newPIndices[index]];
 			System.out.println("Z: " + z);
 			C1limitPrice = Math.abs(limitPrice+z*7.8);
-			
+			*/
 			
 			/*
 			// First method:OLD
@@ -316,7 +319,12 @@ public class C2 extends Agent {
 			System.out.println("Pr: " + newP[index] + " z: " + z);
 			C1limitPrice = Math.abs(limitPrice+z*7.8);
 			*/
-			
+			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+			double [][] info = new double[ob.hourAhead+1][4];
+			double z = C2(ob, info);
+			double std = z*7.8;
+			double C1limitPrice = Math.abs(limitPrice+std);
+			System.out.println("LimitPrice" + limitPrice + " z " + z + " C2LP " + C1limitPrice);
 			
 			System.out.println("C2limitPrice" + C1limitPrice);
 			
@@ -344,5 +352,122 @@ public class C2 extends Agent {
         
         //System.out.println("CP " + netInput + " : pr " + output);
         return output;
+    }
+	
+	public void print2D(double [][] arr2D) {
+		for(int i =0; i< arr2D.length;i++) {
+			for(int j=0; j< arr2D[i].length; j++)
+			{
+				System.out.printf("%.3f ",arr2D[i][j]);
+			}
+			System.out.println();
+		}
+	}
+	
+	public boolean isThreshold(double [][] p, double threshold) {
+    	double totalP = p[0][Pr];
+    	for(int i = 1; i < p.length; i++) {
+    		totalP += p[i][Pr]*(1-totalP); 
+    	}
+    	if(totalP >= threshold)
+    		return false;
+    	return true;
+    }
+	
+    public double C2(Observer ob, double [][] info) {
+    	//C2
+    	double threshold = MAX_PR;
+		
+		// Initialize
+//    	System.out.println("Initialize array");
+		for(int i = 0; i < info.length; i++) {
+			info[i][Pr] = MIN_PR;
+			double d =  ob.pricepredictor.getPrice(i);
+			info[i][CP] = d;
+			info[i][PCP] = d;
+			info[i][HA] = i;
+		}
+		
+//		print2D(info);
+
+		int lastCounter = 0;
+		while(isThreshold(info, threshold)) {
+			// sort the array based on clearing price
+			bubbleSort(info);
+//			System.out.println("BUBBLE SORT");
+//			print2D(info);
+			// get the index to increment the probability
+			lastCounter = getProperIndex(info);
+			
+			if(lastCounter == -1)
+				break; // finished updating all
+			
+//			System.out.println("INCREMENTING "+lastCounter+": "+ info[lastCounter][CP] +" from " + info[lastCounter][Pr] +" to "+ (info[lastCounter][Pr]+MIN_PR));
+			info[lastCounter][Pr]+=MIN_PR;
+			double prp = info[lastCounter][Pr];
+			double z = utility.calc_q(prp);
+			if(prp < 0.5)
+				z *= -1;
+			info[lastCounter][PCP] = Math.abs(info[lastCounter][CP]+(7.8*z));
+//			System.out.println("Z:"+z+" newPCP "+info[lastCounter][PCP]);
+			//lastCounter++;
+		}
+
+		// Find the probability of corresponding hourAhead auction
+		int index = 0;
+		double prob = 0.5;
+		print2D(info);
+		for(int i = 0; i < info.length; i++) {
+			if(ob.hourAhead == info[i][HA])
+			{
+				index = i;
+				prob = info[index][Pr];
+				break;
+			}
+		}
+	
+		double mult = utility.calc_q(prob);
+		if(prob < 0.5)
+			mult *= -1;
+
+		return mult;
+    }
+
+    public int getProperIndex(double [][] info) {
+    	
+    	for(int i = 0; i < info.length; i++) {
+    		if(info[i][Pr] < MAX_PR) {
+    			return i;
+    		}
+    	}
+    	
+    	return -1;
+    }
+    
+    public void bubbleSort(double [][] info) {
+    	double tempPr = 0.0;
+    	double tempHA = 0;
+    	double tempPCP = 0.0;
+    	double tempCP = 0.0;
+    	for(int i = 0; i < info.length; i++) {
+    		for(int j = i+1; j < info.length; j++) {
+    			if(info[i][PCP] > info[j][PCP]) {
+    				tempPr = info[i][Pr];
+    				tempHA = info[i][HA];
+    				tempPCP = info[i][PCP];
+    				tempCP = info[i][CP];
+    				
+    				info[i][Pr] = info[j][Pr];
+    				info[i][HA] = info[j][HA];
+    				info[i][PCP] = info[j][PCP];
+    				info[i][CP] = info[j][CP];
+    				
+    				info[j][Pr] = tempPr;
+    				info[j][HA] = tempHA;
+    				info[j][PCP] = tempPCP;
+    				info[j][CP] = tempCP;
+    			}
+    		}
+    	}
     }
 }

@@ -6,6 +6,7 @@ import java.util.Random;
 import Agents.Agent.agentType;
 import Auctioneer.Ask;
 import Auctioneer.Bid;
+import MCTS.MCTS;
 import Observer.Observer;
 import Observer.PricePredictor;
 import Observer.Utility;
@@ -52,7 +53,10 @@ public class C1 extends Agent {
 
 		// Bidding configuration
 		if(this.neededMWh > 0){
-			
+			double z = C1(ob);
+			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+			double C1limitPrice = Math.abs(limitPrice+z*7.8);
+			/*
 			double [] newP = new double[ob.hourAhead+1];
 			double threshold = 1;
 			
@@ -89,7 +93,7 @@ public class C1 extends Agent {
 				z *= -1;
 			System.out.println("Pr: " + newP[index] + " z: " + z);
 			C1limitPrice = Math.abs(limitPrice+z*7.8);
-			
+			*/
 			/*
 			// Initial algorithm
 			int [] newPIndices = new int[ob.hourAhead+1];
@@ -138,4 +142,37 @@ public class C1 extends Agent {
 			bids.add(bid);
 		}
 	}
+	public boolean isThreshold(double [] p, double threshold) {
+    	double totalP = p[0];
+    	for(int i = 1; i < p.length; i++) {
+    		totalP += p[i]*(1-totalP); 
+    	}
+    	if(totalP >= threshold)
+    		return false;
+    	return true;
+    }
+	
+    public double C1(Observer ob) {
+    	//C1
+		double [] newP = new double[ob.hourAhead+1];
+		double threshold = MAX_PR;
+		
+		for(int i = 0; i < newP.length; i++) {
+			newP[i] = MIN_PR;
+		}
+
+		int lastCounter = 0;
+		while(isThreshold(newP, threshold)) {
+			lastCounter = lastCounter%newP.length;
+			newP[lastCounter]+=MIN_PR;
+			lastCounter++;
+		}
+
+		double mult = utility.calc_q(newP[newP.length-1]);
+		if(newP[newP.length-1] < 0.5)
+			mult *= -1;
+
+		return mult;
+    }
+
 }

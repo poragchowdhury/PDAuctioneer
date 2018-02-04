@@ -20,6 +20,10 @@ import MCTS.Action.ACTION_TYPE;
 import Observer.Observer;
 
 public class TreeNode {
+	public int CP = 0;
+	public int PCP = 1;
+	public int Pr = 2;
+	public int HA = 3;
     static Random r = new Random();
     static double epsilon = 1e-6;
 	public double MIN_PR = 0.025;
@@ -82,7 +86,29 @@ public class TreeNode {
     	}
     	return count;
     }
-    
+    public double C1(Observer ob, MCTS mcts) {
+    	//C1
+		double [] newP = new double[ob.hourAhead+1];
+		double threshold = MAX_PR;
+		
+		for(int i = 0; i < newP.length; i++) {
+			newP[i] = MIN_PR;
+		}
+
+		int lastCounter = 0;
+		while(isThreshold(newP, threshold)) {
+			lastCounter = lastCounter%newP.length;
+			newP[lastCounter]+=MIN_PR;
+			lastCounter++;
+		}
+
+		double mult = mcts.utility.calc_q(newP[newP.length-1]);
+		//System.out.println("q: " + newP[newP.length-1] + " z: " + mult);
+		if(newP[newP.length-1] < 0.5)
+			mult *= -1;
+
+		return mult;
+    }
     public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob, int sims) {
     	
     	double simCost = 0.0;
@@ -96,40 +122,10 @@ public class TreeNode {
         // add dynamic action space logic
         if(sims == 0) {
         	
-        	//C1
-    		double [] newP = new double[ob.hourAhead+1];
-    		double threshold = 1.0;
-    		
-    		for(int i = 0; i < newP.length; i++) {
-    			newP[i] = MIN_PR;
-    			if(i == 0)
-    				threshold *= MAX_PR;
-    			else
-    				threshold *= MIN_PR;
-    		}
-
-    		double totP = Double.MIN_VALUE;
-
-    		int lastCounter = 0;
-    		while(totP < threshold) {
-    			totP = 1;
-    			for(int i = 0; i < newP.length; i++) {
-    				totP *= newP[i];
-    			}
-
-    			if(totP < threshold)
-    			{
-    				int index = lastCounter%newP.length;
-    				newP[index]+=MIN_PR;
-    			}
-    			lastCounter++;
-    		}
-
-    		double mult = mcts.utility.calc_q(newP[newP.length-1]);
-    		//System.out.println("q: " + newP[newP.length-1] + " z: " + mult);
-    		if(newP[newP.length-1] < 0.5)
-    			mult *= -1;
-
+        	//double mult = C1(ob, mcts);
+        	double [][] info = new double[ob.hourAhead+1][4];
+			double mult = C2(ob, mcts, info);
+        	
     		/*
         	// C2
         	int [] newPIndices = new int[ob.hourAhead+1];
@@ -271,6 +267,120 @@ public class TreeNode {
         
     }
 
+    public double C2(Observer ob, MCTS mcts, double [][] info) {
+    	//C2
+    	double threshold = MAX_PR;
+		
+		// Initialize
+//    	System.out.println("Initialize array");
+		for(int i = 0; i < info.length; i++) {
+			info[i][Pr] = MIN_PR;
+			double d =  mcts.arrMctsPredClearingPrice[i];
+			info[i][CP] = d;
+			info[i][PCP] = d;
+			info[i][HA] = i;
+		}
+		
+//		print2D(info);
+
+		int lastCounter = 0;
+		while(isThreshold(info, threshold)) {
+			// sort the array based on clearing price
+			bubbleSort(info);
+//			System.out.println("BUBBLE SORT");
+//			print2D(info);
+			// get the index to increment the probability
+			lastCounter = getProperIndex(info);
+			
+			if(lastCounter == -1)
+				break; // finished updating all
+			
+//			System.out.println("INCREMENTING "+lastCounter+": "+ info[lastCounter][CP] +" from " + info[lastCounter][Pr] +" to "+ (info[lastCounter][Pr]+MIN_PR));
+			info[lastCounter][Pr]+=MIN_PR;
+			double prp = info[lastCounter][Pr];
+			double z = mcts.utility.calc_q(prp);
+			if(prp < 0.5)
+				z *= -1;
+			info[lastCounter][PCP] = Math.abs(info[lastCounter][CP]+(7.8*z));
+//			System.out.println("Z:"+z+" newPCP "+info[lastCounter][PCP]);
+			//lastCounter++;
+		}
+
+		// Find the probability of corresponding hourAhead auction
+		int index = 0;
+		double prob = 0.5;
+		for(int i = 0; i < info.length; i++) {
+			if(ob.hourAhead == info[i][HA])
+			{
+				index = i;
+				prob = info[index][Pr];
+				break;
+			}
+		}
+	
+		double mult = mcts.utility.calc_q(prob);
+		if(prob < 0.5)
+			mult *= -1;
+
+		return mult;
+    }
+
+    public int getProperIndex(double [][] info) {
+    	
+    	for(int i = 0; i < info.length; i++) {
+    		if(info[i][Pr] < MAX_PR) {
+    			return i;
+    		}
+    	}
+    	
+    	return -1;
+    }
+    
+    public void bubbleSort(double [][] info) {
+    	double tempPr = 0.0;
+    	double tempHA = 0;
+    	double tempPCP = 0.0;
+    	double tempCP = 0.0;
+    	for(int i = 0; i < info.length; i++) {
+    		for(int j = i+1; j < info.length; j++) {
+    			if(info[i][PCP] > info[j][PCP]) {
+    				tempPr = info[i][Pr];
+    				tempHA = info[i][HA];
+    				tempPCP = info[i][PCP];
+    				tempCP = info[i][CP];
+    				
+    				info[i][Pr] = info[j][Pr];
+    				info[i][HA] = info[j][HA];
+    				info[i][PCP] = info[j][PCP];
+    				info[i][CP] = info[j][CP];
+    				
+    				info[j][Pr] = tempPr;
+    				info[j][HA] = tempHA;
+    				info[j][PCP] = tempPCP;
+    				info[j][CP] = tempCP;
+    			}
+    		}
+    	}
+    }
+	public boolean isThreshold(double [][] p, double threshold) {
+    	double totalP = p[0][Pr];
+    	for(int i = 1; i < p.length; i++) {
+    		totalP += p[i][Pr]*(1-totalP); 
+    	}
+    	if(totalP >= threshold)
+    		return false;
+    	return true;
+    }
+    public boolean isThreshold(double [] p, double threshold) {
+    	double totalP = p[0];
+    	for(int i = 1; i < p.length; i++) {
+    		totalP += p[i]*(1-totalP); 
+    	}
+    	if(totalP >= threshold)
+    		return false;
+    	return true;
+    }
+    
     public void expand(ArrayList<Action> actions, MCTS mcts, Observer ob, double mean) {
     	int nActions = actions.size();
     	children = new ArrayList<TreeNode>();
