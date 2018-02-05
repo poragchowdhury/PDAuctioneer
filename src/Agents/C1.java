@@ -53,7 +53,7 @@ public class C1 extends Agent {
 
 		// Bidding configuration
 		if(this.neededMWh > 0){
-			double z = C1(ob);
+			double z = newC1(ob);
 			double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
 			double C1limitPrice = Math.abs(limitPrice+z*7.8);
 			/*
@@ -152,8 +152,8 @@ public class C1 extends Agent {
     	return true;
     }
 	
-    public double C1(Observer ob) {
-    	//C1
+    public double newC1(Observer ob) {
+    	//newC1
 		double [] newP = new double[ob.hourAhead+1];
 		double threshold = MAX_PR;
 		

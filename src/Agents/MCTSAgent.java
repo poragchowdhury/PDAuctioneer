@@ -60,7 +60,6 @@ public class MCTSAgent extends Agent {
 		//else 
 		//	System.out.println("BestMove " + bestMove.actionName);;
 		
-		//double minMWh = bestMove.demand / bestMove.iteration;
 		long end = System.currentTimeMillis();
 		NumberFormat formatter = new DecimalFormat("#0.00000");
 		String totalTime =  formatter.format((end - start) / 1000d); 

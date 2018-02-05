@@ -86,7 +86,42 @@ public class TreeNode {
     	}
     	return count;
     }
-    public double C1(Observer ob, MCTS mcts) {
+    
+    public double IJCAIC1(Observer ob, MCTS mcts) {
+    	//C1
+		double [] newP = new double[ob.hourAhead+1];
+		double threshold = 1.0;
+		
+		for(int i = 0; i < newP.length; i++) {
+			newP[i] = MIN_PR;
+			if(i == 0)
+				threshold *= MAX_PR;
+			else
+				threshold *= MIN_PR;
+		}
+		double totP = Double.MIN_VALUE;
+		int lastCounter = 0;
+		while(totP < threshold) {
+			totP = 1;
+			for(int i = 0; i < newP.length; i++) {
+				totP *= newP[i];
+			}
+			if(totP < threshold)
+			{
+				int index = lastCounter%newP.length;
+				newP[index]+=MIN_PR;
+			}
+			lastCounter++;
+		}
+		double mult = mcts.utility.calc_q(newP[newP.length-1]);
+		System.out.println("q: " + newP[newP.length-1] + " z: " + mult);
+		if(newP[newP.length-1] < 0.5)
+			mult *= -1;
+		
+		return mult;
+	}
+    
+    public double newC1(Observer ob, MCTS mcts) {
     	//C1
 		double [] newP = new double[ob.hourAhead+1];
 		double threshold = MAX_PR;
@@ -109,6 +144,24 @@ public class TreeNode {
 
 		return mult;
     }
+
+    public void staticAction() {
+    	/*
+    	Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		mcts.actions.add(action);
+		action = new Action(1,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		mcts.actions.add(action);
+		action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		mcts.actions.add(action);
+		action = new Action(3,1,1,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		mcts.actions.add(action);
+		action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		mcts.actions.add(action);
+    	action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
+		mcts.actions.add(action);
+		*/
+    }
+    
     public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob, int sims) {
     	
     	double simCost = 0.0;
@@ -121,63 +174,14 @@ public class TreeNode {
         
         // add dynamic action space logic
         if(sims == 0) {
-        	
-        	//double mult = C1(ob, mcts);
+        	//double mult = newC1(ob, mcts);
         	double [][] info = new double[ob.hourAhead+1][4];
-			double mult = C2(ob, mcts, info);
+			double mult = newC2(ob, mcts, info);
         	
-    		/*
-        	// C2
-        	int [] newPIndices = new int[ob.hourAhead+1];
-			int threshold = 7;
-			for(int i = 0; i < newPIndices.length; i++) {
-				newPIndices[i] = threshold;
-				//threshold = 0;
-				if(threshold > 1)
-					threshold-=1;
-			}
-
-			double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
-			
-			for(int HA = 0; HA < arrsortedPredClearingPrice.length; HA++){
-				arrsortedPredClearingPrice[HA] = mcts.arrMctsPredClearingPrice[HA];
-			}
-			Arrays.sort(arrsortedPredClearingPrice);
-
-			int index = 0;
-			for(int i = 0; i < arrsortedPredClearingPrice.length; i++) {
-				if(mcts.arrMctsPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
-				{
-					index = i;
-					break;
-				}
-			}
-			
-			double mult = sigma[newPIndices[index]];
-			*/
-
-    		
-			Action action = new Action(0,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
+    		Action action = new Action(0,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
     		mcts.actions.add(action);
     		action = new Action(1,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
     		mcts.actions.add(action);
-        	
-    		
-        	/*
-        	Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    		mcts.actions.add(action);
-    		action = new Action(1,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    		mcts.actions.add(action);
-    		action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    		mcts.actions.add(action);
-    		action = new Action(3,1,1,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    		mcts.actions.add(action);
-    		action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    		mcts.actions.add(action);
-        	action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
-    		mcts.actions.add(action);
-    		*/
-    		
     	}
         else if(sims > mcts.thresholdMCTS[mcts.thresholdcount] && enableDynamicAction) {
         	int actionsize = actions.size();
@@ -267,7 +271,39 @@ public class TreeNode {
         
     }
 
-    public double C2(Observer ob, MCTS mcts, double [][] info) {
+    public void IJCAIC2() {
+    	/*
+    	// C2
+    	int [] newPIndices = new int[ob.hourAhead+1];
+		int threshold = 7;
+		for(int i = 0; i < newPIndices.length; i++) {
+			newPIndices[i] = threshold;
+			//threshold = 0;
+			if(threshold > 1)
+				threshold-=1;
+		}
+
+		double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
+		
+		for(int HA = 0; HA < arrsortedPredClearingPrice.length; HA++){
+			arrsortedPredClearingPrice[HA] = mcts.arrMctsPredClearingPrice[HA];
+		}
+		Arrays.sort(arrsortedPredClearingPrice);
+
+		int index = 0;
+		for(int i = 0; i < arrsortedPredClearingPrice.length; i++) {
+			if(mcts.arrMctsPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		
+		double mult = sigma[newPIndices[index]];
+		*/
+    }
+    
+    public double newC2(Observer ob, MCTS mcts, double [][] info) {
     	//C2
     	double threshold = MAX_PR;
 		
