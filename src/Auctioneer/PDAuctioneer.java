@@ -172,7 +172,7 @@ public class PDAuctioneer {
 								if(clearingPrice != 0) {
 									observer.MCPrice[observer.hourAhead] += clearingPrice; 
 									observer.MCPriceCount[observer.hourAhead]++; 
-									observer.movingAvgErrorMCP[observer.hourAhead] = 0;//(observer.movingAvgErrorMCP[observer.hourAhead] * 0.95) + ((pcp-clearingPrice) * 0.05);
+									observer.movingAvgErrorMCP[observer.hourAhead] = -pcp*observer.error; //((observer.movingAvgErrorMCP[observer.hourAhead] * 0.95) + ((pcp-clearingPrice) * 0.05));
 									//observer.updateMean(clearingPrice);
 									//observer.updateSTDDEV();
 								}
@@ -190,11 +190,17 @@ public class PDAuctioneer {
 								//observer.updateNumberOfSuccessfullBids(SPOT2.playerName);
 								// Debug clearing price
 								
-								double percentage_error = Math.abs((clearingPrice-pcp)/pcp)*100;
-								if(percentage_error!=0) {
-									observer.pp_error_ha[observer.hourAhead]+=percentage_error;
-									observer.pp_error_ha_count[observer.hourAhead]++;
-								}
+								/*ERROR CALCULATION*/
+								double diff = (clearingPrice-pcp);
+								double mae = Math.abs(diff);
+								double percentage_error = Math.abs(diff/pcp)*100;
+								double rmse_error = diff*diff;
+								//if(percentage_error==0) {
+								observer.ma_err[observer.hourAhead]+=mae;
+								observer.rmse_err[observer.hourAhead]+=rmse_error; 
+								observer.pp_error_ha[observer.hourAhead]+=percentage_error;
+								observer.pp_error_ha_count[observer.hourAhead]++;
+								//}
 								System.out.println("hour " + observer.hour + " hourAhead " + observer.hourAhead + " cp " + clearingPrice + " pcp " + pcp + " err " + percentage_error + " mvn err " + observer.movingAvgErrorMCP[observer.hourAhead]);
 								
 								// clean auctioner's bids asks

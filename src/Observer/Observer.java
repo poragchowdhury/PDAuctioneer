@@ -42,6 +42,7 @@ public class Observer {
 	public double [] arrMCPMean;
 	public double [] arrMCPCount;
 	
+	
 	public int[] mctsDebugVals;
 	public double mctsxRealCostPerHour = 0.0;
 	public double mctsxPredictedCostPerHour = 0.0;
@@ -52,8 +53,12 @@ public class Observer {
 	
 	public double[][] mctsxRealCost;
 	public double[][] mctsxPredictedCost;
-	public double[] pp_error_ha;
-	public double[] pp_error_ha_count;
+	
+	public double error = 0; // percentage error introduced to the predictor
+	public double[] ma_err; // root mean square error
+	public double[] rmse_err; // root mean square error
+	public double[] pp_error_ha; // Percentage error
+	public double[] pp_error_ha_count; // Percentage error counter
 	
 	public int[][] recordMCTSMove;
 	public PredictorFactory pricepredictor;
@@ -235,6 +240,8 @@ public class Observer {
 		
 		mctsxRealCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		mctsxPredictedCost = new double[Configure.getTOTAL_SIM_DAYS()*Configure.getHOURS_IN_A_DAY()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
+		ma_err = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
+		rmse_err = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		pp_error_ha = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		pp_error_ha_count = new double [Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()+1];
 		
@@ -789,15 +796,21 @@ public class Observer {
 				//pwOutput.println(MCTSSimulation + "," + totHours + "," + totHours/Configure.getHOURS_IN_A_DAY() + "," + totHours%Configure.getHOURS_IN_A_DAY() + "," + totHA + "," + (realCost - mctsxPredictedCost[totHours][totHA]));
 			}
 		}
-		double avg_err = 0;
+		double avg_err = 0; // percentage error
+		double mae = 0;
+		double rmse = 0;
 		double count = 0;
 		for(int i = 0; i < pp_error_ha.length; i++) {
 			avg_err += pp_error_ha[i];
+			mae += ma_err[i];
+			rmse += rmse_err[i];
 			count += pp_error_ha_count[i];
 		}
 		avg_err /= count;
-		System.out.println("PP err " + avg_err);
-		pwOutput.println("Avg Error " + avg_err);
+		mae /= count;
+		rmse /= count;
+		System.out.println("Error: Percentage err " + avg_err + " MAE " + mae + " RMSE " + rmse);
+		pwOutput.println("Error: Percentage err " + avg_err + " MAE " + mae + " RMSE " + rmse);
 		pwOutput.close();
 		fwOutput.close();
 		
@@ -810,32 +823,41 @@ public class Observer {
 		String file = Configure.getRESULT_FILE();
 		FileWriter fwOutput = new FileWriter(file + "-mcts-moves.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
-		pwOutput.println("HourAhead,Action,MoveTakenCount,avgmcp,minmAuctioncount,PredictionErr");
+		pwOutput.println("HourAhead,Action,MoveTakenCount,avgmcp,minmAuctioncount,PercentageErr,MAE,RMSE");
 		
 		//pwOutput.println("ha,avgmcp,count,err");
 		double avg_err = 0;
+		double mae = 0;
+		double rmse = 0;
 		double count = 0;
 		
 		for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
 			if(MCPriceCount[totHA] == 0)
 				MCPriceCount[totHA]=1;
 			for(int j = 0; j < 10; j++) {
-				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]+","+MCPrice[totHA]/MCPriceCount[totHA]+","+minCPHourAhead[totHA]+","+pp_error_ha[totHA]/pp_error_ha_count[totHA]);
+				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]+","+MCPrice[totHA]/MCPriceCount[totHA]+","+minCPHourAhead[totHA]+","+pp_error_ha[totHA]/pp_error_ha_count[totHA]+","+ma_err[totHA]/pp_error_ha_count[totHA]+","+rmse_err[totHA]/pp_error_ha_count[totHA]);
 				recordMCTSMove[totHA][j] = 0;
 			}
 			MCPrice[totHA]=0;
 			MCPriceCount[totHA]=0;
 			minCPHourAhead[totHA]=0;
 			avg_err += pp_error_ha[totHA];
+			mae += ma_err[totHA];
+			rmse += rmse_err[totHA];
 			count += pp_error_ha_count[totHA];
+			
+			// reseting the error and counter values
+			ma_err[totHA] = 0;
+			rmse_err[totHA] = 0;
 			pp_error_ha[totHA] = 0;
 			pp_error_ha_count[totHA] = 0;
 		}
 		
 		avg_err /= count;
-		System.out.println("PP err " + avg_err);
-		pwOutput.println("Avg Error " + avg_err);
-		
+		mae /= count;
+		rmse /= count;
+		System.out.println("Error: Percentage err " + avg_err + " MAE " + mae + " RMSE " + rmse);
+		pwOutput.println("Error,Percentage err," + avg_err + ",MAE," + mae + ",RMSE," + rmse);
 		
 		pwOutput.close();
 		fwOutput.close();

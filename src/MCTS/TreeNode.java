@@ -176,7 +176,18 @@ public class TreeNode {
         if(sims == 0) {
         	//double mult = newC1(ob, mcts);
         	double [][] info = new double[ob.hourAhead+1][4];
+			
+        	/* newC2
+        	 * -578271.95:1K: with 0% error:
+        	 * -517060.30: with 10% error: pp err 40.653649
+        	 *  */
 			double mult = newC2(ob, mcts, info);
+        	
+        	/* IJCAIC2
+        	 * -534894.45:1K: with 0% error: pp err
+        	 * -492914.52:1K: with 10% error: pp err 32.2803751942143 
+        	 *  */
+			//double mult = IJCAIC2(ob, mcts);
         	
     		Action action = new Action(0,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
     		mcts.actions.add(action);
@@ -271,8 +282,8 @@ public class TreeNode {
         
     }
 
-    public void IJCAIC2() {
-    	/*
+    public double IJCAIC2(Observer ob, MCTS mcts) {
+    	
     	// C2
     	int [] newPIndices = new int[ob.hourAhead+1];
 		int threshold = 7;
@@ -300,51 +311,51 @@ public class TreeNode {
 		}
 		
 		double mult = sigma[newPIndices[index]];
-		*/
+		return mult;
     }
     
     public double newC2(Observer ob, MCTS mcts, double [][] info) {
     	//C2
     	double threshold = MAX_PR;
-		
+    	double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
 		// Initialize
-//    	System.out.println("Initialize array");
+    	// System.out.println("Initialize array");
 		for(int i = 0; i < info.length; i++) {
 			info[i][Pr] = MIN_PR;
-			double d =  mcts.arrMctsPredClearingPrice[i];
+			double d =  ob.pricepredictor.getPrice(i);
 			info[i][CP] = d;
 			info[i][PCP] = d;
 			info[i][HA] = i;
 		}
 		
-//		print2D(info);
+		// print2D(info);
 
 		int lastCounter = 0;
 		while(isThreshold(info, threshold)) {
 			// sort the array based on clearing price
 			bubbleSort(info);
-//			System.out.println("BUBBLE SORT");
-//			print2D(info);
+			// System.out.println("BUBBLE SORT");
+			// print2D(info);
 			// get the index to increment the probability
 			lastCounter = getProperIndex(info);
 			
 			if(lastCounter == -1)
 				break; // finished updating all
 			
-//			System.out.println("INCREMENTING "+lastCounter+": "+ info[lastCounter][CP] +" from " + info[lastCounter][Pr] +" to "+ (info[lastCounter][Pr]+MIN_PR));
+			// System.out.println("INCREMENTING "+lastCounter+": "+ info[lastCounter][CP] +" from " + info[lastCounter][Pr] +" to "+ (info[lastCounter][Pr]+MIN_PR));
 			info[lastCounter][Pr]+=MIN_PR;
 			double prp = info[lastCounter][Pr];
 			double z = mcts.utility.calc_q(prp);
 			if(prp < 0.5)
 				z *= -1;
 			info[lastCounter][PCP] = Math.abs(info[lastCounter][CP]+(7.8*z));
-//			System.out.println("Z:"+z+" newPCP "+info[lastCounter][PCP]);
-			//lastCounter++;
+			// System.out.println("Z:"+z+" newPCP "+info[lastCounter][PCP]);
 		}
 
 		// Find the probability of corresponding hourAhead auction
 		int index = 0;
 		double prob = 0.5;
+		//print2D(info);
 		for(int i = 0; i < info.length; i++) {
 			if(ob.hourAhead == info[i][HA])
 			{
