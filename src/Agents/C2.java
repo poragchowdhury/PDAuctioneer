@@ -249,7 +249,7 @@ public class C2 extends Agent {
 		
 	}
 	
-	public double IJCAIC2(Observer ob) {
+	public double C2(Observer ob) {
 		
 		// increasing probability: FINAL
 		int [] newPIndices = new int[ob.hourAhead+1];
@@ -294,27 +294,30 @@ public class C2 extends Agent {
 
 			double [][] info = new double[ob.hourAhead+1][4];
 			
-			/* newC2
-			 * -1093848.67: with -30% error: pp err 181
-			 * -704403.35: with -20% error: pp err 85.64
-			 * -643625.85: with -10% error: pp err 59.94
-			 * -550105.85: with 0% error: pp err 46.05
-        	 * -527037.92: with 10% error: pp err 46.80
-        	 * -532671.58: with 20% error: pp err 45.193 
-        	 * -652627.84: with 30% error: pp err 47.42  
+			/* C3
+			 * -652472.29: with -30% error: pp err 181
+			 * -535912.02: with -20% error: pp err 85.64
+			 * -528382.12: with -10% error: pp err 59.94
+			 * -538484.71: with 0% error: pp err 46.05
+			 * -557276.66: with 1% error: pp err 46.05
+			 * -567495.91: with 5% error: pp err 46.05
+        	 * -647616.38: with 10% error: pp err 46.80
+        	 * -708494.28: with 20% error: pp err 45.193 
         	 *  */
-			double C2limitPrice = newC2(ob, info); 
+			//double C2limitPrice = C3(ob, info); 
 			
 			//double C2limitPrice = parametricC2(ob); // -586875.85
 			//double C2limitPrice = oldC2(ob); // -599145.19
 			
-			/* IJCAIC2
-        	 * -558354.13: with 0% error: pp err
-        	 * -540446.62: with 10% error: pp err 30.42
-        	 * -683062.50: with 20% error: pp err 39.31
-        	 * -792075.38: with 30% error: pp err 47.25
+			/* C2
+			 * -794065.74: with -30% error: pp err 181
+			 * -681485.69: with -20% error: pp err 85.64
+			 * -542847.50: with -10% error: pp err 59.94
+			 * -562273.71: with 0% error: pp err
+        	 * -668295.74: with 10% error: pp err 30.42
+        	 * -1123595.90: with 20% error: pp err 39.31
         	 *  */
-			//double C2limitPrice = IJCAIC2(ob);
+			double C2limitPrice = C2(ob);
 			//System.out.println(" C2LP " + C2limitPrice);
 			
 			if((this.neededMWh-MIN_MWH) <= 0) {
@@ -363,7 +366,7 @@ public class C2 extends Agent {
     	return true;
     }
 	
-    public double newC2(Observer ob, double [][] info) {
+    public double C3(Observer ob, double [][] info) {
     	//C2
     	double threshold = newMAX_PR;
     	double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);

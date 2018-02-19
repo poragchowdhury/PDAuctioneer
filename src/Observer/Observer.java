@@ -54,7 +54,7 @@ public class Observer {
 	public double[][] mctsxRealCost;
 	public double[][] mctsxPredictedCost;
 	
-	public double error = 0; // percentage error introduced to the predictor
+	public double error = 0.2; // percentage error introduced to the predictor
 	public double[] ma_err; // root mean square error
 	public double[] rmse_err; // root mean square error
 	public double[] pp_error_ha; // Percentage error
@@ -821,7 +821,7 @@ public class Observer {
 	
 	public void writeMCTSMoves() throws IOException{
 		String file = Configure.getRESULT_FILE();
-		FileWriter fwOutput = new FileWriter(file + "-mcts-moves.csv", true);
+		FileWriter fwOutput = new FileWriter(file + "-mcts-moves-and-errors.csv", true);
 		PrintWriter pwOutput = new PrintWriter(new BufferedWriter(fwOutput));
 		pwOutput.println("HourAhead,Action,MoveTakenCount,avgmcp,minmAuctioncount,PercentageErr,MAE,RMSE");
 		
@@ -834,7 +834,10 @@ public class Observer {
 		for(int totHA = 0; totHA < Configure.getTOTAL_HOUR_AHEAD_AUCTIONS(); totHA++){
 			if(MCPriceCount[totHA] == 0)
 				MCPriceCount[totHA]=1;
-			for(int j = 0; j < 10; j++) {
+			// Number of max actions in MCTS
+			// MaxN = 1 
+			int MaxN = 1; //10
+			for(int j = 0; j < MaxN; j++) {
 				pwOutput.println(totHA + "," + j + "," + recordMCTSMove[totHA][j]+","+MCPrice[totHA]/MCPriceCount[totHA]+","+minCPHourAhead[totHA]+","+pp_error_ha[totHA]/pp_error_ha_count[totHA]+","+ma_err[totHA]/pp_error_ha_count[totHA]+","+rmse_err[totHA]/pp_error_ha_count[totHA]);
 				recordMCTSMove[totHA][j] = 0;
 			}
