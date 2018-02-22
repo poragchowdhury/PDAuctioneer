@@ -177,11 +177,11 @@ public class TreeNode {
         	//double mult = newC1(ob, mcts);
         	double [][] info = new double[ob.hourAhead+1][4];
 			
-        	/* newC2
-        	 * -578271.95:1K: with 0% error:
+        	/* C3
+        	 * -578271.95:1K: with 0% error:69.96 // -579544.97
         	 * -517060.30: with 10% error: pp err 40.653649
         	 *  */
-			double mult = newC2(ob, mcts, info);
+			double mult = C3(ob, mcts, info);
         	
         	/* IJCAIC2
         	 * -534894.45:1K: with 0% error: pp err
@@ -314,8 +314,8 @@ public class TreeNode {
 		return mult;
     }
     
-    public double newC2(Observer ob, MCTS mcts, double [][] info) {
-    	//C2
+    public double C3(Observer ob, MCTS mcts, double [][] info) {
+    	//C3
     	double threshold = MAX_PR;
     	double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
 		// Initialize
