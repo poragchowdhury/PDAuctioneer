@@ -293,8 +293,18 @@ public class C2 extends Agent {
 		if(this.neededMWh > 0){
 
 			double [][] info = new double[ob.hourAhead+1][4];
-			
 			/* C3
+			 * -750250.05: with -30% error: pp err 181
+			 * -506558.92: with -20% error: pp err 85.64
+			 * -509490.42: with -10% error: pp err 59.94
+			 * -546350.88: with 0% error: pp err 46.05
+			 * -549271.27: with 1% error: pp err 46.05
+			 * -570655.81: with 5% error: pp err 46.05
+        	 * -662000.53: with 10% error: pp err 46.80
+        	 * -755765.96: with 20% error: pp err 45.193 
+        	 *  */
+			double C2limitPrice = C3(ob, info);
+			/* C4
 			 * -652472.29: with -30% error: pp err 181
 			 * -535912.02: with -20% error: pp err 85.64
 			 * -528382.12: with -10% error: pp err 59.94
@@ -317,7 +327,7 @@ public class C2 extends Agent {
         	 * -668295.74: with 10% error: pp err 30.42
         	 * -1123595.90: with 20% error: pp err 39.31
         	 *  */
-			double C2limitPrice = C2(ob);
+			//double C2limitPrice = C2(ob);
 			//System.out.println(" C2LP " + C2limitPrice);
 			
 			if((this.neededMWh-MIN_MWH) <= 0) {
@@ -366,14 +376,75 @@ public class C2 extends Agent {
     	return true;
     }
 	
+	 public double C4(Observer ob, double [][] info) {
+	    	//C4
+	    	double threshold = newMAX_PR;
+	    	double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+			// Initialize
+	    	// System.out.println("Initialize array");
+			for(int i = 0; i < info.length; i++) {
+				info[i][Pr] = newMIN_PR;
+				double d =  ob.pricepredictor.getPrice(i);
+				info[i][CP] = d;
+				info[i][PCP] = d;
+				info[i][HA] = i;
+			}
+			
+			// print2D(info);
+
+			int lastCounter = 0;
+			while(isThreshold(info, threshold)) {
+				// sort the array based on clearing price
+				bubbleSort(info);
+				// System.out.println("BUBBLE SORT");
+				// print2D(info);
+				// get the index to increment the probability
+				lastCounter = getProperIndex(info);
+				
+				if(lastCounter == -1)
+					break; // finished updating all
+				
+				// System.out.println("INCREMENTING "+lastCounter+": "+ info[lastCounter][CP] +" from " + info[lastCounter][Pr] +" to "+ (info[lastCounter][Pr]+MIN_PR));
+				info[lastCounter][Pr]+=newMIN_PR;
+				double prp = info[lastCounter][Pr];
+				double z = utility.calc_q(prp);
+				if(prp < 0.5)
+					z *= -1;
+				info[lastCounter][PCP] = Math.abs(info[lastCounter][CP]+(7.8*z));
+				// System.out.println("Z:"+z+" newPCP "+info[lastCounter][PCP]);
+			}
+
+			// Find the probability of corresponding hourAhead auction
+			int index = 0;
+			double prob = 0.5;
+			//print2D(info);
+			for(int i = 0; i < info.length; i++) {
+				if(ob.hourAhead == info[i][HA])
+				{
+					index = i;
+					prob = info[index][Pr];
+					break;
+				}
+			}
+		
+			double mult = utility.calc_q(prob);
+			if(prob < 0.5)
+				mult *= -1;
+
+			double std = mult*7.8;
+			double C2limitPrice = Math.abs(limitPrice+std);
+			
+			return C2limitPrice;
+	    }
+	
     public double C3(Observer ob, double [][] info) {
-    	//C2
-    	double threshold = newMAX_PR;
+    	//C3
+    	double threshold = MAX_PR;
     	double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
 		// Initialize
     	// System.out.println("Initialize array");
 		for(int i = 0; i < info.length; i++) {
-			info[i][Pr] = newMIN_PR;
+			info[i][Pr] = MIN_PR;
 			double d =  ob.pricepredictor.getPrice(i);
 			info[i][CP] = d;
 			info[i][PCP] = d;
