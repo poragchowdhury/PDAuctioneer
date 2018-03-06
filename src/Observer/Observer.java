@@ -54,7 +54,7 @@ public class Observer {
 	public double[][] mctsxRealCost;
 	public double[][] mctsxPredictedCost;
 	
-	public double error = -0.3; // percentage error introduced to the predictor
+	public double error = 0.0; // percentage error introduced to the predictor
 	public double[] ma_err; // root mean square error
 	public double[] rmse_err; // root mean square error
 	public double[] pp_error_ha; // Percentage error
