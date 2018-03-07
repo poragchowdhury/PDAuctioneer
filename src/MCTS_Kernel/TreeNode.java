@@ -60,6 +60,7 @@ public class TreeNode {
 
 	public TreeNode(double pprice, ArrayList<Action> actions, double stddev, int newactions){
 		this.limitprices = new double[20];
+		// changing the kernel methods
 		this.kernel = new double[20][20][4];
 		this.actionsize = actions.size() + newactions;
 		for(Action a:actions) {
