@@ -145,23 +145,7 @@ public class TreeNode {
 		return mult;
     }
 
-    public void staticAction() {
-    	/*
-    	Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
-		mcts.actions.add(action);
-		action = new Action(1,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
-		mcts.actions.add(action);
-		action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, false);
-		mcts.actions.add(action);
-		action = new Action(3,1,1,false, Action.ACTION_TYPE.BUY, 1.00, false);
-		mcts.actions.add(action);
-		action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
-		mcts.actions.add(action);
-    	action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
-		mcts.actions.add(action);
-		*/
-    }
-    
+
     public void runMonteCarlo(ArrayList<Action> actions, MCTS mcts, Observer ob, int sims) {
     	
     	double simCost = 0.0;
