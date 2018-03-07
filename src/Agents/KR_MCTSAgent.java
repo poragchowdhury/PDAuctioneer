@@ -54,7 +54,13 @@ public class KR_MCTSAgent extends Agent {
 		observer.initialNeededEneryMCTSBroker = this.initialNeededMWh;
 		if(this.neededMWh <= 0.001)
 			return;
+		
 		TreeNode bestMove = mcts.getBestMCTSMove(observer);
+		// Clear the actionspace
+		System.out.println("Action size " + mcts.actions.size());
+		mcts.actions.clear();
+		mcts.thresholdcount=0;
+		
 		if(bestMove == null)
 			System.out.println("BestMove is null");
 		//else 

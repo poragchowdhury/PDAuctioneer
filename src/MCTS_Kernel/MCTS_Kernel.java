@@ -47,7 +47,7 @@ public class MCTS_Kernel {
 		this.thresholdMCTS[1] = mctsSim*0.10;
 		this.thresholdMCTS[2] = mctsSim*0.20;
 		this.thresholdMCTS[3] = mctsSim*0.50;
-		//this.thresholdMCTS[4] = mctsSim*10.0;
+		this.thresholdMCTS[4] = mctsSim;
 		this.playerName = name;
 	}
 
@@ -129,16 +129,16 @@ public class MCTS_Kernel {
     	actions.add(action);
 		*/
 		
-		Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    	actions.add(action);
-    	action = new Action(1,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    	actions.add(action);
-    	action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    	actions.add(action);
-    	action = new Action(3,1,1,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    	actions.add(action);
-    	action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
-    	actions.add(action);
+//		Action action = new Action(0,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    	actions.add(action);
+//    	action = new Action(1,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    	actions.add(action);
+//    	action = new Action(2,0,0,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    	actions.add(action);
+//    	action = new Action(3,1,1,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    	actions.add(action);
+//    	action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    	actions.add(action);
 		
 		
     	// Create all the actions
@@ -166,8 +166,8 @@ public class MCTS_Kernel {
     	actions.add(action);
 		*/
 		// no bid
-		action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
-    	actions.add(action);
+//		action = new Action(5,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
+//    	actions.add(action);
     	/*
     	// Selling
     	action = new Action("11",-2,0,false, Action.ACTION_TYPE.SELL, 1.20);
@@ -215,16 +215,16 @@ public class MCTS_Kernel {
     		root.runMonteCarlo(actions, this, observer,i);
     		//System.out.println("sim " + i);
     	}
-    	//root.printKernel();
+    	root.printKernel();
     	
     	
-    	for(int jj=observer.hourAhead-1; jj>= 0; jj--){
-    		if(arrMctsPredClearingPrice[observer.hourAhead] > arrMctsPredClearingPrice[jj]){
-				arrCounterHigherBids[observer.hourAhead]++;
-			}
-    	}
+//    	for(int jj=observer.hourAhead-1; jj>= 0; jj--){
+//    		if(arrMctsPredClearingPrice[observer.hourAhead] > arrMctsPredClearingPrice[jj]){
+//				arrCounterHigherBids[observer.hourAhead]++;
+//			}
+//    	}
     	
-    	int thresholdLimit = observer.hourAhead * (thresholdLowAuctionsPerc/100);
+//    	int thresholdLimit = observer.hourAhead * (thresholdLowAuctionsPerc/100);
     	
     	/*
 		if(arrCounterHigherBids[observer.hourAhead] > thresholdLimit)
