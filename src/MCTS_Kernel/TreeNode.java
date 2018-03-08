@@ -34,6 +34,7 @@ public class TreeNode {
 	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.932, 0.975};
 	public double [] sigma = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
 
+	// One dimentional kernel
 	public double kernel [][][];
 	public double limitprices [];
 	ArrayList<TreeNode> children;
