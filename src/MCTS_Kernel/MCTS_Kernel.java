@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import configure.Configure;
-
 import Agents.Agent;
 import MCTS_Kernel.TreeNode;
 import Observer.Observer;
@@ -190,9 +189,36 @@ public class MCTS_Kernel {
     		arrMctsPredClearingPrice[j] = observer.pricepredictor.getPrice(j);
     		arrCounterHigherBids[j] = 0;
     	}
+
     	
+    	//***********ADDING INITIAL ACTION TO MCTS*************//
+		//double mult = newC1(ob, mcts);
+    	//double [][] info = new double[ob.hourAhead+1][4];
+		
+    	/* C3
+    	 * -578271.95:1K: with 0% error:69.96 // -579544.97
+    	 * -517060.30: with 10% error: pp err 40.653649
+    	 *  */
+		double mult = 0;//C3(ob, mcts, info);
     	
-    	TreeNode root = new TreeNode(arrMctsPredClearingPrice[observer.hourAhead], actions, observer.STDDEV[observer.hourAhead], thresholdcount);
+    	/* IJCAIC2
+    	 * -534894.45:1K: with 0% error: pp err
+    	 * -492914.52:1K: with 10% error: pp err 32.2803751942143 
+    	 *  */
+		//double mult = IJCAIC2(ob, mcts);
+    	mult = 0;
+		Action action = new Action(0,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		actions.add(action);
+		mult = -1;
+		action = new Action(1,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		actions.add(action);
+		mult = 1;
+		action = new Action(2,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
+		actions.add(action);
+		action = new Action(3,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
+		actions.add(action);
+    	//************************//
+		TreeNode root = new TreeNode(arrMctsPredClearingPrice[observer.hourAhead], actions, observer.STDDEV[observer.hourAhead], thresholdcount);
     	root.parent = null;
     	root.nVisits = actions.size();
     	root.hourAheadAuction = observer.hourAhead+1;
