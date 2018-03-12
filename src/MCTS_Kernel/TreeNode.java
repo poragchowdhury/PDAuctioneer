@@ -72,7 +72,7 @@ public class TreeNode {
 
 	public int actionName;
 	public double C = 10;
-	public boolean printOn = false;
+	public boolean printOn = true;
 	int hourAheadAuction;
 	int	appliedAction;
 	int actionsize;
@@ -83,11 +83,16 @@ public class TreeNode {
 		// changing the kernel methods
 		this.kernel = new ArrayList<KernelNode>();
 		this.actionsize = actions.size() + newactions;
+		
 		for(Action a:actions) {
 			if(a.dynamicAction)
 				this.limitprices[a.actionName] = a.minMult;
-			else
-				this.limitprices[a.actionName] = pprice + (stddev * a.minMult);
+			else {
+				if(a.actionName == 0)
+					this.limitprices[a.actionName] = -1;
+				else
+					this.limitprices[a.actionName] = pprice + (stddev * a.minMult);
+			}
 		}
 		for(int i = 0; i < 20; i++)
 		this.kernel.add(i,new KernelNode());
@@ -138,6 +143,7 @@ public class TreeNode {
 		double iniNeededEnergy = ob.initialNeededEneryMCTSBroker;
 		List<TreeNode> visited = new LinkedList<TreeNode>();
 		TreeNode cur = this;
+		boolean rolloutExit = false;
 
 		visited.add(this);
 
@@ -148,9 +154,9 @@ public class TreeNode {
         	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob);
         	// ACTION: ACT_NO, MIN_PRC, MAX_PRC, booNOBID, ACT_TYP, PERC, booDYN_ACT
         	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
-        	mcts.actions.add(action);
+        	mcts.actions.get(0).add(action);
         	mcts.thresholdcount++;
-        	printKernel();
+//        	printKernel();
         }
 
 		int actionsize = actions.size();
@@ -194,52 +200,76 @@ public class TreeNode {
 					newchild.volPercentage = action.percentage;
 					newchild.actionName = action.actionName;
 					newchild.dynamicState = action.dynamicAction;
-					newchild.nVisits = actionsize;
+					newchild.nVisits = 0;//actionsize;
 					cur.children.add(newchild);
 				}
 				//cur = cur.selectRandomUnvisited(mcts, ob);
 			}
 
 			TreeNode unvisitedNode = cur.selectRandomUnvisited(mcts, ob);
-			if(unvisitedNode != null){
+			while(unvisitedNode != null){
+				double unvisitedNeededEnergy = neededEnergy;
+				double unvisitedSimCost = simCost;
 				// Initiate all nodes
 				// select a random node
-				cur = unvisitedNode;
-				visited.add(cur);
+				//cur = unvisitedNode;
+				visited.add(unvisitedNode);
 				// do the rollout
-				double [] retValue = rollout(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy, actions, mcts);
-				System.out.println("Rollout");
-				cur.parent.printKernel();
+				double [] retValue = rollout(unvisitedNode, mcts.arrMctsPredClearingPrice, ob, unvisitedNeededEnergy, iniNeededEnergy, actions, mcts);
+//				System.out.println("Rollout");
+//				unvisitedNode.parent.printKernel();
 				// deduct the clearing volume
-				neededEnergy -= retValue[0];
+				unvisitedNeededEnergy -= retValue[0];
 				// add to the sim cost
-				simCost += retValue[1]*(-1);
-				break;
+				unvisitedSimCost += retValue[1]*(-1);
+				
+				double balancingSimCost = Math.abs(unvisitedNeededEnergy)*ob.arrBalacingPrice[ob.currentTimeSlot]*(-1);
+				unvisitedSimCost += balancingSimCost;
+				// make the sim cost as unit cost
+				unvisitedSimCost /= ob.neededEneryMCTSBroker;
+				
+				// update all the nodes in the visited array
+				for (TreeNode node : visited) {
+					// System.out.println(node);
+					node.updateStats(unvisitedSimCost);
+				}
+				// remove it from the list
+				visited.remove(unvisitedNode);
+				// call the unvisited nodes again
+				unvisitedNode = cur.selectRandomUnvisited(mcts, ob);
+				if(unvisitedNode == null) {
+					rolloutExit = true;
+					break;
+				}
 			}
 
+			if(rolloutExit)
+				break;
 			// select a node for next simulations
 			cur = cur.select(mcts, ob, neededEnergy);
 
 			// Do the simulation for wholesale auction 
 			double [] retValue = simulation(cur, mcts.arrMctsPredClearingPrice, ob, neededEnergy, iniNeededEnergy);
-			System.out.println("Simulation");
-			cur.parent.printKernel();
+//			System.out.println("Simulation");
+//			cur.parent.printKernel();
 			neededEnergy -= retValue[0];
 			simCost += retValue[1]*(-1);
-
+			
 			visited.add(cur);
 		}
-
-		double balancingSimCost = Math.abs(neededEnergy)*ob.arrBalacingPrice[ob.currentTimeSlot]*(-1);
-
-		simCost += balancingSimCost;
-
-		// make the sim cost as unit cost
-		simCost /= ob.neededEneryMCTSBroker;
-
-		for (TreeNode node : visited) {
-			// System.out.println(node);
-			node.updateStats(simCost);
+		
+		// all nodes were simulated
+		if(rolloutExit == false) {
+			double balancingSimCost = Math.abs(neededEnergy)*ob.arrBalacingPrice[ob.currentTimeSlot]*(-1);
+			simCost += balancingSimCost;
+			// make the sim cost as unit cost
+			simCost /= ob.neededEneryMCTSBroker;
+	
+			// update all the nodes in the visited array
+			for (TreeNode node : visited) {
+				// System.out.println(node);
+				node.updateStats(simCost);
+			}
 		}
 
 	}
@@ -315,7 +345,7 @@ public class TreeNode {
 
 			if (kernelValue[i] > bestValue) {
 				selected = this.children.get(i);
-				bestValue = uctValue;
+				bestValue = kernelValue[i];
 				if(printOn)
 					System.out.println(" [best] ");
 			}
@@ -378,7 +408,7 @@ public class TreeNode {
 
 	public TreeNode selectRandom(MCTS_Kernel mcts, Observer observer) {
 		Random r = new Random();
-		int i = r.nextInt(mcts.actions.size()) + 0;
+		int i = r.nextInt(mcts.actions.get(0).size()) + 0;
 		return children.get(i);
 	}
 
@@ -558,7 +588,7 @@ public class TreeNode {
 			if(updateKernel && tempNode.nobid)
 			{
 				for(int i = 0; i < tempNode.parent.children.size(); i++) {
-					tempNode.parent.kernel.get(i).accB++;
+					//tempNode.parent.kernel.get(i).accB++;
 					tempNode.parent.kernel.get(i).totB++;
 				}
 				updateKernel = false;
@@ -669,7 +699,7 @@ public class TreeNode {
 		else {
 			// NO BID
 			for(int i = 0; i < tn.parent.children.size(); i++) {
-				tn.parent.kernel.get(i).accB++;
+				//tn.parent.kernel.get(i).accB++;
 				tn.parent.kernel.get(i).totB++;
 			}
 		}
@@ -687,7 +717,7 @@ public class TreeNode {
 		ntotValueVisits+=1;
 		if(parent!=null) {
 			parent.kernel.get(actionName).totalPoints = totValue;
-			parent.kernel.get(actionName).totalVisits = nVisits;
+			parent.kernel.get(actionName).totalVisits = ntotValueVisits;
 		}
 
 	}
@@ -711,7 +741,7 @@ public class TreeNode {
 			double n = kernel.get(i).accB;
 			double d = kernel.get(i).totB;
 			double p = n/d;
-			if(n==0)
+			if(d==0)
 				p = 99;
 			
 			if(i == 0) System.out.print("Pr: ");

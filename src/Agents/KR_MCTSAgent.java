@@ -57,8 +57,8 @@ public class KR_MCTSAgent extends Agent {
 		
 		TreeNode bestMove = mcts.getBestMCTSMove(observer);
 		// Clear the actionspace
-		System.out.println("Action size " + mcts.actions.size());
-		mcts.actions.clear();
+		System.out.println("Action size " + mcts.actions.get(0).size());
+		mcts.actions.get(0).clear();
 		mcts.thresholdcount=0;
 		
 		if(bestMove == null)
