@@ -72,7 +72,7 @@ public class TreeNode {
 
 	public int actionName;
 	public double C = 10;
-	public boolean printOn = true;
+	public boolean printOn = false;
 	int hourAheadAuction;
 	int	appliedAction;
 	int actionsize;
@@ -156,6 +156,7 @@ public class TreeNode {
         	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
         	mcts.actions.get(0).add(action);
         	mcts.thresholdcount++;
+        	System.out.println(mcts.thresholdcount);
 //        	printKernel();
         }
 

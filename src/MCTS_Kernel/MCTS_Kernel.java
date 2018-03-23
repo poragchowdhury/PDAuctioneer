@@ -1,6 +1,7 @@
 package MCTS_Kernel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +11,7 @@ import Agents.Agent;
 import MCTS_Kernel.TreeNode;
 import Observer.Observer;
 import Observer.PricePredictor;
+import Observer.Utility;
 
 /**
  * Created by Moinul Morshed Porag Chowdhury
@@ -38,6 +40,22 @@ public class MCTS_Kernel {
     public String playerName;
     public int thresholdcount = 0;
     
+	public int CP = 0;
+	public int PCP = 1;
+	public int Pr = 2;
+	public int HA = 3;
+	public double meanBidPrice = 0;
+	public double stddevPrice = 0;
+	public double MIN_PR = 0.025;
+	public double newMIN_PR = 0.005;
+	public double MAX_PR = 0.975;
+	public double newMAX_PR = 0.998;
+	public double [] probability = {0.025, 0.069, 0.16, 0.30, 0.50, 0.69, 0.84, 0.932, 0.975};
+	public double [] sigma = {-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2};
+	public Utility utility;
+	double totalLayerInput;
+
+    
 	public MCTS_Kernel(double mctsSim, String name){
 		actions = new ArrayList<ArrayList<Action>>();
 		dynamicactionsMCTS2 = new ArrayList<Action>();
@@ -48,6 +66,8 @@ public class MCTS_Kernel {
 		this.thresholdMCTS[3] = mctsSim*0.50;
 		this.thresholdMCTS[4] = mctsSim;
 		this.playerName = name;
+		
+		utility = new Utility();
 	}
 
 	public void setup(Observer observer){
@@ -65,24 +85,14 @@ public class MCTS_Kernel {
 
     	
     	//***********ADDING INITIAL ACTION TO MCTS*************//
-		//double mult = newC1(ob, mcts);
+//    	double [][] info = new double[observer.hourAhead+1][4];
+		//double mult = C4(observer, info);
+    	//double mult = C2(observer);
     	//double [][] info = new double[ob.hourAhead+1][4];
-		
-    	/* C3
-    	 * -578271.95:1K: with 0% error:69.96 // -579544.97
-    	 * -517060.30: with 10% error: pp err 40.653649
-    	 *  */
-		double mult = 0;//C3(ob, mcts, info);
-    	
-    	/* IJCAIC2
-    	 * -534894.45:1K: with 0% error: pp err
-    	 * -492914.52:1K: with 10% error: pp err 32.2803751942143 
-    	 *  */
-		//double mult = IJCAIC2(ob, mcts);
     	
 		Action action = new Action(0,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
 		actions.get(0).add(action);
-		mult = 0;
+		double mult = 0;
 		action = new Action(1,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
 		actions.get(0).add(action);
 		mult = -1;
@@ -113,6 +123,7 @@ public class MCTS_Kernel {
 		// loop it and do some number of simulations
     	for(int i=0; root.ntotValueVisits < this.mctsSim; i++){
     		root.runMonteCarlo(actions.get(0), this, observer,i);
+    		i = (int)root.ntotValueVisits;
     		//System.out.println("sim " + i);
     	}
     	root.printKernel();
@@ -134,4 +145,148 @@ public class MCTS_Kernel {
     	*/
     	return root.finalSelect(observer);
     }
+    
+	public double C4(Observer ob, double [][] info) {
+		//C4
+		double threshold = MAX_PR;
+		//double limitPrice = ob.pricepredictor.getPrice(ob.hourAhead);
+		// Initialize
+		// System.out.println("Initialize array");
+		for(int i = 0; i < info.length; i++) {
+			info[i][Pr] = newMIN_PR;
+			double d =  ob.pricepredictor.getPrice(i);
+			info[i][CP] = d;
+			info[i][PCP] = d;
+			info[i][HA] = i;
+		}
+
+		// print2D(info);
+
+		int lastCounter = 0;
+		while(isThreshold(info, threshold)) {
+			// sort the array based on clearing price
+			bubbleSort(info);
+			// System.out.println("BUBBLE SORT");
+			// print2D(info);
+			// get the index to increment the probability
+			lastCounter = getProperIndex(info);
+
+			if(lastCounter == -1)
+				break; // finished updating all
+
+			// System.out.println("INCREMENTING "+lastCounter+": "+ info[lastCounter][CP] +" from " + info[lastCounter][Pr] +" to "+ (info[lastCounter][Pr]+MIN_PR));
+			info[lastCounter][Pr]+=newMIN_PR;
+			double prp = info[lastCounter][Pr];
+			double z = utility.calc_q(prp);
+			if(prp < 0.5)
+				z *= -1;
+			info[lastCounter][PCP] = Math.abs(info[lastCounter][CP]+(7.8*z));
+			// System.out.println("Z:"+z+" newPCP "+info[lastCounter][PCP]);
+		}
+
+		// Find the probability of corresponding hourAhead auction
+		int index = 0;
+		double prob = 0.5;
+		//print2D(info);
+		for(int i = 0; i < info.length; i++) {
+			if(ob.hourAhead == info[i][HA])
+			{
+				index = i;
+				prob = info[index][Pr];
+				break;
+			}
+		}
+
+		double mult = utility.calc_q(prob);
+		if(prob < 0.5)
+			mult *= -1;
+
+		//double std = mult*7.8;
+		//double C2limitPrice = Math.abs(limitPrice+std);
+
+		return mult;
+	}
+	
+	public boolean isThreshold(double [][] p, double threshold) {
+		double totalP = p[0][Pr];
+		for(int i = 1; i < p.length; i++) {
+			totalP += p[i][Pr]*(1-totalP); 
+		}
+		if(totalP >= threshold)
+			return false;
+		return true;
+	}
+	public int getProperIndex(double [][] info) {
+		for(int i = 0; i < info.length; i++) {
+			if(info[i][Pr] < MAX_PR) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public void bubbleSort(double [][] info) {
+		double tempPr = 0.0;
+		double tempHA = 0;
+		double tempPCP = 0.0;
+		double tempCP = 0.0;
+		for(int i = 0; i < info.length; i++) {
+			for(int j = i+1; j < info.length; j++) {
+				if(info[i][PCP] > info[j][PCP]) {
+					tempPr = info[i][Pr];
+					tempHA = info[i][HA];
+					tempPCP = info[i][PCP];
+					tempCP = info[i][CP];
+
+					info[i][Pr] = info[j][Pr];
+					info[i][HA] = info[j][HA];
+					info[i][PCP] = info[j][PCP];
+					info[i][CP] = info[j][CP];
+
+					info[j][Pr] = tempPr;
+					info[j][HA] = tempHA;
+					info[j][PCP] = tempPCP;
+					info[j][CP] = tempCP;
+				}
+			}
+		}
+	}
+	
+	public double C2(Observer ob) {
+		// increasing probability: FINAL
+		int [] newPIndices = new int[ob.hourAhead+1];
+		int threshold = 7;
+		for(int i = 0; i < newPIndices.length; i++) {
+			newPIndices[i] = threshold;
+			//threshold = 0;
+			if(threshold > 1)
+				threshold-=1;
+		}
+
+		double [] arrPredClearingPrice = new double[ob.hourAhead+1];
+		double [] arrsortedPredClearingPrice = new double[ob.hourAhead+1];
+
+		for(int HA = 0; HA < arrPredClearingPrice.length; HA++){
+			double d = ob.pricepredictor.getPrice(HA);
+			arrPredClearingPrice[HA] = d;
+			arrsortedPredClearingPrice[HA] = d;
+		}
+		Arrays.sort(arrsortedPredClearingPrice);
+
+		int index = 0;
+		for(int i = 0; i < arrPredClearingPrice.length; i++) {
+			if(arrPredClearingPrice[ob.hourAhead] == arrsortedPredClearingPrice[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		double C1limitPrice = 0.0;
+		double limitPrice = arrPredClearingPrice[ob.hourAhead];
+		double z = sigma[newPIndices[index]];
+		//System.out.println("Z: " + z);
+		//C1limitPrice = Math.abs(limitPrice+z*7.8);
+		return z;
+	}
+
 }

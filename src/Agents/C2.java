@@ -541,13 +541,11 @@ public class C2 extends Agent {
 	}
 
 	public int getProperIndex(double [][] info) {
-
 		for(int i = 0; i < info.length; i++) {
 			if(info[i][Pr] < MAX_PR) {
 				return i;
 			}
 		}
-
 		return -1;
 	}
 
