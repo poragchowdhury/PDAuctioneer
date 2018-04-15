@@ -69,7 +69,7 @@ public class MCTSAgent extends Agent {
 			observer.nanoTime += dTotalTime;
 			observer.nanoTimeCount++;
 		}
-		//System.out.println(totalTime);
+		System.out.println(totalTime + " seconds");
 
 		//double limitPrice = bestMove.mctsClearingPrice;
 
