@@ -9,8 +9,10 @@ package MCTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import configure.Configure;
@@ -18,6 +20,7 @@ import Auctioneer.Ask;
 import Auctioneer.Bid;
 import MCTS.Action.ACTION_TYPE;
 import Observer.Observer;
+import Observer.MemoryNode;
 
 public class TreeNode {
 	public int CP = 0;
@@ -52,7 +55,7 @@ public class TreeNode {
     public boolean nobid = false;
     
     public TreeNode(){
-    	
+
     }
     
     public TreeNode(int n, boolean nobid){
@@ -154,6 +157,9 @@ public class TreeNode {
         List<TreeNode> visited = new LinkedList<TreeNode>();
         TreeNode cur = this;
         
+        
+        ob.sampleCP = 0;
+        
         visited.add(this);
         
         // add dynamic action space logic
@@ -165,26 +171,32 @@ public class TreeNode {
         	 * -578271.95:1K: with 0% error:69.96 // -579544.97
         	 * -517060.30: with 10% error: pp err 40.653649
         	 *  */
-			double mult = C3(ob, mcts, info);
+//			double mult = C3(ob, mcts, info);
         	
         	/* IJCAIC2
         	 * -534894.45:1K: with 0% error: pp err
         	 * -492914.52:1K: with 10% error: pp err 32.2803751942143 
         	 *  */
 			//double mult = IJCAIC2(ob, mcts);
-        	
+        	double mult = 1;
     		Action action = new Action(0,mult,mult,false, Action.ACTION_TYPE.BUY, 1.00, false);
     		mcts.actions.add(action);
     		action = new Action(1,0,0,true, Action.ACTION_TYPE.NO_BID, 1.00, false);
     		mcts.actions.add(action);
+    		action = new Action(2,-1,-1,false, Action.ACTION_TYPE.BUY, 1.00, false);
+    		mcts.actions.add(action);
+//    		action = new Action(3,-2,-2,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    		mcts.actions.add(action);
+//    		action = new Action(4,2,2,false, Action.ACTION_TYPE.BUY, 1.00, false);
+//    		mcts.actions.add(action);
     	}
         else if(sims > mcts.thresholdMCTS[mcts.thresholdcount] && enableDynamicAction) {
         	int actionsize = actions.size();
+//        	double pmctsprice = cur.addPromisingAction(ob);
         	double pmctsprice = cur.getMCTSValue(mcts.arrMctsPredClearingPrice[this.hourAheadAuction-1],ob);
         	Action action = new Action(actionsize,pmctsprice,0,false, Action.ACTION_TYPE.BUY, 1.00, true);
         	mcts.actions.add(action);	
         	mcts.thresholdcount++;
-        	
         }
         
         int actionsize = actions.size();
@@ -264,6 +276,23 @@ public class TreeNode {
             node.updateStats(simCost, balancingSimCost);
         }
         
+        // Adding a new node to the simulation
+        ob.sampleCP = (double)Math.round(ob.sampleCP*1000d)/1000d;
+//      System.out.println(ob.sampleCP);
+		if(ob.sampleCP != 0) {
+			//HashMap<Double, MemoryNode> memory = ob.arrMemory.get(0);
+			MemoryNode mnode = ob.memory.get(ob.sampleCP);
+			if(mnode == null)
+			{
+//				System.out.println("Creating a new entry : sampledCP " + ob.sampleCP + " size" + memory.size());
+				mnode = new MemoryNode(ob.sampleCP, simCost, 1);
+			}
+			else {
+//				System.out.println("Updating");
+				mnode.updateMemoryNode(simCost);
+			}
+			ob.memory.put(ob.sampleCP,mnode);
+		}
     }
 
     public double IJCAIC2(Observer ob, MCTS mcts) {
@@ -476,6 +505,57 @@ public class TreeNode {
         return selected;
     }
 
+    public double addPromisingAction(Observer ob) {
+    	int i = 0;
+    	
+    	ArrayList<MemoryNode> sortedList = new ArrayList<MemoryNode>();
+    	sortedList.add(new MemoryNode(-100000,-100000, 100000));
+    	sortedList.add(new MemoryNode(-100000,-100000, 100000));
+    	sortedList.add(new MemoryNode(-100000,-100000, 100000));
+    	sortedList.add(new MemoryNode(-100000,-100000, 100000));
+    	sortedList.add(new MemoryNode(-100000,-100000, 100000));
+    	
+    	for (Map.Entry<Double, MemoryNode> entry : ob.memory.entrySet()) {
+    	    Double key = entry.getKey();
+    	    MemoryNode value = entry.getValue();
+//    	    System.out.println(i + "LCP " + key + " LCP2" + value.price + " SimCost " + value.profitability + " visits " + value.nVisits);
+    	    
+    	    if(sortedList.size()==0) {
+    	    	sortedList.add(value);
+    	    }
+    	    else {
+    	    	for(int j=0; j<4; j++) {
+	    	    	if(value.profitability > sortedList.get(j).profitability)
+    	    		{
+    	    			MemoryNode temp = sortedList.get(j);
+    	    			sortedList.set(j+1,temp);
+    	    			sortedList.set(j,value);
+    	    			break;
+    	    		}
+    	    	
+    	    	}
+    	    }
+    	    
+    	    i++;
+    	}
+    	
+    	for(int k = 0; k < 4; k++) {
+    		for(int l=k; l < 4; l++) {
+    			if(sortedList.get(l).nVisits < sortedList.get(k).nVisits)
+        		{
+        			MemoryNode tempL = sortedList.get(l);
+        			MemoryNode tempK = sortedList.get(k);
+        			sortedList.set(k,tempL);
+        			sortedList.set(l,tempK);
+        		}
+        	}
+    	}
+    
+    	double priceTemp = sortedList.get(0).price*0.4+sortedList.get(1).price*0.3+sortedList.get(2).price*0.2+sortedList.get(3).price*0.1;
+//    	System.out.println("New action " + priceTemp);
+    	return priceTemp;
+    }
+    
     public double getMCTSValue(double mean, Observer ob) {
     	boolean printOn = false;
         TreeNode selected = null;
@@ -656,6 +736,10 @@ public class TreeNode {
 					if(totalE > 0) {
 						
 						minMWh= Math.abs(totalE) / numberofbids;
+						if(ob.sampleCP == 0) {
+							ob.sampleCP = limitPrice;
+//							System.out.println(ob.sampleCP);
+						}
 			    		for(int i = 1; i <=numberofbids; i++){
 			    			if(limitPrice >= clearingPrice) //arrPredClearingPrice[tn.hourAheadAuction]){
 			    			{
@@ -743,7 +827,10 @@ public class TreeNode {
 				double totalE = surplus + Math.abs(neededMWh);
 
 				if(totalE > 0) {
-				
+					if(ob.sampleCP == 0) {
+						ob.sampleCP = limitPrice;
+//						System.out.println(ob.sampleCP);
+					}
 	    			minMWh= Math.abs(totalE) / numberofbids;
 		    		for(int i = 1; i <=numberofbids; i++){
 		    			if(limitPrice >= clearingPrice){

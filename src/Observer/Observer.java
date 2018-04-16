@@ -68,6 +68,10 @@ public class Observer {
 	public double [][][] weatherPrediction;
 	public double [] movingAvgErrorMCP;
 
+	//public ArrayList<HashMap<Double, MemoryNode>> arrMemory;
+	public HashMap<Double, MemoryNode> memory;
+	public double sampleCP;
+	
 	public double [] STDDEV = {
 			
 			7.8,
@@ -256,6 +260,11 @@ public class Observer {
 		arrMCPCount = new double [24];
 		weatherPrediction = new double[(Configure.getHOURS_IN_A_DAY())*Configure.getTOTAL_SIM_DAYS()][Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()][4];
 		movingAvgErrorMCP = new double[Configure.getTOTAL_HOUR_AHEAD_AUCTIONS()];
+		
+		//arrMemory = new ArrayList<HashMap<Double, MemoryNode>>();
+		//HashMap<Double, MemoryNode> memory = new HashMap<Double, MemoryNode>();
+		//arrMemory.add(memory);
+	
 	}
 	
 	public void setTime(int day, int hour, int hourAhead, int currentTimeSlot){

@@ -2,6 +2,7 @@ package MCTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +10,7 @@ import java.util.Random;
 import configure.Configure;
 import Agents.Agent;
 import MCTS.TreeNode;
+import Observer.MemoryNode;
 import Observer.Observer;
 import Observer.PricePredictor;
 import Observer.Utility;
@@ -286,12 +288,19 @@ public class MCTS {
 			arrMctsPredClearingPrice[j] = observer.pricepredictor.getPrice(j);
 			arrCounterHigherBids[j] = 0;
 		}
+		
+		// Clear the Memory before simulating it 
+		//HashMap<Double, MemoryNode> memory = observer.arrMemory.get(0);
+		observer.memory = new HashMap<Double, MemoryNode>();
+		//observer.arrMemory.set(0, memory);
 
 		// loop it and do some number of simulations
 		for(int i=0; i < this.mctsSim; i++){
 			root.runMonteCarlo(actions, this, observer,i);
 		}
 
+		System.out.println("Size of memory is: "+observer.memory.size());
+		
 		for(int jj=observer.hourAhead-1; jj>= 0; jj--){
 			if(arrMctsPredClearingPrice[observer.hourAhead] > arrMctsPredClearingPrice[jj]){
 				arrCounterHigherBids[observer.hourAhead]++;
